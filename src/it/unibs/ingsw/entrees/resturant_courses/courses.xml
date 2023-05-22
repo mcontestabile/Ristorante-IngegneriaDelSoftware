@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<courses>
+	<course name="menu del giorno" type="menu alla carta" validation="tutto l'anno">
+		<dish has="tartufi al tiramisu'"/>
+		<dish has="risotto alle erbe e noci"/>
+		<dish has="affettati e formaggi"/>
+		<dish has="polpettone di tonno e patate"/>
+		<dish has="pasta al pesto"/>
+	</course>
+	<course name="la primavera" type="menu tematico" validation="primavera">
+		<dish has="affettati e formaggi"/>
+		<dish has="polpettone di tonno e patate"/>
+		<dish has="risotto alle erbe e noci"/>
+	</course>
+</courses>

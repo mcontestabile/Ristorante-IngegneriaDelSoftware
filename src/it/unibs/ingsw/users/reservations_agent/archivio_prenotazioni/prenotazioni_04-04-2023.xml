@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Elenco prenotazioni del 04-04-2023-->
+<agenda>
+	<reservation name="anto" res_cover="4">
+		<item item_name="la primavera" item_cover="4"/>
+	</reservation>
+	<reservation name="diego" res_cover="2">
+		<item item_name="affettati e formaggi" item_cover="12"/>
+	</reservation>
+</agenda>

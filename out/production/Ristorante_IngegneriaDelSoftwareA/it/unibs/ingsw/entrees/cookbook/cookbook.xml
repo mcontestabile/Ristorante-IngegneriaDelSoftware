@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<recipes>
+	<recipe name="spaghetti allo scoglio" portions="4" n="1" d="4">
+		<ingredient has="spaghetti 400g "/>
+		<ingredient has="cozze 400g"/>
+		<ingredient has="vongole 400g"/>
+		<ingredient has="prezzemolo 5g"/>
+	</recipe>
+	<recipe name="platessa con panatura di frutta secca" portions="4" n="2" d="7">
+		<ingredient has="filetti di platessa 4"/>
+		<ingredient has="uova 1"/>
+		<ingredient has="farina 80g"/>
+		<ingredient has="pangrattato 80g"/>
+		<ingredient has="frutta secca 100g"/>
+	</recipe>
+	<recipe name="tartufi al tiramisu'" portions="5" n="1" d="12">
+		<ingredient has="mascarpone 250g"/>
+		<ingredient has="savoiardi 160g"/>
+		<ingredient has="caffè 80g"/>
+		<ingredient has="zucchero a velo 60g"/>
+	</recipe>
+	<recipe name="risotto alle erbe e noci" portions="4" n="1" d="3">
+		<ingredient has="riso 280g"/>
+		<ingredient has="erbe 100g"/>
+		<ingredient has="noci 40g"/>
+	</recipe>
+	<recipe name="polpettone di tonno e patate" portions="6" n="1" d="5">
+		<ingredient has="macinato di bovino 600g"/>
+		<ingredient has="tonno 100g"/>
+		<ingredient has="patate 100g"/>
+		<ingredient has="uova 1"/>
+	</recipe>
+	<recipe name="brownies con mascarpone" portions="8" n="1" d="5">
+		<ingredient has="cioccolato 260g"/>
+		<ingredient has="cacao 20g"/>
+		<ingredient has="burro 150g"/>
+		<ingredient has= "farina00 90g"/>
+		<ingredient has="uova 2"/>
+		<ingredient has="mascarpone 10g"/>
+	</recipe>
+	<recipe name="lasagne alla bolognese" portions="8" n="3" d="5">
+		<ingredient has="pasta sfoglia 500g"/>
+		<ingredient has="macinato di bovino 300g"/>
+		<ingredient has="passata pomodoro 300g"/>
+		<ingredient has="sedano 50g"/>
+	</recipe>
+	<recipe name="vitello tonnato" portions="6" n="1" d="10">
+		<ingredient has="vitello 800g"/>
+		<ingredient has="tonno 100g"/>
+		<ingredient has="foglia alloro 1"/>
+		<ingredient has="uova 2"/>
+	</recipe>
+	<recipe name="pasta al pesto" portions="4" n="1" d="10">
+		<ingredient has="mezze penne rigate 400g"/>
+		<ingredient has="pesto 50g"/>
+	</recipe>
+	<recipe name="affettati e formaggi" portions="6" n="1" d="10">
+		<ingredient has="prosciutto crudo 100g"/>
+		<ingredient has="gorgonzola 100g"/>
+		<ingredient has="coppa 100g"/>
+		<ingredient has="formaggio grana 100g"/>
+		<ingredient has="speck 100g"/>
+		<ingredient has="brie 100g"/>
+	</recipe>
+	<recipe name="torta della nonna" portions="10" n="1" d="5">
+		<ingredient has="farina00 500g"/>
+		<ingredient has="zucchero 260g"/>
+		<ingredient has="limone 2"/>
+		<ingredient has="burro 200g"/>
+		<ingredient has="uova 6"/>
+		<ingredient has="latte intero 500g"/>
+	</recipe>
+	<recipe name="avocado toast" portions="4" n="1" d="10">
+		<ingredient has="limone 1"/>
+		<ingredient has="fette di pane 4"/>
+		<ingredient has="fette di salmone 4"/>
+		<ingredient has="avocado 1"/>
+	</recipe>
+	<recipe name="spaghetti aglio olio e peperoncino" portions="4" n="1" d="5">
+		<ingredient has="spaghetti 360g"/>
+		<ingredient has="olio extra vergine d'oliva 10g"/>
+		<ingredient has="spicchi di aglio 2"/>
+		<ingredient has="peperoncino 2"/>
+		<ingredient has="cucchiai pangrattato 4"/>
+		<ingredient has="prezzemolo 10g"/>
+		<ingredient has="pomodori secchi sott'olio 5g"/>
+	</recipe>
+</recipes>
