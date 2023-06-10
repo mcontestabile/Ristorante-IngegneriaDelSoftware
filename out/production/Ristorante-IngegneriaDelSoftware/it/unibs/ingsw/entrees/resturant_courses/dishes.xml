@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<dishes>
+	<dish name="spaghetti allo scoglio" availability="estate" n="1" d="4"></dish>
+	<dish name="platessa con panatura di frutta secca" availability="estate" n="2" d="7"></dish>
+	<dish name="tartufi al tiramisu'" availability="primavera" n="1" d="12"></dish>
+	<dish name="risotto alle erbe e noci" availability="primavera" n="1" d="3"></dish>
+	<dish name="polpettone di tonno e patate" availability="primavera" n="1" d="5"></dish>
+	<dish name="brownies con mascarpone" availability="inverno" n="1" d="5"></dish>
+	<dish name="lasagne alla bolognese" availability="inverno" n="3" d="5"></dish>
+	<dish name="vitello tonnato" availability="inverno" n="1" d="10"></dish>
+	<dish name="pasta al pesto" availability="tutto l'anno" n="1" d="10"></dish>
+	<dish name="affettati e formaggi" availability="tutto l'anno" n="1" d="10"></dish>
+	<dish name="torta della nonna" availability="estate" n="1" d="5"></dish>
+	<dish name="avocado toast" availability="venerdì" n="1" d="10"></dish>
+	<dish name="spaghetti aglio olio e peperoncino" availability="venerdì " n="1" d="5"></dish>
+	<dish name="maritozzi golosi" availability="estate" n="1" d="3"></dish>
+</dishes>
