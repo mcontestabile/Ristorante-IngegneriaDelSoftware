@@ -7,7 +7,7 @@ import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
 import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
-import it.unibs.ingsw.users.User;
+import it.unibs.ingsw.users.registered_users.User;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLStreamException;

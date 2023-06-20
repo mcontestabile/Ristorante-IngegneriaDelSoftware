@@ -1,11 +1,7 @@
 package it.unibs.ingsw.users.registered_users;
 
-import it.unibs.ingsw.users.User;
 import it.unibs.ingsw.users.manager.Manager;
-import it.unibs.ingsw.users.reservations_agent.ReservationsAgent;
-import it.unibs.ingsw.users.warehouse_worker.WarehouseWorker;
 
-import javax.xml.stream.XMLStreamException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -17,8 +13,8 @@ public class UserController {
     private final Queue<User> users;
     private UserDAO model;
 
-    public UserController() {
-        users = new LinkedList<>();
+    public UserController(Queue<User> userQueue) {
+        this.users = userQueue;
         model = new UserDAO();
     }
 
@@ -37,6 +33,15 @@ public class UserController {
             }
         }
         return null; // Autenticazione fallita
+    }
+
+    public User getUserFromQueue(Queue<User> userQueue, String username) {
+        for (User user : userQueue) {
+            if (user.getUsername().equals(username)) {
+                return user; // Restituisci l'utente trovato
+            }
+        }
+        return null; // L'utente non è stato trovato
     }
 
     public void updateUserTurn() {
@@ -59,21 +64,21 @@ public class UserController {
         return model.getUserCategory(user);
     }
 
-    public void configureUsers() {
-        try {
-            addUser(new Manager(UserDAO.getUserCredentials().get(0).getUsername(), UserDAO.getUserCredentials().get(0).getPassword(), true));
-            addUser(new ReservationsAgent(UserDAO.getUserCredentials().get(1).getUsername(), UserDAO.getUserCredentials().get(1).getPassword(), false));
-            addUser(new WarehouseWorker(UserDAO.getUserCredentials().get(2).getUsername(), UserDAO.getUserCredentials().get(2).getPassword(), false));
-        } catch (XMLStreamException e) {
-            System.out.println("Errore nel Parsing di UsersAllowed.xml");
-        }
-    }
-
     public boolean getCanIWork(User user) {
         return user.isCanIWork();
     }
 
-    public Queue<User> getUsers() {
+    public Queue<User> getQueue() {
         return users;
     }
+
+    public double getWorkloadPerPerson() {return getUserFromQueue(getQueue(), "gestore").getWorkloadPerPerson();}
+
+    public double getCovered() {return getUserFromQueue(getQueue(), "gestore").getCovered();}
+
+    public void setCovered(int covered) {getUserFromQueue(getQueue(), "gestore").setCovered(covered);}
+
+    public double getRestaurantWorkload() {return getUserFromQueue(getQueue(), "gestore").getRestaurantWorkload();}
+
+    public void setRestaurantWorkload(double w) {getUserFromQueue(getQueue(), "gestore").setRestaurantWorkload(w);}
 }

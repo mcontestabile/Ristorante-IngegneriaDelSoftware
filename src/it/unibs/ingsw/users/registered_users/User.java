@@ -1,4 +1,4 @@
-package it.unibs.ingsw.users;
+package it.unibs.ingsw.users.registered_users;
 
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
@@ -21,6 +21,18 @@ public abstract class User {
      * Variabile che determina se l'utente può lavorare o meno.
      */
     private boolean canIWork;
+    /**
+     * Variabile che determina i coperti del ristorante.
+     */
+    private int covered;
+    /**
+     * Carico di lavoro per persona.
+     */
+    private int workloadPerPerson;
+    /**
+     * Carico di lavoro per persona.
+     */
+    private double restaurantWorkload;
 
     // permette di istanziare un oggetto di tipo corpo celeste
     public User(String username, String password, boolean didIWork) {
@@ -34,7 +46,7 @@ public abstract class User {
      */
     public <T extends Parsable> ArrayList<T> parsingTask(String file, Class<T> c) throws XMLStreamException {
         XMLParser parser = new XMLParser(file);
-        return new ArrayList<T>(parser.parseXML(c));
+        return new ArrayList<>(parser.parseXML(c));
     }
 
     /**
@@ -43,7 +55,7 @@ public abstract class User {
      * @param obj l'oggetto da scrivere, compresa quello appena aggiunto.
      * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
      */
-    public <T extends Writable> void writingTask(ArrayList<T> obj, Class<T> c, String path, String tag) throws XMLStreamException {
+    public <T extends Writable> void writingTask(ArrayList<T> obj, String path, String tag) throws XMLStreamException {
         XMLWriter writer = new XMLWriter(path);
         writer.writeArrayListXML(obj, tag);
     }
@@ -89,4 +101,32 @@ public abstract class User {
      * @param canIWork variabile per indicare se il gestore ha lavorato o meno.
      */
     public void setCanIWork(boolean canIWork) {this.canIWork = canIWork;}
+
+    /**
+     * Metodo che ritorna i coperti.
+     * @return i coperti.
+     */
+    public int getCovered() {return covered;}
+
+    /**
+     * Metodo per settare i coperti.
+     * @param covered  i coperti.
+     */
+    public void setCovered(int covered) {this.covered = covered;}
+
+    /**
+     * Metodo che ritorna il carico di lavoro per persona.
+     * @return il carico di lavoro per persona.
+     */
+    public int getWorkloadPerPerson() {return workloadPerPerson;}
+
+    /**
+     * Metodo per settare il carico di lavoro per persona.
+     * @param workloadPerPerson il carico di lavoro per persona.
+     */
+    public void setWorkloadPerPerson(int workloadPerPerson) {this.workloadPerPerson = workloadPerPerson;}
+
+    public double getRestaurantWorkload() {return restaurantWorkload;}
+
+    public void setRestaurantWorkload(double restaurantWorkload) {this.restaurantWorkload = restaurantWorkload;}
 }

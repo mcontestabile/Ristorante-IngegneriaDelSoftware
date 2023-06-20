@@ -2,16 +2,12 @@ package it.unibs.ingsw.users.registered_users;
 
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
-import it.unibs.ingsw.users.User;
 import it.unibs.ingsw.users.manager.Manager;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgent;
 import it.unibs.ingsw.users.warehouse_worker.WarehouseWorker;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User Data Access Object, responsabile del recupero e del parsing delle credenziali degli utenti dal file XML.
@@ -39,5 +35,18 @@ public class UserDAO {
         }
 
         return "";
+    }
+
+    public static Queue<User> configureUsers() {
+        try {
+            Queue<User> users = new LinkedList<>();
+            users.add(new Manager(UserDAO.getUserCredentials().get(0).getUsername(), UserDAO.getUserCredentials().get(0).getPassword(), true));
+            users.add(new ReservationsAgent(UserDAO.getUserCredentials().get(1).getUsername(), UserDAO.getUserCredentials().get(1).getPassword(), false));
+            users.add(new WarehouseWorker(UserDAO.getUserCredentials().get(2).getUsername(), UserDAO.getUserCredentials().get(2).getPassword(), false));
+            return users;
+        } catch (XMLStreamException e) {
+            System.out.println("Errore nel Parsing di UsersAllowed.xml");
+        }
+        return null;
     }
 }

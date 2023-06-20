@@ -1,5 +1,7 @@
 package it.unibs.ingsw.mylib.utilities;
 
+import it.unibs.ingsw.users.registered_users.UserController;
+import it.unibs.ingsw.users.registered_users.UserDAO;
 import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
@@ -28,6 +30,27 @@ import java.util.Locale;
  * @see <a href="https://www.scaler.com/topics/split-in-java/">Split di una stringa in Java.</a>
  */
 public class RestaurantDates {
+    /**
+     * Formatter della data, serve per avere la conversione nel formato italiano.
+     */
+    public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    /**
+     * Data del giorno attuale.
+     */
+    public static final LocalDate today = LocalDate.now();
+    /**
+     * Data del giorno successivo.
+     */
+    public static final LocalDate tomorrow = today.plusDays(1);
+    /**
+     * Data del giorno lavorativo successivo.
+     */
+    public static LocalDate workingDay;
+    /**
+     * Data del giorno lavorativo successivo formattata.
+     */
+    public static String workingDayString;
+
     /**
      * Metodo che una data sia nel formato corretto.
      * @param date data inserita.
@@ -194,20 +217,18 @@ public class RestaurantDates {
      * sta stabilendo il menù.
      * <p>
      * @param availability disponibilità scelta dal gestore.
-     * @param tomorrow data del giorno lavorativo successivo (a quello del momento in cui il programma è in esecuzione) in formato String.
-     * @param tomorrowDate data del giorno lavorativo successivo (a quello del momento in cui il programma è in esecuzione) in formato Date.
      * @return se la data è idonea o meno.
      */
     /*
      @ requires availability != null && tomorrow != null && tomorrowDate != null;
      */
-    public static boolean checkDate(@NotNull String availability, String tomorrow, @NotNull LocalDate tomorrowDate) {
-        DayOfWeek tDay = tomorrowDate.getDayOfWeek();
-        Month tMonth = tomorrowDate.getMonth();
+    public static boolean checkAvailability(@NotNull String availability) {
+        DayOfWeek tDay = workingDay.getDayOfWeek();
+        Month tMonth = workingDay.getMonth();
 
         if(availability.equalsIgnoreCase("tutto l'anno"))
             return true;
-        if(RestaurantDates.isValidDate(availability) && tomorrow.equalsIgnoreCase(availability))
+        if(RestaurantDates.isValidDate(availability) && workingDayString.equalsIgnoreCase(availability))
             return true;
         else if(RestaurantDates.isValidDayOfWeek(availability)) {
             if(!isHoliday(availability))
@@ -300,6 +321,28 @@ public class RestaurantDates {
         String dayMonth = result[0] + "-" + result[1];
 
         return holidays.containsKey(dayMonth);
+    }
+
+    public static void setWorkingDay() {
+        /*
+         * Una volta confermato che il programma è stato avviato in un giorno in cui il
+         * ristorante è operativo, è il momento di controllare se l'indomani è un festivo.
+         * Se oggi è venerdì/prefestivo, si setta il ristorante per IL GIORNO LAVORATIVO SUCCESSIVO.
+         * Quindi, bisogna controllare che giorno è e impostare workingDay di conseguenza.
+         */
+        if(!RestaurantDates.isHoliday(tomorrow)) {
+            // Se non è un festivo, si può settare senza problemi workingDay.
+            workingDay = today.plusDays(1);
+        } else {
+            /*
+             * Se è un festivo, dalla data dobbiamo partire dal presupposto di aggiungere almeno
+             * due giorni alla data odierna, per andare a dopodomani, che, potenzialmente, non
+             * dovrebbe essere un festivo. Sarà il metodo a controllare che giorno lavorativo servirà.
+             */
+            workingDay = RestaurantDates.setWorkingDay(today.plusDays(2));
+        }
+
+        workingDayString = workingDay.format(formatter);
     }
 
     /**
