@@ -2,18 +2,19 @@ package it.unibs.ingsw.restaurant;
 
 import it.unibs.ingsw.entrees.cookbook.CookbookRecipe;
 import it.unibs.ingsw.entrees.resturant_courses.Course;
+import it.unibs.ingsw.entrees.resturant_courses.WorkloadOfTheDay;
 import it.unibs.ingsw.mylib.menu_utils.Menu;
 import it.unibs.ingsw.mylib.menu_utils.MenuItem;
 import it.unibs.ingsw.mylib.menu_utils.Time;
 import it.unibs.ingsw.mylib.utilities.*;
-import it.unibs.ingsw.mylib.xml_utils.XMLParser;
+import it.unibs.ingsw.users.User;
 import it.unibs.ingsw.users.manager.*;
-import it.unibs.ingsw.users.registered_users.RegisteredUser;
+import it.unibs.ingsw.users.registered_users.UserController;
+import it.unibs.ingsw.users.registered_users.UserCredentials;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgent;
 import it.unibs.ingsw.users.warehouse_worker.Article;
 import it.unibs.ingsw.users.warehouse_worker.WarehouseWorker;
 
-import javax.xml.crypto.Data;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -45,11 +46,11 @@ public class Handler {
     /**
      * Utenti autorizzati ad accedere a Ristorante, ossia gestore, addetto alle prenotazioni e magazziniere.
      */
-    ArrayList<RegisteredUser> users;
+    ArrayList<UserCredentials> users;
     /**
      * Versione HashMap della collezione di utenti, utile per ciclare in o(1), invece di o(n).
      */
-    HashMap<String, RegisteredUser> usersMap;
+    HashMap<String, UserCredentials> usersMap;
 
     /**
      * Merce da acquistare per il giorno lavorativo successivo.
@@ -109,9 +110,10 @@ public class Handler {
 
             System.out.println(AsciiArt.coloredText(UsefulStrings.DAY + " " + workingDayString, AsciiArt.color.rainbowSeq));
 
-            // Inizializzazione del ristorante.
-            tryManageUsersParsing();
-            startMenu();
+            UserController controller = new UserController();
+            controller.configureUsers();
+
+            startMenu(controller);
         } else {
             AsciiArt.slowPrint(UsefulStrings.ACCESS_DENIED3);
         }
@@ -121,7 +123,7 @@ public class Handler {
      * Questo è il main menu, che permette di avviare l'invio di ordini
      * al ristorante o di terminare il programma {@code Ristorante}.
      */
-    public void startMenu() {
+    public void startMenu(UserController controller) {
         /*
          * "Addormento" il thread per permettere all'utente di
          * visualizzare il messaggio di benvenuto e avere uno stacco,
@@ -132,7 +134,9 @@ public class Handler {
 
         // Menu principale, permette l'accesso ai sotto-menu.
         MenuItem[] items  = {
-                new MenuItem(UsefulStrings.FIRST_FIRST_MENU_OPTION, this::loginTask),
+                new MenuItem(UsefulStrings.FIRST_FIRST_MENU_OPTION, () -> {
+                    loginTask(controller);
+                }),
                 new MenuItem(UsefulStrings.SECOND_FIRST_MENU_OPTION, this::authorTask),
         };
 
@@ -144,96 +148,33 @@ public class Handler {
     }
 
     /**
-     * Questo metodo gestisce le eccezioni che possono generarsi nei parsing
-     * che avvengono appena viene fatto partire il programma, atti a recuperare
-     * le informazioni precedentemente salvate delle credenziali utente nel file XML.
-     */
-    public void tryManageUsersParsing() {
-        try {
-            usersParsingTask();
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Parsing del file per consentire il controllo di quali utenti
-     * e con quale interfaccia possono interagire con Ristorante.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void usersParsingTask() throws XMLStreamException {
-        XMLParser usersParser = new XMLParser(UsefulStrings.USERS_FILE);
-        users = usersParser.parseXML(RegisteredUser.class);
-        usersMap = new HashMap<>();
-
-        for (RegisteredUser u : users)
-            usersMap.put(u.getUsername(), u);
-
-        // creazione degli oggetti, le cui informazioni sono salvate nel file xml.
-        manager = new Manager("gestore", usersMap.get("gestore").getPassword(), false);
-        manager.setFormatter(formatter);
-        manager.setTomorrow(workingDay);
-        manager.setTomorrowString(workingDayString);
-
-        agent = new ReservationsAgent("addetto", usersMap.get("addetto").getPassword(), false);
-        /**
-         * quando si crea l'oggetto agent, la giornata lavorativa è frescamente cominciata
-         * quindi resetto l'agenda con l'insieme delle prenotazioni attuali
-         * essendo la giornata appena iniziata, facendo così ad ogni inizio giornata lavorativa
-         * si fornirà l'agenda vuota, in attesa di essere riempita
-         */
-        agent.agendaWritingTask(agent.getReservations());
-
-        warehouseWorker = new WarehouseWorker("magazziniere", usersMap.get("magazziniere").getPassword(), false);
-
-    }
-
-    /**
      * Nel caso l'utente abbia selezionato l'opzione {@code «Autenticazione utente.»}, il programma
      * avvia questo metodo. Questo è un sotto-menu, qui si arriva a ciò che il gestore
      * può fare nel {@code Ristorante}. Qui è presente il menu le scelte fra le attività che
      * il gestore fa per amministrare il Ristorante.
      */
-    public void loginTask() {
+    public void loginTask(UserController controller) {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
 
         AsciiArt.slowPrint(UsefulStrings.USERS_SIGNIN);
         String username = DataInput.readNotEmptyString("username » ");
         String password = DataInput.readNotEmptyString("password » ");
-        loginController(username, password);
-    }
 
-    /**
-     * Metodo che si occupa del controllo dell'autenticazione di un
-     * utente e reindirizzarlo, in base al tipo di utente — gestore,
-     * addetto alle prenotazioni oppure magazziniere — all'interfaccia
-     * utente-programma corretta.
-     *
-     * @param givenUsername l'username che l'utente che vuole autenticarsi ha inserito.
-     * @param givenPassword la password che l'utente che vuole autenticarsi ha inserito.
-     */
-    public void loginController(String givenUsername, String givenPassword) {
-        boolean allowed = false;
-        RegisteredUser user = null;
+        LoginController loginController = new LoginController(controller);
+        User user = loginController.authenticateUser(username, password);
 
-        if (usersMap.containsKey(givenUsername)) {
-            user = usersMap.get(givenUsername);
-            if (givenPassword.equals(user.getPassword()))
-                allowed = true;
-        }
-
-        if (allowed) {
-            AsciiArt.slowPrint(UsefulStrings.WELCOME_USER + user.getId());
-            switch (user.getCategory()) {
+        if (user != null) {
+            AsciiArt.slowPrint(UsefulStrings.WELCOME_USER + user.getUsername());
+            switch (controller.findUserCategory(user)) {
                 case "gestore" -> {
                     try {
-                        managerTask();
+                        managerTask(user, controller);
                     } catch (XMLStreamException e) {
                         e.printStackTrace();
                     }
                 }
-                case "addetto alle prenotazioni" -> reservationsAgentTask();
-                case "magazziniere" -> wareHouseWorkerTask();
+                case "addetto alle prenotazioni" -> reservationsAgentTask(user, controller);
+                case "magazziniere" -> wareHouseWorkerTask(user, controller);
             }
         } else
             System.out.println(UsefulStrings.ACCESS_DENIED);
@@ -245,7 +186,7 @@ public class Handler {
      * ristorante, crea e visualizza il ricettario e i menu.
      * @throws XMLStreamException nel caso in cui lo stream dei dati lanci errori.
      */
-    public void managerTask() throws XMLStreamException {
+    public void managerTask(User user, UserController controller) throws XMLStreamException {
         // sotto-menu del gestore.
         MenuItem[] items = new MenuItem[]{
                 new MenuItem(UsefulStrings.INITIALISE_RESTAURANT_STATUS, () -> {
@@ -669,7 +610,7 @@ public class Handler {
     public void updateRestaurant() throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
 
-        if(!manager.getDidIWork()) {
+        if(manager.isCanIWork()) {
             // Non ha ancora inizializzato il ristorante quel giorno, quindi può farlo.
             AsciiArt.slowPrint(UsefulStrings.RESTAURANT_SETUP);
 
@@ -708,7 +649,7 @@ public class Handler {
             }
 
             // salvataggio carico di lavoro dei vari menù.
-            manager.workloadWritingTask();
+            manager.writingTask(manager.getWorkloads(), WorkloadOfTheDay.class, UsefulStrings.WORKLOADS_FILE, UsefulStrings.WORKLOAD_OUTER_TAG);
 
             // inizializzazione coperti.
             setCovered();
@@ -718,7 +659,7 @@ public class Handler {
 
             System.out.println();
 
-            manager.setDidIWork(true); // Da qui in poi, non sarà più consentito inizializzare il ristorante per la corrente giornata lavorativa.
+            manager.setCanIWork(false); // Da qui in poi, non sarà più consentito inizializzare il ristorante per la corrente giornata lavorativa.
             agent.setCanIWork(true);
         } else {
             AsciiArt.slowPrint(UsefulStrings.RESTAURANT_SETUP_NOT_ALLOWED); // l'inizializzazione è gia avvenuta -> STOP, si può fare solo una volta.
@@ -789,8 +730,8 @@ public class Handler {
      * Metodo rappresentativo dell'interazione con l'addetto, il quale
      * permette l'aggiunta delle prenotazioni e il loro salvataggio sul relativo file.
      */
-    public void reservationsAgentTask() {
-        if(!agent.isCanIWork()) {
+    public void reservationsAgentTask(User user, UserController controller) {
+        if(!controller.getCanIWork(user)) {
             AsciiArt.slowPrint(UsefulStrings.ACCESS_DENIED4);
         } else {
             MenuItem[] items = new MenuItem[]{
@@ -910,8 +851,8 @@ public class Handler {
     /**
      * @throws
      */
-    public void wareHouseWorkerTask() {
-        if (!warehouseWorker.isCanIWork()) {
+    public void wareHouseWorkerTask(User user, UserController controller) {
+        if (!controller.getCanIWork(user)) {
             AsciiArt.slowPrint(UsefulStrings.ACCESS_DENIED5);
         } else {
             MenuItem[] items = new MenuItem[]{

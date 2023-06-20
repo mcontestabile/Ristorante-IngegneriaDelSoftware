@@ -11,8 +11,7 @@ import it.unibs.ingsw.mylib.utilities.DataInput;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
-import it.unibs.ingsw.mylib.xml_utils.XMLParser;
-import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
+import it.unibs.ingsw.users.User;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLStreamException;
@@ -25,16 +24,7 @@ import java.util.HashMap;
  * Classe rappresentativa del gestore, il quale inizializza e visualizza i dati di configurazione
  * relativi al ristorante, crea e visualizza il ricettario e i menu.
  */
-public class Manager {
-    /**
-     * Username.
-     */
-    private String username;
-    /**
-     * Password.
-     */
-    private String password;
-
+public class Manager extends User {
     /**
      * Formatter della data, serve per ottenerla in formato italiano.
      */
@@ -140,10 +130,6 @@ public class Manager {
      * Coperti.
      */
     private int covered;
-    /**
-     * Variabile che determina se il gestore ha lavorato o meno.
-     */
-    private boolean didIWork;
 
     /**
      * Costruttore dell'oggetto gestore. Quando inizializzato, esso deve recuperare
@@ -151,20 +137,18 @@ public class Manager {
      *
      * @param username l'username del gestore.
      * @param password la password del gestore.
-     * @param didIWork attributo che determina se il gestore quel giorno ha già
+     * @param canIWork attributo che determina se il gestore quel giorno ha già
      *                 inizializzato il ristorante o meno.
      * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
      */
-    public Manager(String username, String password, boolean didIWork) throws XMLStreamException {
-        this.username = username;
-        this.password = password;
-        this.didIWork = didIWork;
+    public Manager(String username, String password, boolean canIWork) throws XMLStreamException {
+        super(username, password, canIWork);
 
-        setCookbook(cookbookParsingTask());
-        setDishes(dishesParsingTask());
-        setMenu(coursesParsingTask());
-        setDrinks(drinksParsingTask());
-        setAppetizers(appetizersParsingTask());
+        setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
+        setDishes(parsingTask(UsefulStrings.DISHES_FILE, Dish.class));
+        setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+        setDrinks(parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
+        setAppetizers(parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
     }
 
     /**
@@ -213,7 +197,10 @@ public class Manager {
         }
 
         try {
-            coursesWritingTask(newCourse);
+            writingTask(newCourse, Carte.class, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+            System.out.println(UsefulStrings.COURSES_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -243,7 +230,10 @@ public class Manager {
         recipes.add(new Recipe(name, availability, Integer.toString(portions), workloadPerPortion, ingredients));
 
         try {
-            cookbookWritingTask(recipes);
+            writingTask(recipes, Recipe.class, UsefulStrings.COOKBOOK_FILE, UsefulStrings.RECIPES_OUTER_TAG);
+            setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
+            System.out.println(UsefulStrings.COOKBOOK_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -266,7 +256,8 @@ public class Manager {
         newDish.add(new NewPlate(name, availability, workloadPerPerson));
 
         try {
-            dishesWritingTask(newDish);
+            writingTask(newDish, NewPlate.class, UsefulStrings.DISHES_FILE, UsefulStrings.DISHES_OUTER_TAG);
+            setDishes(parsingTask(UsefulStrings.DISHES_FILE, Dish.class));
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -287,7 +278,10 @@ public class Manager {
         cookbookRecipes.forEach(r -> recipes.add(new Recipe(r.getName(), dishesMap.get(r.getName()).getAvailability(), r.getPortion(), new Fraction(r.getNumerator(), r.getDenominator()), r.getIngredients())));
 
         try {
-            cookbookWritingTask(recipes);
+            writingTask(recipes, Recipe.class, UsefulStrings.COOKBOOK_FILE, UsefulStrings.RECIPES_OUTER_TAG);
+            setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
+            System.out.println(UsefulStrings.COOKBOOK_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -308,7 +302,8 @@ public class Manager {
         dishes.forEach(d -> newDish.add(new NewPlate(d.getName(), d.getAvailability(), d.getWorkloadFraction())));
 
         try {
-            dishesWritingTask(newDish);
+            writingTask(newDish, NewPlate.class, UsefulStrings.DISHES_FILE, UsefulStrings.DISHES_OUTER_TAG);
+            setDishes(parsingTask(UsefulStrings.DISHES_FILE, Dish.class));
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -342,7 +337,10 @@ public class Manager {
         workloads.add(new WorkloadOfTheDay(name, "menu", menuWorkload));
 
         try {
-            coursesWritingTask(newCourse);
+            writingTask(newCourse, Carte.class, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+            System.out.println(UsefulStrings.COURSES_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -373,7 +371,10 @@ public class Manager {
         }
 
         try {
-            coursesWritingTask(newCourse);
+            writingTask(newCourse, Carte.class, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+            System.out.println(UsefulStrings.COURSES_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -412,7 +413,10 @@ public class Manager {
         workloads.add(new WorkloadOfTheDay(name, "piatto", dishesMap.get(name).getWorkloadFraction()));
 
         try {
-            coursesWritingTask(newCourse);
+            writingTask(newCourse, Carte.class, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+            System.out.println(UsefulStrings.COURSES_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -442,7 +446,10 @@ public class Manager {
         }
 
         try {
-            coursesWritingTask(newCourse);
+            writingTask(newCourse, Carte.class, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+            System.out.println(UsefulStrings.COURSES_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -483,7 +490,10 @@ public class Manager {
         }
 
         try {
-            coursesWritingTask(newCourse);
+            writingTask(newCourse, Carte.class, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+            System.out.println(UsefulStrings.COURSES_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -503,7 +513,10 @@ public class Manager {
         newAppetizer.add(new Starter(name, consumption));
 
         try {
-            appetizersWritingTask(newAppetizer);
+            writingTask(newAppetizer, Starter.class, UsefulStrings.APPETIZERS_FILE, UsefulStrings.APPETIZERS_OUTER_TAG);
+            setAppetizers(parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
+            System.out.println(UsefulStrings.APPETIZERS_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -523,7 +536,10 @@ public class Manager {
         appetizers.forEach(a -> newAppetizer.add(new Starter(a.getGenre(), Double.parseDouble(a.getQuantity()))));
 
         try {
-            appetizersWritingTask(newAppetizer);
+            writingTask(newAppetizer, Starter.class, UsefulStrings.APPETIZERS_FILE, UsefulStrings.APPETIZERS_OUTER_TAG);
+            setAppetizers(parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
+            System.out.println(UsefulStrings.APPETIZERS_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -543,7 +559,10 @@ public class Manager {
         newDrinksMenu.add(new DrinksMenu(name, consumption));
 
         try {
-            drinksWritingTask(newDrinksMenu);
+            writingTask(newDrinksMenu, DrinksMenu.class, UsefulStrings.DRINKS_FILE, UsefulStrings.DRINKS_OUTER_TAG);
+            setDrinks(parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
+            System.out.println(UsefulStrings.DRINKS_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -563,7 +582,10 @@ public class Manager {
         drinks.forEach(d -> newDrinksMenu.add(new DrinksMenu(d.getName(), Double.parseDouble(d.getQuantity()))));
 
         try {
-            drinksWritingTask(newDrinksMenu);
+            writingTask(newDrinksMenu, DrinksMenu.class, UsefulStrings.DRINKS_FILE, UsefulStrings.DRINKS_OUTER_TAG);
+            setDrinks(parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
+            System.out.println(UsefulStrings.DRINKS_UPDATED);
+            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -673,135 +695,6 @@ public class Manager {
     }
 
     /**
-     * Parsing del file per consentire la visione del ricettario al gestore.
-     */
-    public ArrayList<CookbookRecipe> cookbookParsingTask() throws XMLStreamException {
-        XMLParser cookbookParser = new XMLParser(UsefulStrings.COOKBOOK_FILE);
-        return new ArrayList<>(cookbookParser.parseXML(CookbookRecipe.class));
-    }
-
-    /**
-     * Parsing del file per consentire la visione del menù al gestore.
-     */
-    public ArrayList<Course> coursesParsingTask() throws XMLStreamException {
-        XMLParser coursesParser = new XMLParser(UsefulStrings.COURSES_FILE);
-        return new ArrayList<>(coursesParser.parseXML(Course.class));
-    }
-
-    /**
-     * Parsing del file per consentire la visione delle bevande al gestore.
-     */
-    public ArrayList<Drink> drinksParsingTask() throws XMLStreamException {
-        XMLParser drinksParser = new XMLParser(UsefulStrings.DRINKS_FILE);
-        return new ArrayList<>(drinksParser.parseXML(Drink.class));
-    }
-
-    /**
-     * Parsing del file per consentire la visione dei generi alimentari extra al gestore.
-     */
-    public ArrayList<Appetizer> appetizersParsingTask() throws XMLStreamException {
-        XMLParser appetizersParser = new XMLParser(UsefulStrings.APPETIZERS_FILE);
-        return new ArrayList<>(appetizersParser.parseXML(Appetizer.class));
-    }
-
-    /**
-     * Parsing del file per consentire al gestore di inserire i piatti del ricettario nei menu.
-     */
-    public ArrayList<Dish> dishesParsingTask() throws XMLStreamException {
-        XMLParser dishsParser = new XMLParser(UsefulStrings.DISHES_FILE);
-        return new ArrayList<>(dishsParser.parseXML(Dish.class));
-    }
-
-    /**
-     * Writing del ricettario per aggiornare l'XML con la nuova ricetta.
-     *
-     * @param recipes le ricette da scrivere, compresa quella appena aggiunta.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void cookbookWritingTask(ArrayList<Recipe> recipes) throws XMLStreamException {
-        XMLWriter writer = new XMLWriter(UsefulStrings.COOKBOOK_FILE);
-        writer.writeArrayListXML(recipes, UsefulStrings.RECIPES_OUTER_TAG);
-
-        setCookbook(cookbookParsingTask());
-
-        System.out.println(UsefulStrings.COOKBOOK_UPDATED);
-        DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-    }
-
-    /**
-     * Writing del menu per aggiornare l'XML con il nuovo menu tematico
-     * oppure l'aggiornamento del menu tematico.
-     *
-     * @param updatedCourses i menu da scrivere, compresa quello appena aggiunto.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void coursesWritingTask(ArrayList<Carte> updatedCourses) throws XMLStreamException {
-        XMLWriter writer = new XMLWriter(UsefulStrings.COURSES_FILE);
-        writer.writeArrayListXML(updatedCourses, UsefulStrings.COURSE_OUTER_TAG);
-
-        setMenu(coursesParsingTask());
-
-        System.out.println(UsefulStrings.COURSES_UPDATED);
-        DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-    }
-
-    /**
-     * Writing delle bevande per aggiornare l'XML con la nuova bevanda.
-     *
-     * @param updatedDrinks le bevande da scrivere, compreso quella appena aggiunta.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void drinksWritingTask(ArrayList<DrinksMenu> updatedDrinks) throws XMLStreamException {
-        XMLWriter writer = new XMLWriter(UsefulStrings.DRINKS_FILE);
-        writer.writeArrayListXML(updatedDrinks, UsefulStrings.DRINKS_OUTER_TAG);
-
-        setDrinks(drinksParsingTask());
-
-        System.out.println(UsefulStrings.DRINKS_UPDATED);
-        DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-    }
-
-    /**
-     * Writing dei generi alimentari extra per aggiornare l'XML con
-     * il nuovo genere alimentare extra.
-     *
-     * @param updatedAppetizers generi alimentari extra da scrivere, compreso quello appena aggiunto.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void appetizersWritingTask(ArrayList<Starter> updatedAppetizers) throws XMLStreamException {
-        XMLWriter writer = new XMLWriter(UsefulStrings.APPETIZERS_FILE);
-        writer.writeArrayListXML(updatedAppetizers, UsefulStrings.APPETIZERS_OUTER_TAG);
-
-        setAppetizers(appetizersParsingTask());
-
-        System.out.println(UsefulStrings.APPETIZERS_UPDATED);
-        DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-    }
-
-    /**
-     * Writing dei piatti per aggiornare l'XML con il nuovo piatto.
-     *
-     * @param updatedAppetizers piatti da scrivere, compreso quello appena aggiunto.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void dishesWritingTask(ArrayList<NewPlate> updatedAppetizers) throws XMLStreamException {
-        XMLWriter writer = new XMLWriter(UsefulStrings.DISHES_FILE);
-        writer.writeArrayListXML(updatedAppetizers, UsefulStrings.DISHES_OUTER_TAG);
-
-        setDishes(dishesParsingTask());
-    }
-
-    /**
-     * Writing dei carichi di lavoro del giorno.
-     *
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void workloadWritingTask() throws XMLStreamException {
-        XMLWriter writer = new XMLWriter(UsefulStrings.WORKLOADS_FILE);
-        writer.writeArrayListXML(workloads, UsefulStrings.WORKLOAD_OUTER_TAG);
-    }
-
-    /**
      * Metodo che ritorna il carico di lavoro per persona.
      * @return il carico di lavoro per persona.
      */
@@ -824,18 +717,6 @@ public class Manager {
      * @param covered  i coperti.
      */
     public void setCovered(int covered) {this.covered = covered;}
-
-    /**
-     * Metodo che ritorna se il gestore ha lavorato o meno.
-     * @return true se ha lavorato, false altrimenti.
-     */
-    public boolean getDidIWork() {return didIWork;}
-
-    /**
-     * Metodo per settare se il gestore ha lavorato o meno.
-     * @param didIWork variabile per indicare se il gestore ha lavorato o meno.
-     */
-    public void setDidIWork(boolean didIWork) {this.didIWork = didIWork;}
 
     /**
      * Metodo che ritorna le bevande.
@@ -898,4 +779,6 @@ public class Manager {
      * @return l'HashMap dei piatti.
      */
     public HashMap<String, Dish> getDishesMap() {return dishesMap;}
+
+    public ArrayList<WorkloadOfTheDay> getWorkloads() {return workloads;}
 }
