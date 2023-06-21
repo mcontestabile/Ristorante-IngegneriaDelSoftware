@@ -27,15 +27,6 @@ public class Handler {
      * Merce da acquistare per il giorno lavorativo successivo.
      */
     ArrayList<Article> shoppingList;
-    /**
-     * Addetto alle vendite.
-     */
-    ReservationsAgent agent;
-    /**
-     * Magazziniere.
-     */
-    WarehouseWorker warehouseWorker;
-
 
     /**
      * Questo metodo lancia il messaggio di benvenuto una volta
@@ -121,8 +112,7 @@ public class Handler {
      */
     public void managerTask(Manager user, UserController controller) {
         ManagerController mController = new ManagerController(controller.getQueue(), user);
-        System.out.println(user.getCookbook().toString());//TODO ELIMINARE
-        System.out.println(user.getDrinks().toString());//TODO ELIMINARE
+
         // sotto-menu del gestore.
         MenuItem[] items = new MenuItem[]{
                 new MenuItem(UsefulStrings.INITIALISE_RESTAURANT_STATUS, () -> updateRestaurant(mController)), // Inizializza i dati di configurazione.
@@ -673,16 +663,16 @@ public class Handler {
         } else {
             MenuItem[] items = new MenuItem[]{
                     new MenuItem(UsefulStrings.UPDATE_AGENDA_MENU_VOICE, () -> {
-                        if(agent.getCopertiRaggiunti() < raController.getCovered() && raController.getCarico_raggiunto() < controller.getRestaurantWorkload())
+                        if(user.getCopertiRaggiunti() < raController.getCovered() && raController.getCarico_raggiunto() < controller.getRestaurantWorkload())
                             try{
-                                updateAgenda(raController);
+                                updateAgenda(user, raController);
                             }catch (XMLStreamException e){
                                 System.out.println(UsefulStrings.ERROR_MESSAGE);
                             }
                         else
                             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
                     }),
-                    new MenuItem(UsefulStrings.SAVE_IN_RES_ARCHIVE_MENU_VOICE, this::saveInResArchive)
+                    new MenuItem(UsefulStrings.SAVE_IN_RES_ARCHIVE_MENU_VOICE, () -> saveInResArchive(user))
             };
 
             Menu menu = new Menu(UsefulStrings.MAIN_TASK_REQUEST, items);
@@ -695,9 +685,9 @@ public class Handler {
     /**
      * Metodo per l'aggiornamento dell'agenda riguardante le prenotazioni.
      */
-    public void updateAgenda(ReservationsAgentController controller) throws XMLStreamException{
-        agent.setMenu(agent.coursesParsingTask()); // prende dal file i menu con i relativi piatti
-        agent.setWorkloads(agent.workloadsParsingTask()); // prende dal file i carichi di lavoro dei menu/piatti relativi la giornata
+    public void updateAgenda(ReservationsAgent user, ReservationsAgentController controller) throws XMLStreamException{
+        user.setMenu(user.coursesParsingTask()); // prende dal file i menu con i relativi piatti
+        user.setWorkloads(user.workloadsParsingTask()); // prende dal file i carichi di lavoro dei menu/piatti relativi la giornata
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint(UsefulStrings.UPDATE_AGENDA);
 
@@ -711,61 +701,61 @@ public class Handler {
         // somma dei coperti di un item (menu) di una prenotazione per la relativa item_list  ->  servirà per controllare che si potrà avere soltanto un menù tematico a testa
         int sumMenuItemCover;
 
-        AsciiArt.printALaCarteMenu(agent.getMenu());
-        AsciiArt.printThemedMenu(agent.getMenu());
+        AsciiArt.printALaCarteMenu(user.getMenu());
+        AsciiArt.printThemedMenu(user.getMenu());
 
 
         do{
 
             HashMap<String, String> item_list = new HashMap<>();
 
-            agent.seeInfoCovered((int) controller.getCovered());
+            user.seeInfoCovered((int) controller.getCovered());
 
-            name = agent.askResName();
+            name = user.askResName();
 
-            resCover = agent.askResCover((int) controller.getCovered());
+            resCover = user.askResCover((int) controller.getCovered());
 
             sumItemCover = 0;
             sumMenuItemCover = 0;
 
             do{
-                agent.seeInfoWorkload(controller.getRestaurantWorkload());
+                user.seeInfoWorkload(controller.getRestaurantWorkload());
 
-                menu_piatto = agent.askMenuPiatto(item_list, controller.getRestaurantWorkload());
+                menu_piatto = user.askMenuPiatto(item_list, controller.getRestaurantWorkload());
 
-                if(!agent.isDish(menu_piatto) && (sumMenuItemCover < resCover)){ // se non è un Dish -> è un menù tematico  &&  un menù a testa!
+                if(!user.isDish(menu_piatto) && (sumMenuItemCover < resCover)){ // se non è un Dish -> è un menù tematico  &&  un menù a testa!
 
                     do {
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-                    } while (agent.exceedsOneMenuPerPerson(itemCover, sumMenuItemCover, resCover) ||
-                            agent.exceedsRestaurantWorkload(agent.calculateWorkload(menu_piatto, itemCover), agent.getCarico_raggiunto(), controller.getRestaurantWorkload()));
+                    } while (user.exceedsOneMenuPerPerson(itemCover, sumMenuItemCover, resCover) ||
+                            user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCarico_raggiunto(), controller.getRestaurantWorkload()));
 
-                    sumMenuItemCover += agent.addItem(itemCover, sumMenuItemCover, menu_piatto, item_list);
+                    sumMenuItemCover += user.addItem(itemCover, sumMenuItemCover, menu_piatto, item_list);
 
-                }else if(agent.isDish(menu_piatto)){ // se è un piatto normale, dovrò solo controllare che non si ecceda il carico del ristorante
+                }else if(user.isDish(menu_piatto)){ // se è un piatto normale, dovrò solo controllare che non si ecceda il carico del ristorante
                     do{
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-                    }while(agent.exceedsRestaurantWorkload(agent.calculateWorkload(menu_piatto, itemCover), agent.getCarico_raggiunto(), controller.getRestaurantWorkload()));
+                    }while(user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCarico_raggiunto(), controller.getRestaurantWorkload()));
 
-                    sumItemCover += agent.addItem(itemCover, sumItemCover, menu_piatto, item_list);
+                    sumItemCover += user.addItem(itemCover, sumItemCover, menu_piatto, item_list);
                 }else{
                     System.out.println(UsefulStrings.ONE_MENU_PER_PERSON);
                 }
 
                 // aggiorno il carico di lavoro
-                agent.updateCaricoRaggiunto(agent.calculateWorkload(menu_piatto, itemCover));
+                user.updateCaricoRaggiunto(user.calculateWorkload(menu_piatto, itemCover));
 
-            }while(agent.moreItems(sumItemCover, sumMenuItemCover, resCover) && agent.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
+            }while(user.moreItems(sumItemCover, sumMenuItemCover, resCover) && user.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
-            agent.insertReservation(name, Integer.toString(resCover), item_list);
+            user.insertReservation(name, Integer.toString(resCover), item_list);
 
             // aggiorno i coperti
-            agent.updateCopertiRaggiunti(resCover);
+            user.updateCopertiRaggiunti(resCover);
 
-        }while((DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) && agent.restaurantNotFull((int) controller.getCovered())) && agent.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
+        }while((DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) && user.restaurantNotFull((int) controller.getCovered())) && user.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
         // salvataggio nell'archivio prenotazioni
-        saveInResArchive();
+        saveInResArchive(user);
 
         // ora che l'agenda è stata scritta, il magazziniere potrà creare la lista della spesa a seconda delle prenotazioni raccolte
         controller.updateUserTurn();
@@ -774,11 +764,11 @@ public class Handler {
     /**
      * Metodo per quanto riguarda il salvataggio nell'archivio delle prenotazioni.
      */
-    public void saveInResArchive() {
+    public void saveInResArchive(ReservationsAgent user) {
         boolean save = DataInput.yesOrNo(UsefulStrings.QUE_SAVE_IN_RES_ARCHIVE);
         if (save) {
             try {
-                agent.salvaInArchivioPrenotazioni(RestaurantDates.workingDay.format(RestaurantDates.formatter));
+                user.salvaInArchivioPrenotazioni(RestaurantDates.workingDay.format(RestaurantDates.formatter));
             } catch (IOException e) {
                 System.out.println(UsefulStrings.ERROR_MESSAGE);
                 e.printStackTrace();
@@ -796,35 +786,35 @@ public class Handler {
             MenuItem[] items = new MenuItem[]{
                     new MenuItem("Visualizza lo stato del magazzino.", () -> {
                         try {
-                            printWareHouse();
+                            printWareHouse(user);
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Lista della spesa.", () -> {
                         try {
-                            createShoppingList();
+                            createShoppingList(user);
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Porta ingrediente in cucina.", () -> {
                         try {
-                            getIngredientFromWareHouse();
+                            getIngredientFromWareHouse(user);
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Riporta ingrediente in magazzino.", () -> {
                         try {
-                            putIngredientInWareHouse();
+                            putIngredientInWareHouse(user);
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Scarta prodotto.", () -> {
                         try {
-                            trashIngredientFromWareHouse();
+                            trashIngredientFromWareHouse(user);
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
@@ -841,29 +831,29 @@ public class Handler {
      *
      * @throws XMLStreamException
      */
-    public void printWareHouse() throws XMLStreamException {
-        if(!warehouseWorker.getWareHouseArticles().isEmpty())
-            AsciiArt.printWareHouse(warehouseWorker.getWareHouseArticles());
+    public void printWareHouse(WarehouseWorker user) throws XMLStreamException {
+        if(!user.getWareHouseArticles().isEmpty())
+            AsciiArt.printWareHouse(user.getWareHouseArticles());
         else
             System.out.println("Il magazzino è vuoto.");
 
-        if(!warehouseWorker.getKitchenList().isEmpty())
-            AsciiArt.printKitchen(warehouseWorker.getKitchenList());
+        if(!user.getKitchenList().isEmpty())
+            AsciiArt.printKitchen(user.getKitchenList());
     }
 
     /**
      *
      * @throws XMLStreamException
      */
-    public void createShoppingList() throws XMLStreamException{
+    public void createShoppingList(WarehouseWorker user) throws XMLStreamException{
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
-        warehouseWorker.readReservations();
-        shoppingList = warehouseWorker.createShoppingList();
+        user.readReservations();
+        shoppingList = user.createShoppingList();
 
         if(!shoppingList.isEmpty()) {
             AsciiArt.printShoppingList(shoppingList);
             if(DataInput.yesOrNo("Procedere all'acquisto? ")) {
-                warehouseWorker.buyShoppingList(shoppingList);
+                user.buyShoppingList(shoppingList);
                 System.out.println("Acquistati correttamente "+ shoppingList.size() + " articoli.");
             }
         } else {
@@ -876,18 +866,18 @@ public class Handler {
      *
      * @throws XMLStreamException
      */
-    public void getIngredientFromWareHouse() throws XMLStreamException {
+    public void getIngredientFromWareHouse(WarehouseWorker user) throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint("Prelievo ingredienti \n");
-        if(!warehouseWorker.getWareHouseArticles().isEmpty()) {
+        if(!user.getWareHouseArticles().isEmpty()) {
 
 
-            AsciiArt.printWareHouse(warehouseWorker.getWareHouseArticles());
+            AsciiArt.printWareHouse(user.getWareHouseArticles());
 
             do {
                 String name = DataInput.readNotEmptyString("nome ingrediente » ");
-                if (warehouseWorker.getArticle(name) != null) {
-                    Article article = warehouseWorker.getArticle(name);
+                if (user.getArticle(name) != null) {
+                    Article article = user.getArticle(name);
 
                     double qty = 0;
                     do {
@@ -896,9 +886,9 @@ public class Handler {
                         qty = DataInput.readDoubleWithMinimum("qtà da prelevare (max: " + article.getQuantity() + ") » ", 0);
                     } while (qty > article.getQuantity());
 
-                    if (warehouseWorker.removeArticle(name, qty, true)) {
+                    if (user.removeArticle(name, qty, true)) {
                         System.out.println("Prelevati correttamente " + qty + article.getMeasure() + " di " + name + ".\n");
-                        if (warehouseWorker.getArticle(name).getQuantity() == 0)
+                        if (user.getArticle(name).getQuantity() == 0)
                             System.out.println("Attenzione: hai finito le scorte di " + name + "!\n");
                     } else {
                         System.out.println("\nNome ingrediente errato");
@@ -916,29 +906,29 @@ public class Handler {
      *
      * @throws XMLStreamException
      */
-    public void putIngredientInWareHouse() throws XMLStreamException {
+    public void putIngredientInWareHouse(WarehouseWorker user) throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint("Reinserimento ingredienti in magazzino\n");
-        if(!warehouseWorker.getKitchenList().isEmpty()) {
+        if(!user.getKitchenList().isEmpty()) {
 
 
             String name;
             double qty;
             //stampa degli ingredienti in cucina
-            AsciiArt.printKitchen(warehouseWorker.getKitchenList());
+            AsciiArt.printKitchen(user.getKitchenList());
 
             do {
                 do {
                     name = DataInput.readNotEmptyString("nome ingrediente » ");
-                } while (warehouseWorker.getKitchenMap().get(name) == null);
+                } while (user.getKitchenMap().get(name) == null);
                 do {
-                    qty = DataInput.readDoubleWithMinimum("quantità ingrediente (max: " + warehouseWorker.getKitchenMap().get(name).getQuantity() + ") »", 0);
-                } while (qty > warehouseWorker.getKitchenMap().get(name).getQuantity());
+                    qty = DataInput.readDoubleWithMinimum("quantità ingrediente (max: " + user.getKitchenMap().get(name).getQuantity() + ") »", 0);
+                } while (qty > user.getKitchenMap().get(name).getQuantity());
 
-                if (warehouseWorker.insertArticle(name, qty, warehouseWorker.getKitchenMap().get(name).getMeasure())) {
-                    warehouseWorker.getKitchenMap().get(name).decrementQuantity(qty);
-                    if(warehouseWorker.getKitchenMap().get(name).getQuantity() == 0) warehouseWorker.getKitchenMap().remove(name);
-                    System.out.println("\nInseriti correttamente " + qty + warehouseWorker.getKitchenMap().get(name).getMeasure() + " di " + name + ".\n");
+                if (user.insertArticle(name, qty, user.getKitchenMap().get(name).getMeasure())) {
+                    user.getKitchenMap().get(name).decrementQuantity(qty);
+                    if(user.getKitchenMap().get(name).getQuantity() == 0) user.getKitchenMap().remove(name);
+                    System.out.println("\nInseriti correttamente " + qty + user.getKitchenMap().get(name).getMeasure() + " di " + name + ".\n");
                 }
             } while (DataInput.yesOrNo("Vuoi inserire qualcos'altro? "));
         } else {
@@ -950,16 +940,16 @@ public class Handler {
      *
      * @throws XMLStreamException
      */
-    public void trashIngredientFromWareHouse() throws XMLStreamException {
+    public void trashIngredientFromWareHouse(WarehouseWorker user) throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint("Scarta ingrediente dal magazzino \n");
-        if(!warehouseWorker.getWareHouseArticles().isEmpty()) {
+        if(!user.getWareHouseArticles().isEmpty()) {
 
             do {
 
                 String name = DataInput.readNotEmptyString("nome ingrediente » ");
-                if (warehouseWorker.getArticle(name) != null) {
-                    Article article = warehouseWorker.getArticle(name);
+                if (user.getArticle(name) != null) {
+                    Article article = user.getArticle(name);
 
                     double qty = 0;
                     do {
@@ -968,9 +958,9 @@ public class Handler {
                         qty = DataInput.readDoubleWithMinimum("qtà da prelevare (max: " + article.getQuantity() + ") » ", 0);
                     } while (qty > article.getQuantity());
 
-                    if (warehouseWorker.removeArticle(name, qty, false)) {
+                    if (user.removeArticle(name, qty, false)) {
                         System.out.println("\nScartati correttamente " + qty + article.getMeasure() + " di " + name + ".\n");
-                        if (warehouseWorker.getArticle(name).getQuantity() == 0)
+                        if (user.getArticle(name).getQuantity() == 0)
                             System.out.println("Attenzione hai finito le scorte di " + name + "!\n");
                     } else {
                         System.out.println("\nNome ingrediente errato!");

@@ -1,12 +1,17 @@
 package it.unibs.ingsw.users.registered_users;
 
+import it.unibs.ingsw.entrees.resturant_courses.Course;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
 import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public abstract class User {
     /**
@@ -33,6 +38,14 @@ public abstract class User {
      * Carico di lavoro per persona.
      */
     private double restaurantWorkload;
+    /**
+     * Menù parsati formato ArrayList.
+     */
+    private ArrayList<Course> menu;
+    /**
+     * Menù parsati formato HashMap.
+     */
+    private HashMap<String, Course> coursesMap;
 
     // permette di istanziare un oggetto di tipo corpo celeste
     public User(String username, String password, boolean didIWork) {
@@ -129,4 +142,22 @@ public abstract class User {
     public double getRestaurantWorkload() {return restaurantWorkload;}
 
     public void setRestaurantWorkload(double restaurantWorkload) {this.restaurantWorkload = restaurantWorkload;}
+
+    /**
+     * Metodo che ritorna i menù.
+     * @return i menù.
+     */
+    public List<Course> getMenu() {return menu;}
+
+    public void setMenu(@NotNull ArrayList<Course> menu) {
+        this.menu = menu;
+        coursesMap = new HashMap<>();
+        menu.forEach(m -> coursesMap.put(m.getName(), m));
+    }
+
+    /**
+     * Metodo che ritorna l'HashMap dei menù.
+     * @return l'HashMap dei menù.
+     */
+    public Map<String, Course> getCoursesMap() {return coursesMap;}
 }

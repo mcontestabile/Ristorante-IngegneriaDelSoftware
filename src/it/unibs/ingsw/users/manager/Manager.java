@@ -46,20 +46,10 @@ public class Manager extends User {
      */
     private HashMap<String, CookbookRecipe> recipeMap;
 
-
-    /**
-     * Menù parsati formato ArrayList.
-     */
-    private ArrayList<Course> menu;
     /**
      * Menù da scrivere formato ArrayList.
      */
     private ArrayList<Carte> newCourse;
-    /**
-     * Menù parsati formato HashMap.
-     */
-    private HashMap<String, Course> coursesMap;
-
 
     /**
      * Bevande parsate formato ArrayList.
@@ -132,12 +122,6 @@ public class Manager extends User {
         cookbookRecipes.forEach(e -> recipeMap.put(e.getName(), e));
     }
 
-    public void setMenu(@NotNull ArrayList<Course> menu) {
-        this.menu = menu;
-        coursesMap = new HashMap<>();
-        menu.forEach(m -> coursesMap.put(m.getName(), m));
-    }
-
     public void setDishes(@NotNull ArrayList<Dish> dishes) {
         this.dishes = dishes;
         dishesMap = new HashMap<>();
@@ -175,12 +159,6 @@ public class Manager extends User {
     public List<Dish> getDishes() {return dishes;}
 
     /**
-     * Metodo che ritorna i menù.
-     * @return i menù.
-     */
-    public List<Course> getMenu() {return menu;}
-
-    /**
      * Metodo che ritorna il ricettario.
      * @return il ricettario.
      */
@@ -205,12 +183,6 @@ public class Manager extends User {
     public Map<String, CookbookRecipe> getRecipeMap() {
         return recipeMap;
     }
-
-    /**
-     * Metodo che ritorna l'HashMap dei menù.
-     * @return l'HashMap dei menù.
-     */
-    public Map<String, Course> getCoursesMap() {return coursesMap;}
 
     /**
      * Metodo che ritorna l'HashMap dei piatti.
