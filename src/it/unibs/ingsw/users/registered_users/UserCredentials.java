@@ -1,14 +1,13 @@
 package it.unibs.ingsw.users.registered_users;
 
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
-
 import java.util.ArrayList;
 
 /**
  * Classe statica, serve per elaborare le informazioni contenute nel file .xml,
  * che contiene gli utenti autorizzati ad accedere a Ristorante.
  */
-public class RegisteredUser implements Parsable {
+public class UserCredentials implements Parsable {
     private String category;
     private String id;
     private String username;
@@ -31,7 +30,7 @@ public class RegisteredUser implements Parsable {
 
 
     /**
-     * Metodo necessaio, siccome {@code RegisteredUser} implementa Parsable.
+     * Metodo necessaio, siccome {@code UserCredentials} implementa Parsable.
      */
     @Override
     public void setSetters() {

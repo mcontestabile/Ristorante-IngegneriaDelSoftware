@@ -8,18 +8,15 @@ import it.unibs.ingsw.entrees.resturant_courses.Course;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
 import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
+import it.unibs.ingsw.users.registered_users.User;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLStreamException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
 
-public class WarehouseWorker {
-    private String name;
-    private String password;
-
+public class WarehouseWorker extends User {
     private ArrayList<ReservationItems> reservations;   //prenotazioni
     private HashMap<String, ReservationItems> reservationsMap;  //prenotazioni per nome
     private ArrayList<WareHouseArticle> wareHouseArticles = new ArrayList<>();  //articoli nel magazzino
@@ -40,25 +37,18 @@ public class WarehouseWorker {
     private ArrayList<Appetizer> appetizersPerCustomer;
     private static final int GAP = 10;
 
-    /**
-     * Variabile che determina se il magazziniere può lavorare o meno.
-     */
-    private boolean canIWork;
-
 
     // Questo oggetto consente il calcolo del tempo trascorso.
     Timer timer;
 
     /**
      * Costruttore dell'oggetto articolo
-     * @param name nome del magazziniere.
+     * @param username nome del magazziniere.
      * @param password password.
      * @param canIWork determina se il magazziniere può lavorare o meno.
      */
-    public WarehouseWorker(String name, String password, boolean canIWork) throws XMLStreamException {
-        this.name = name;
-        this.password = password;
-        this.canIWork = canIWork;
+    public WarehouseWorker(String username, String password, boolean canIWork) throws XMLStreamException {
+        super(username, password, canIWork);
 
         setCookbook(cookbookParsingTask());
         setCourses(coursesParsingTask());
@@ -505,16 +495,4 @@ public class WarehouseWorker {
             }
         });
     }
-
-    /**
-     * Metodo che legge se il magazziniere può lavorare
-     * @return true or false
-     */
-    public boolean isCanIWork() {return canIWork;}
-
-    /**
-     * Metodo che setta se il magazziniere può lavorare
-     * @param canIWork
-     */
-    public void setCanIWork(boolean canIWork) {this.canIWork = canIWork;}
 }

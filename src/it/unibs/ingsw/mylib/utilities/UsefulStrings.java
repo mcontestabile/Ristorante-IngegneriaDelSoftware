@@ -26,38 +26,6 @@ public class UsefulStrings {
 
     public static final String GOODBYE = "Arrivederci. Grazie per aver utilizzato Ristorante.\nSperiamo che la sua esperienza con noi sia stata piacevole e di rivederLa presto.";
 
-    public static final String NEGATIVE_MESSAGE = "\n\nCi dispiace informarLa che il prodotto da Lei richiesto è al momento esaurito presso i nostri magazzini.\nLe chiediamo di pazientare, appena tornera' disponibile la avviseremo.\n";
-
-    public static final String INSERT_PRODUCT_NAME = "\n\nInserire il nome del prodotto da ordinare.\n» ";
-    public static final String POSITIVE_MESSAGE = "In base ai dati in nostro possesso, abbiamo a dispisizione quantità\nsufficienti di prodotto per permetterLe di effettuare un ordine.\n» ";
-    public static final String CHOSEN_ARTICLE = "\n\nHa scelto questo articolo.\nLe ricordiamo le specifiche:\n";
-    public static final String AVAILABLE_ARTICLES = "Articoli disponibili:\n";
-    public static final String INSERT_HOW_MANY_PRODUCTS = "\n\nInserire la quantità desiderata dell'articolo.\nSi ricorda che non si può sforare la quantità disponibile presso il nostro magazzino.\n» ";
-    public static final int MIN_PRODUCT = 1;
-
-    public static final String PLACING_AN_ORDER = "Gentile cliente, siamo lieti di comunicarLe che l'acquisto è avvenuto con successo.\nQuesta era l'ultima quantità acquistabile.\nNon si preoccupi, abbiamo già provveduto ad ordinarne nuove unita'.\n";
-    public static final String NOW_THE_ARTICLE_IS_AVAILABLE = "Precedentemente ci ha chiesto un articolo non disponibile.\nSiamo lieti di comunicarLe che risulta ordinabile.\nSi affretti, prima che si esaurisca nuovamente!\n";
-
-    public static final String LEFT_TIME = "Tempo per riavere disponibili i prodotti » ";
-
-    public static final int MIN_QUANTITY = 5;
-    public static final int MAX_QUANTITY = 20;
-
-    // 2 minuti di tempo = 2*60s = 120s * 1000 = 120000ms
-    public static final int ANIMALS_FOOD_PRODUCTION = 120;
-    public static final String ANIMALS_FOOD = "Cibo per animali";
-
-    // 50 secondi di tempo per produrre cbo per animali
-    public static final int PETS_HEALTHCARE_PRODUCTION = 50;
-    public static final String PETS_HEALTHCARE = "Prodotti per la cura degli animali";
-
-    // 1 minuto e 10 secondi per produrre prodotti per la cura di cavalli
-    public static final int HORSES_HEALTHCARE_PRODUCTION = 70;
-    public static final String HORSES_HEALTHCARE = "Prodotti per la cura di cavalli";
-
-    public static final int MILLISECONDS = 1000;
-    public static final String SECONDS = " secondi";
-
     public static final String FIRST_FIRST_MENU_OPTION = "Accesso al Ristorante con autenticazione.";
     public static final String END_MENU_OPTION = "Uscire dal programma.";
 
