@@ -7,6 +7,7 @@ import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
 import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
+import it.unibs.ingsw.users.registered_users.User;
 import org.jetbrains.annotations.NotNull;
 
 import javax.xml.stream.XMLStreamException;
@@ -23,15 +24,7 @@ import java.lang.Math;
  * Classe rappresentativa dell'addetto, il quale
  * permette l'aggiunta delle prenotazioni e il loro salvataggio sul relativo file
  */
-public class ReservationsAgent {
-    /**
-     * Username.
-     */
-    private String username;
-    /**
-     * Password.
-     */
-    private String password;
+public class ReservationsAgent extends User {
     /**
      * Coperti attualmente raggiunti con le prenotazioni.
      */
@@ -58,11 +51,6 @@ public class ReservationsAgent {
     private HashMap<String, Workload> workloadsMap;
 
     /**
-     * Variabile che determina se l'addetto alle prenotazioni può lavorare o meno.
-     */
-    private boolean canIWork;
-
-    /**
      * Costruttore dell'oggetto addetto. Quando inizializzato, esso deve recuperare
      * le informazioni contenute nei file .xml di sua competenza.
      *
@@ -71,9 +59,7 @@ public class ReservationsAgent {
      * @param canIWork determina se l'addetto alle prenotazioni puà lavorare o meno.
      */
     public ReservationsAgent(String username, String password, boolean canIWork) {
-        this.username = username;
-        this.password = password;
-        this.canIWork = canIWork;
+        super(username, password, canIWork);
 
         this.coperti_raggiunti = 0; // a inizio giornata quando si crea l'oggetto ReservationAgent
         this.carico_raggiunto = 0.0; // a inizio giornata quando si crea l'oggetto ReservationAgent
@@ -535,8 +521,4 @@ public class ReservationsAgent {
         System.out.println(UsefulStrings.ACTUAL_WORKLOAD_MESSAGE+(this.getCarico_raggiunto()));
         System.out.println(UsefulStrings.ACTUAL_WORKLOAD_AVAILABLE_MESSAGE+Math.floor((restaurantWorkload - this.getCarico_raggiunto()) *100)/100+"\n");
     }
-
-    public boolean isCanIWork() {return canIWork;}
-
-    public void setCanIWork(boolean canIWork) {this.canIWork = canIWork;}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <users>
-	<user category="magazziniere" id="magazziniere000" username="magazziniere" password="test1"></user>
-	<user category="addetto alle prenotazioni" id="addetto000" username="addetto" password="pw1"></user>
 	<user category="gestore" id="gestore000" username="gestore" password="esempio"></user>
+	<user category="addetto alle prenotazioni" id="addetto000" username="addetto" password="pw1"></user>
+	<user category="magazziniere" id="magazziniere000" username="magazziniere" password="test1"></user>
 </users>
