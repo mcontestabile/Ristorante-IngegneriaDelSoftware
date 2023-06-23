@@ -18,5 +18,5 @@ public class ReservationsAgentController extends UserController {
         this.agent = agent;
     }
 
-    public double getCarico_raggiunto() {return agent.getCarico_raggiunto();}
+    public double getCarico_raggiunto() {return agent.getCaricoRaggiunto();}
 }

@@ -728,14 +728,14 @@ public class Handler {
                     do {
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
                     } while (user.exceedsOneMenuPerPerson(itemCover, sumMenuItemCover, resCover) ||
-                            user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCarico_raggiunto(), controller.getRestaurantWorkload()));
+                            user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
                     sumMenuItemCover += user.addItem(itemCover, sumMenuItemCover, menu_piatto, item_list);
 
                 }else if(user.isDish(menu_piatto)){ // se è un piatto normale, dovrò solo controllare che non si ecceda il carico del ristorante
                     do{
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-                    }while(user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCarico_raggiunto(), controller.getRestaurantWorkload()));
+                    }while(user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
                     sumItemCover += user.addItem(itemCover, sumItemCover, menu_piatto, item_list);
                 }else{

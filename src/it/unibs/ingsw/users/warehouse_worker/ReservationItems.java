@@ -1,7 +1,6 @@
 package it.unibs.ingsw.users.warehouse_worker;
 
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
-import it.unibs.ingsw.users.reservations_agent.Reservation;
 
 import java.util.ArrayList;
 import java.util.HashMap;

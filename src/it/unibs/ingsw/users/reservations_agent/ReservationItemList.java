@@ -1,6 +1,5 @@
 package it.unibs.ingsw.users.reservations_agent;
 
-import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
 import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
@@ -9,42 +8,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Classe che serve ad aggiornare il file XML delle Prenotazioni.
- *
- * @see Writable
- */
-public class Reservation implements Writable {
-    /**
-     * Nome prenotazione.
-     */
-    private String name;
-    /**
-     * Numero coperti prenotazione.
-     */
-    private String res_cover;
-    /**
-     * Lista di items (menù/piatto) prenotazione.
-     */
+public class ReservationItemList extends ReservationDecorator implements Writable {
     private HashMap<String, String> item_list;
-
 
     public static final String START_STRING = "reservation";
     private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
-
-    /**
-     * Costruttore, accetta i parametri caratterizzanti di una prenotazione.
-     *
-     * @param name nome prenotazione.
-     * @param res_cover numero coperti prenotazione.
-     * @param item_list lista di items (menù/piatto) prenotazione.
-     */
-    public Reservation(String name, String res_cover, HashMap<String, String> item_list) {
-        this.name = name;
-        this.res_cover = res_cover;
-        this.item_list = item_list;
+    public ReservationItemList(Reservable decoratedReservation, HashMap<String, String> itemList) {
+        super(decoratedReservation);
+        item_list = itemList;
     }
-
+    
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente
      * da qualsiasi istanza creata per la classe. I metodi statici non usano
@@ -52,7 +25,7 @@ public class Reservation implements Writable {
      */
     static {
         ATTRIBUTE_STRINGS.add("name");
-        ATTRIBUTE_STRINGS.add("res_cover");
+        ATTRIBUTE_STRINGS.add("resCover");
     }
 
     /**
@@ -89,26 +62,9 @@ public class Reservation implements Writable {
      */
     @Override
     public String[] getChildTagStrings() {
-        return new String[]{Reservation.START_STRING};
+        return new String[]{ReservationItemList.START_STRING};
     }
 
-    /**
-     * Metodo che restituisce il nome della prenotazione.
-     *
-     * @return nome prenotazione.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Metodo che restituisce il numero coperti di una prenotazione.
-     *
-     * @return numero coperti della prenotazione.
-     */
-    public String getResCover() {
-        return res_cover;
-    }
 
 
     /**
