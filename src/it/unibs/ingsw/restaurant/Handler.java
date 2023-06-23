@@ -663,12 +663,8 @@ public class Handler {
         } else {
             MenuItem[] items = new MenuItem[]{
                     new MenuItem(UsefulStrings.UPDATE_AGENDA_MENU_VOICE, () -> {
-                        if(user.getCopertiRaggiunti() < raController.getCovered() && raController.getCarico_raggiunto() < controller.getRestaurantWorkload())
-                            try{
-                                updateAgenda(user, raController);
-                            }catch (XMLStreamException e){
-                                System.out.println(UsefulStrings.ERROR_MESSAGE);
-                            }
+                        if(user.getCopertiRaggiunti() < raController.getCovered() && raController.getCaricoRaggiunto() < controller.getRestaurantWorkload())
+                            updateAgenda(user, raController);
                         else
                             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
                     }),
@@ -685,9 +681,10 @@ public class Handler {
     /**
      * Metodo per l'aggiornamento dell'agenda riguardante le prenotazioni.
      */
-    public void updateAgenda(ReservationsAgent user, ReservationsAgentController controller) throws XMLStreamException{
-        user.setMenu(user.coursesParsingTask()); // prende dal file i menu con i relativi piatti
-        user.setWorkloads(user.workloadsParsingTask()); // prende dal file i carichi di lavoro dei menu/piatti relativi la giornata
+    public void updateAgenda(ReservationsAgent user, ReservationsAgentController controller){
+        controller.parseCourses();
+        controller.parseWorkloads();
+
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint(UsefulStrings.UPDATE_AGENDA);
 
@@ -696,6 +693,7 @@ public class Handler {
 
         int resCover;
         int itemCover = 0;
+
         // somma dei coperti di un item (non menu) di una prenotazione per la relativa item_list
         int sumItemCover;
         // somma dei coperti di un item (menu) di una prenotazione per la relativa item_list  ->  servirà per controllare che si potrà avere soltanto un menù tematico a testa
@@ -738,6 +736,7 @@ public class Handler {
                     }while(user.exceedsRestaurantWorkload(user.calculateWorkload(menu_piatto, itemCover), user.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
                     sumItemCover += user.addItem(itemCover, sumItemCover, menu_piatto, item_list);
+
                 }else{
                     System.out.println(UsefulStrings.ONE_MENU_PER_PERSON);
                 }
@@ -752,7 +751,9 @@ public class Handler {
             // aggiorno i coperti
             user.updateCopertiRaggiunti(resCover);
 
-        }while((DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) && user.restaurantNotFull((int) controller.getCovered())) && user.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
+        }while((DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
+                user.restaurantNotFull((int) controller.getCovered())) &&
+                user.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
         // salvataggio nell'archivio prenotazioni
         saveInResArchive(user);

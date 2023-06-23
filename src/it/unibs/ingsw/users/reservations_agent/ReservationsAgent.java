@@ -145,25 +145,6 @@ public class ReservationsAgent extends User {
         workloads.forEach(w -> workloadsMap.put(w.getName(), w));
     }
 
-    /**
-     * Parsing dal file per reperire i vari menu e piatti disponibili.
-     *
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public ArrayList<Course> coursesParsingTask() throws XMLStreamException {
-        XMLParser coursesParser = new XMLParser(UsefulStrings.COURSES_FILE);
-        return new ArrayList<>(coursesParser.parseXML(Course.class));
-    }
-
-    /**
-     * Parsing dal file per reperire i vari carichi di lavoro dei menu e piatti disponibili.
-     *
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public ArrayList<Workload> workloadsParsingTask() throws XMLStreamException {
-        XMLParser workloadsParser = new XMLParser(UsefulStrings.WORKLOADS_FILE);
-        return new ArrayList<>(workloadsParser.parseXML(Workload.class));
-    }
 
     /**
      * Metodo che restituisce i coperti del ristorante attualmente raggiunti.
