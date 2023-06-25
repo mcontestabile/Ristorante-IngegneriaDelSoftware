@@ -39,7 +39,7 @@ public class Handler {
          * lavorativo prima della data di ricevimento dei clienti. Il ristorante, quindi, si può
          * inizializzare solo dal lunedì al venerdì, quindi OGGI non deve essere un festivo.
          */
-        if(RestaurantDates.isHoliday(RestaurantDates.today)) {
+        if(!RestaurantDates.isHoliday(RestaurantDates.today)) {
             RestaurantDates.setWorkingDay();
 
             System.out.println(AsciiArt.coloredText(UsefulStrings.DAY + " " + RestaurantDates.workingDayString, AsciiArt.color.rainbowSeq));
