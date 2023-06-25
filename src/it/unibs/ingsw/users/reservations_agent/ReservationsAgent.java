@@ -28,15 +28,15 @@ public class ReservationsAgent extends User {
     /**
      * Coperti attualmente raggiunti con le prenotazioni.
      */
-    private int coperti_raggiunti;
+    private int copertiRaggiunti;
     /**
      * Carico di lavoro attualmente raggiunto con i menù/piatti delle prenotazioni.
      */
-    private double carico_raggiunto;
+    private double caricoRaggiunto;
     /**
      * La lista delle prenotazioni.
      */
-    private ArrayList<Reservation> reservations = new ArrayList<>();
+    private ArrayList<ReservationItemList> reservations = new ArrayList<>();
     /**
      * La lista dei menù con i relativi piatti.
      */
@@ -61,8 +61,8 @@ public class ReservationsAgent extends User {
     public ReservationsAgent(String username, String password, boolean canIWork) {
         super(username, password, canIWork);
 
-        this.coperti_raggiunti = 0; // a inizio giornata quando si crea l'oggetto ReservationAgent
-        this.carico_raggiunto = 0.0; // a inizio giornata quando si crea l'oggetto ReservationAgent
+        this.copertiRaggiunti = 0; // a inizio giornata quando si crea l'oggetto ReservationAgent
+        this.caricoRaggiunto = 0.0; // a inizio giornata quando si crea l'oggetto ReservationAgent
     }
 
     /**
@@ -74,7 +74,11 @@ public class ReservationsAgent extends User {
      */
     public void insertReservation(String name, String resCover, HashMap<String, String> itemList) {
 
-        this.reservations.add(new Reservation(name,resCover,itemList));
+        Reservable r = new SimpleReservation(name, resCover);
+
+        r = new ReservationItemList(r, itemList);
+
+        this.reservations.add((ReservationItemList) r);
 
         try {
             agendaWritingTask(reservations);
@@ -89,12 +93,12 @@ public class ReservationsAgent extends User {
      * @param reservations l'elenco delle prenotazioni.
      * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
      */
-    public void agendaWritingTask(ArrayList<Reservation> reservations) throws XMLStreamException{
+    public void agendaWritingTask(ArrayList<ReservationItemList> reservations) throws XMLStreamException{
         XMLWriter writer = new XMLWriter(UsefulStrings.AGENDA_FILE);
         writer.writeArrayListXML(reservations, UsefulStrings.AGENDA_OUTER_TAG);
     }
 
-    public ArrayList<Reservation> getReservations() {
+    public ArrayList<ReservationItemList> getReservations() {
         return reservations;
     }
 
@@ -107,7 +111,7 @@ public class ReservationsAgent extends User {
     public ArrayList<String> getReservationNameList(){
         ArrayList<String> names = new ArrayList<>();
 
-        for(Reservation r : reservations){
+        for(Reservable r : reservations){
             names.add(r.getName());
         }
         return names;
@@ -141,25 +145,6 @@ public class ReservationsAgent extends User {
         workloads.forEach(w -> workloadsMap.put(w.getName(), w));
     }
 
-    /**
-     * Parsing dal file per reperire i vari menu e piatti disponibili.
-     *
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public ArrayList<Course> coursesParsingTask() throws XMLStreamException {
-        XMLParser coursesParser = new XMLParser(UsefulStrings.COURSES_FILE);
-        return new ArrayList<>(coursesParser.parseXML(Course.class));
-    }
-
-    /**
-     * Parsing dal file per reperire i vari carichi di lavoro dei menu e piatti disponibili.
-     *
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public ArrayList<Workload> workloadsParsingTask() throws XMLStreamException {
-        XMLParser workloadsParser = new XMLParser(UsefulStrings.WORKLOADS_FILE);
-        return new ArrayList<>(workloadsParser.parseXML(Workload.class));
-    }
 
     /**
      * Metodo che restituisce i coperti del ristorante attualmente raggiunti.
@@ -167,7 +152,7 @@ public class ReservationsAgent extends User {
      * @return coperti_raggiunti
      */
     public int getCopertiRaggiunti() {
-        return coperti_raggiunti;
+        return copertiRaggiunti;
     }
 
     /**
@@ -177,7 +162,7 @@ public class ReservationsAgent extends User {
      * @param nuoviCoperti coperti da sommare agli attuali.
      */
     public void updateCopertiRaggiunti(int nuoviCoperti) {
-        this.coperti_raggiunti = this.coperti_raggiunti + nuoviCoperti;
+        this.copertiRaggiunti = this.copertiRaggiunti + nuoviCoperti;
     }
 
     /**
@@ -185,8 +170,8 @@ public class ReservationsAgent extends User {
      *
      * @return carico_raggiunto
      */
-    public double getCarico_raggiunto() {
-        return carico_raggiunto;
+    public double getCaricoRaggiunto() {
+        return caricoRaggiunto;
     }
 
     /**
@@ -197,9 +182,9 @@ public class ReservationsAgent extends User {
      * @param nuovoCarico carico da sommare all'attuale.
      */
     public void updateCaricoRaggiunto(double nuovoCarico) {
-        this.carico_raggiunto = this.carico_raggiunto + nuovoCarico;
+        this.caricoRaggiunto = this.caricoRaggiunto + nuovoCarico;
 
-        this.carico_raggiunto = Math.floor((this.carico_raggiunto) * 100)/100; // solo due cifre decimali
+        this.caricoRaggiunto = Math.floor((this.caricoRaggiunto) * 100)/100; // solo due cifre decimali
     }
 
     /**
@@ -430,7 +415,7 @@ public class ReservationsAgent extends User {
             menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
         }while(!this.isInMenu(menu_piatto) ||
                 this.isRepeated(menu_piatto, item_list.keySet()) ||
-                this.exceedsRestaurantWorkload(this.calculateWorkload(menu_piatto, 1), this.getCarico_raggiunto(), restaurantWorkload));
+                this.exceedsRestaurantWorkload(this.calculateWorkload(menu_piatto, 1), this.getCaricoRaggiunto(), restaurantWorkload));
 
 
         return menu_piatto;
@@ -494,8 +479,8 @@ public class ReservationsAgent extends User {
      * @param restaurantWorkload il carico sostenibile del ristorante.
      */
     public boolean workloadRestaurantNotExceeded(double restaurantWorkload){
-        double workloadRimanente = restaurantWorkload - this.getCarico_raggiunto();
-        if(this.getCarico_raggiunto() >= restaurantWorkload || workloadRimanente < this.getMinimumWorkload()){
+        double workloadRimanente = restaurantWorkload - this.getCaricoRaggiunto();
+        if(this.getCaricoRaggiunto() >= restaurantWorkload || workloadRimanente < this.getMinimumWorkload()){
             System.out.println(UsefulStrings.NO_MORE_RES_WORKLOAD);
             return false;
         }
@@ -518,7 +503,7 @@ public class ReservationsAgent extends User {
      * @param restaurantWorkload il carico sostenibile del ristorante.
      */
     public void seeInfoWorkload(double restaurantWorkload){
-        System.out.println(UsefulStrings.ACTUAL_WORKLOAD_MESSAGE+(this.getCarico_raggiunto()));
-        System.out.println(UsefulStrings.ACTUAL_WORKLOAD_AVAILABLE_MESSAGE+Math.floor((restaurantWorkload - this.getCarico_raggiunto()) *100)/100+"\n");
+        System.out.println(UsefulStrings.ACTUAL_WORKLOAD_MESSAGE+(this.getCaricoRaggiunto()));
+        System.out.println(UsefulStrings.ACTUAL_WORKLOAD_AVAILABLE_MESSAGE+Math.floor((restaurantWorkload - this.getCaricoRaggiunto()) *100)/100+"\n");
     }
 }
