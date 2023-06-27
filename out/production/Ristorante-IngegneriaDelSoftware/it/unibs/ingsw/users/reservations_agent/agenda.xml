@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <agenda>
-	<reservation name="vanessa" resCover="3">
-		<item item_name="affettati e formaggi" item_cover="4"/>
+	<reservation name="anto" resCover="3">
+		<item item_name="affettati e formaggi" item_cover="3"/>
 	</reservation>
 </agenda>

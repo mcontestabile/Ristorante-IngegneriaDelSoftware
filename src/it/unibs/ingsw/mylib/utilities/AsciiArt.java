@@ -387,4 +387,26 @@ public class AsciiArt {
         System.out.println(table.render());
         DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
     }
+
+    /**
+     * Metodo che visualizza a video informazioni sui coperti del ristorante.
+     *
+     * @param totCover capienza massima del ristorante.
+     */
+    public static void seeInfoCovered(int copertiRaggiunti, int totCover) {
+        System.out.println(UsefulStrings.ACTUAL_COVER_MESSAGE+copertiRaggiunti);
+        System.out.println(UsefulStrings.ACTUAL_COVER_AVAILABLE_MESSAGE+(totCover - copertiRaggiunti)+"\n");
+    }
+
+
+
+    /**
+     * Metodo che visualizza a video informazioni sul carico di lavoro.
+     *
+     * @param restaurantWorkload il carico sostenibile del ristorante.
+     */
+    public static void seeInfoWorkload(int caricoRaggiunto, double restaurantWorkload){
+        System.out.println(UsefulStrings.ACTUAL_WORKLOAD_MESSAGE+(caricoRaggiunto));
+        System.out.println(UsefulStrings.ACTUAL_WORKLOAD_AVAILABLE_MESSAGE+Math.floor((restaurantWorkload - caricoRaggiunto) *100)/100+"\n");
+    }
 }

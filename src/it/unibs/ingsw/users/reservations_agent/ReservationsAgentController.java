@@ -2,7 +2,6 @@ package it.unibs.ingsw.users.reservations_agent;
 
 import it.unibs.ingsw.entrees.resturant_courses.Course;
 import it.unibs.ingsw.entrees.resturant_courses.Workload;
-import it.unibs.ingsw.mylib.utilities.DataInput;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
@@ -30,6 +29,8 @@ public class ReservationsAgentController extends UserController {
 
     public double getCaricoRaggiunto() {return agent.getCaricoRaggiunto();}
 
+    //public double getOverallWorkload() {return agent.getRestaurantWorkload();}
+
     public void parseCourses(){
         try {
             agent.setMenu(agent.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
@@ -44,6 +45,75 @@ public class ReservationsAgentController extends UserController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Metodo che controlla se il ristorante non è pieno.
+     *
+     * @param totCover capienza massima del ristorante.
+     */
+    public boolean restaurantNotFull(int totCover){
+        if(this.getCopertiRaggiunti() >= totCover){
+            System.out.println(UsefulStrings.NO_MORE_RES_COVER);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Metodo che aggiunge un item (menù/piatto) nella lista di items di una prenotazione.
+     * Aggiungerà l'elemento alla lista e restituirà quindi la nuova quantità selezionata per il tipo dell'item (menù/piatto) in questione.
+     * Sarà la somma dei piatti normali, o la somma dei menù, presi durante una prenotazione.
+     *
+     * @param itemCover numero coperti per l'item da aggiungere.
+     * @param sumGenericItemCover somma coperti attuale dell'item (può essere la somma dei coperti presi per un piatto, o per un menù)
+     * @param menu_piatto nome dell'item da aggiungere.
+     * @param item_list lista di item della prenotazione.
+     * @return sumGenericItemCover, la nuova somma coperti attuale dell'item, dopo l'inserimento nella lista.
+     */
+    public int addItem(int itemCover, int sumGenericItemCover, String menu_piatto, HashMap<String, String> item_list){
+        sumGenericItemCover += itemCover;
+
+        String item_cover = Integer.toString(itemCover);
+        item_list.put(menu_piatto, item_cover);
+
+        return sumGenericItemCover;
+    }
+
+    /**
+     * Metodo che in fase di inserimento di una prenotazione, verifica se per
+     * completare quest'ultima ci sia il bisogno di inserire altri items per adempire
+     * al numero coperti della prenotazione stessa; in quanto si devono avere almeno n items se la prenotazione
+     * è di n coperti.
+     *
+     * @param nItems numero di piatti attuali nella lista
+     * @param nMenu numero di menù attuali nella lista
+     * @param resCover numero coperti della prenotazione.
+     */
+    public boolean moreItemsNeeded(int nItems, int nMenu, int resCover){
+        int sumItemsCover = nItems + nMenu;
+
+        if(sumItemsCover < resCover && nMenu <= resCover)
+            return true;
+
+        return false;
+    }
+
+    /**
+     * Metodo che ritorna il menù disponibile.
+     *
+     * @return menu
+     */
+    public ArrayList<Course> getMenu(){return agent.getMenu();}
+
+    /**
+     * Metodo che restituisce i coperti del ristorante attualmente raggiunti.
+     *
+     * @return coperti_raggiunti
+     */
+    public int getCopertiRaggiunti() {
+        return agent.getCopertiRaggiunti();
+    }
+
 
     /**
      * Metodo che inserisce una Reservation e la scrive nell'agenda.
@@ -65,6 +135,29 @@ public class ReservationsAgentController extends UserController {
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Metodo che aggiorna i coperti raggiunti del ristorante.
+     * Si somma quindi ai coperti attuali, un nuovo valore, aumentando così di quell'ammontare, il numero di persone attualmente prenotate presso il ristorante.
+     *
+     * @param nuoviCoperti coperti da sommare agli attuali.
+     */
+    public void updateCopertiRaggiunti(int nuoviCoperti) {
+        int copertiRaggiunti = agent.getCopertiRaggiunti();
+        agent.setCovered(copertiRaggiunti + nuoviCoperti);
+    }
+
+    /**
+     * Metodo che aggiorna il carico di lavoro del ristorante raggiunto.
+     * Si somma quindi al carico attuale, un nuovo valore, aumentando così di quell'ammontare, il totale del carico di lavoro attualmente sostenuto dal ristorante.
+     * Si effettua poi una trasformazione, richiamando la libreria Math, in modo tale da avere 2 cifre decimali.
+     *
+     * @param nuovoCarico carico da sommare all'attuale.
+     */
+    public void updateCaricoRaggiunto(double nuovoCarico) {
+        double newCaricoRaggiunto = Math.floor((agent.getCaricoRaggiunto() + nuovoCarico) * 100)/100;
+        agent.setCaricoRaggiunto(newCaricoRaggiunto);
     }
 
     /**
@@ -93,21 +186,7 @@ public class ReservationsAgentController extends UserController {
         return names;
     }
 
-    /**
-     * Metodo che chiede all'utente il nome di una prenotazione.
-     * Il valore non è valido, se è già presente nella lista delle prenotazioni.
-     *
-     * @return name, nome della prenotazione.
-     */
-    public String askResName(){
-        String name;
 
-        do{
-            name = DataInput.readNotEmptyString(UsefulStrings.RESERVATION_NAME);
-        }while(isRepeated(name, this.getReservationNameList()));
-
-        return name;
-    }
 
     /**
      * Metodo che controlla se un nome, dato in input, è già presente nella
@@ -126,26 +205,6 @@ public class ReservationsAgentController extends UserController {
         return false;
     }
 
-    /**
-     * Metodo che chiede all'utente il nome di un menù/piatto valido.
-     * Non è valido se non è presente nel menù disponibile nella giornata lavorativa relativa,
-     * oppure se è un nome ripetuto, oppure se il workload dell'item (esteso ad una singola persona) eccede il carico sostenibile del ristorante.
-     *
-     * @param item_list la lista di items della prenotazione.
-     * @param restaurantWorkload carico di lavoro sostenubile del ristorante.
-     * @return menu_piatto valido
-     */
-    public String askMenuPiatto(HashMap<String, String> item_list, double restaurantWorkload){
-        String menu_piatto;
-        do{
-            menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
-        }while(!this.isInMenu(menu_piatto) ||
-                this.isRepeated(menu_piatto, item_list.keySet()) ||
-                this.exceedsRestaurantWorkload(this.calculateWorkload(menu_piatto, 1), this.getCaricoRaggiunto(), restaurantWorkload));
-
-
-        return menu_piatto;
-    }
 
     /**
      * Metodo per controllare se l'item in input sia effetteivamente disponibile
@@ -188,22 +247,7 @@ public class ReservationsAgentController extends UserController {
         return false;
     }
 
-    /**
-     * Metodo che chiede all'utente il numero coperti di una prenotazione.
-     * Il valore non è valido se la totalità dei coperti raggiunti, estesa al valore
-     * inserito dall'utente, supera la capienza massima del ristorante.
-     *
-     * @param totCover capienza massima del ristorante.
-     * @return resCover, i nuovi coperi attialmente raggiunti.
-     */
-    public int askResCover(int totCover){
-        int resCover;
-        do{
-            resCover = DataInput.readPositiveInt(UsefulStrings.RES_COVER);
-        }while(exceedsCover(resCover, agent.getCopertiRaggiunti(), totCover));
 
-        return resCover;
-    }
 
     /**
      * Metodo che controlla se la totalità dei menù tematici estesa all'itemCover in input,

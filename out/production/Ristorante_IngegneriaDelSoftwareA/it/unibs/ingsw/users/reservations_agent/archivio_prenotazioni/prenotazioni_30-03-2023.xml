@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Elenco prenotazioni del 30-03-2023-->
-<agenda>
-	<reservation name="anto" res_cover="2">
-		<item item_name="la primavera" item_cover="2"/>
-	</reservation>
-</agenda>

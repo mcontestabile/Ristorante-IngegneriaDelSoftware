@@ -699,60 +699,76 @@ public class Handler {
         // somma dei coperti di un item (menu) di una prenotazione per la relativa item_list  ->  servirà per controllare che si potrà avere soltanto un menù tematico a testa
         int sumMenuItemCover;
 
-        AsciiArt.printALaCarteMenu(user.getMenu());
-        AsciiArt.printThemedMenu(user.getMenu());
+        boolean doYouWantToContinue = true;
+
+        AsciiArt.printALaCarteMenu(controller.getMenu());
+        AsciiArt.printThemedMenu(controller.getMenu());
 
 
         do{
 
             HashMap<String, String> item_list = new HashMap<>();
 
-            user.seeInfoCovered((int) controller.getCovered());
 
-            name = controller.askResName();
+            AsciiArt.seeInfoCovered(controller.getCopertiRaggiunti(), (int)controller.getCovered());
 
-            resCover = controller.askResCover((int) controller.getCovered());
+            do{
+                name = DataInput.readNotEmptyString(UsefulStrings.RESERVATION_NAME);
+            }while(controller.isRepeated(name, controller.getReservationNameList()));
+
+            do{
+                resCover = DataInput.readPositiveInt(UsefulStrings.RES_COVER);
+            }while(controller.exceedsCover(resCover, controller.getCopertiRaggiunti(), (int) controller.getCovered()));
 
             sumItemCover = 0;
             sumMenuItemCover = 0;
 
             do{
-                user.seeInfoWorkload(controller.getRestaurantWorkload());
+                AsciiArt.seeInfoWorkload((int)controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
 
-                menu_piatto = controller.askMenuPiatto(item_list, controller.getRestaurantWorkload());
+                do{
+                    menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
+                }while(!controller.isInMenu(menu_piatto) ||
+                        controller.isRepeated(menu_piatto, item_list.keySet()) ||
+                        controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, 1), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
                 if(!controller.isDish(menu_piatto) && (sumMenuItemCover < resCover)){ // se non è un Dish -> è un menù tematico  &&  un menù a testa!
 
                     do {
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
                     } while (controller.exceedsOneMenuPerPerson(itemCover, sumMenuItemCover, resCover) ||
-                            controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, itemCover), user.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
+                            controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, itemCover), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
-                    sumMenuItemCover += user.addItem(itemCover, sumMenuItemCover, menu_piatto, item_list);
+                    sumMenuItemCover += controller.addItem(itemCover, sumMenuItemCover, menu_piatto, item_list);
 
                 }else if(controller.isDish(menu_piatto)){ // se è un piatto normale, dovrò solo controllare che non si ecceda il carico del ristorante
                     do{
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-                    }while(controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, itemCover), user.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
+                    }while(controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, itemCover), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
-                    sumItemCover += user.addItem(itemCover, sumItemCover, menu_piatto, item_list);
+                    sumItemCover += controller.addItem(itemCover, sumItemCover, menu_piatto, item_list);
 
                 }else{
                     System.out.println(UsefulStrings.ONE_MENU_PER_PERSON);
                 }
 
                 // aggiorno il carico di lavoro
-                user.updateCaricoRaggiunto(controller.calculateWorkload(menu_piatto, itemCover));
+                controller.updateCaricoRaggiunto(controller.calculateWorkload(menu_piatto, itemCover));
 
-            }while(user.moreItems(sumItemCover, sumMenuItemCover, resCover) && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
+
+                if(!controller.moreItemsNeeded(sumItemCover, sumMenuItemCover, resCover))
+                    doYouWantToContinue = DataInput.yesOrNo(UsefulStrings.MORE_ITEMS);
+
+
+            }while(doYouWantToContinue && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
             controller.insertReservation(name, Integer.toString(resCover), item_list);
 
             // aggiorno i coperti
-            user.updateCopertiRaggiunti(resCover);
+            controller.updateCopertiRaggiunti(resCover);
 
         }while((DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
-                user.restaurantNotFull((int) controller.getCovered())) &&
+                controller.restaurantNotFull((int) controller.getCovered())) &&
                 controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
         // salvataggio nell'archivio prenotazioni
