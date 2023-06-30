@@ -34,6 +34,12 @@ public class ReservationsAgent extends User {
      */
     private double caricoRaggiunto;
 
+    private ReservationArchiveRepository reservationArchiveRepository;
+
+    public ReservationArchiveRepository getReservationArchiveRepository() {
+        return reservationArchiveRepository;
+    }
+
     public void setCaricoRaggiunto(double newCaricoRaggiunto) {
         this.caricoRaggiunto = newCaricoRaggiunto;
     }
@@ -65,6 +71,7 @@ public class ReservationsAgent extends User {
      */
     public ReservationsAgent(String username, String password, boolean canIWork) {
         super(username, password, canIWork);
+        this.reservationArchiveRepository = new XMLReservationArchiveRepository();
 
         this.copertiRaggiunti = 0; // a inizio giornata quando si crea l'oggetto ReservationAgent
         this.caricoRaggiunto = 0.0; // a inizio giornata quando si crea l'oggetto ReservationAgent

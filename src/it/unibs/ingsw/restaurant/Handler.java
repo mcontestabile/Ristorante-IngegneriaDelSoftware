@@ -668,7 +668,7 @@ public class Handler {
                         else
                             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
                     }),
-                    new MenuItem(UsefulStrings.SAVE_IN_RES_ARCHIVE_MENU_VOICE, () -> saveInResArchive(user))
+                    new MenuItem(UsefulStrings.SAVE_IN_RES_ARCHIVE_MENU_VOICE, () -> saveInArchiveTask(raController))
             };
 
             Menu menu = new Menu(UsefulStrings.MAIN_TASK_REQUEST, items);
@@ -772,7 +772,7 @@ public class Handler {
                 controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
         // salvataggio nell'archivio prenotazioni
-        saveInResArchive(user);
+        saveInArchiveTask(controller);
 
         // ora che l'agenda è stata scritta, il magazziniere potrà creare la lista della spesa a seconda delle prenotazioni raccolte
         controller.updateUserTurn();
@@ -781,16 +781,9 @@ public class Handler {
     /**
      * Metodo per quanto riguarda il salvataggio nell'archivio delle prenotazioni.
      */
-    public void saveInResArchive(ReservationsAgent user) {
-        boolean save = DataInput.yesOrNo(UsefulStrings.QUE_SAVE_IN_RES_ARCHIVE);
-        if (save) {
-            try {
-                user.salvaInArchivioPrenotazioni(RestaurantDates.workingDay.format(RestaurantDates.formatter));
-            } catch (IOException e) {
-                System.out.println(UsefulStrings.ERROR_MESSAGE);
-                e.printStackTrace();
-            }
-        }
+    public void saveInArchiveTask(ReservationsAgentController controller){
+        controller.saveInReservationArchive();
+        System.out.println(UsefulStrings.OK_FILE_SAVED_MESSAGE);
     }
 
     /**

@@ -3,6 +3,7 @@ package it.unibs.ingsw.users.reservations_agent;
 import it.unibs.ingsw.entrees.resturant_courses.Course;
 import it.unibs.ingsw.entrees.resturant_courses.Workload;
 import it.unibs.ingsw.mylib.utilities.Fraction;
+import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
 import it.unibs.ingsw.users.registered_users.User;
@@ -353,5 +354,9 @@ public class ReservationsAgentController extends UserController {
         }
 
         return true;
+    }
+
+    public void saveInReservationArchive(){
+        agent.getReservationArchiveRepository().save(RestaurantDates.workingDay.format(RestaurantDates.formatter));
     }
 }

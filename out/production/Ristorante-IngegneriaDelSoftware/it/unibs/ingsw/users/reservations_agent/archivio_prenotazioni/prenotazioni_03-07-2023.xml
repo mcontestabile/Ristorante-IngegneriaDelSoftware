@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Elenco prenotazioni del 03-07-2023-->
 <agenda>
 	<reservation name="anton" resCover="2">
 		<item item_name="pasta al pesto" item_cover="2"/>
