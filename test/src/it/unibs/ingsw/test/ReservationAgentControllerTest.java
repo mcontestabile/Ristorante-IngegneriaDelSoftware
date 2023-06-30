@@ -19,13 +19,27 @@ import static org.junit.Assert.assertEquals;
 
 public class ReservationAgentControllerTest {
     @Test
+    public void AgentControllerShouldNotInsertReservation() throws XMLStreamException {
+        ReservationsAgent agent = new ReservationsAgent("username", "password", true);
+
+        Queue<User> users = new LinkedList<>();
+        users.add(new ReservationsAgent("username", "password", true));
+
+        ReservationsAgentController raController = new ReservationsAgentController(users, agent);
+
+        HashMap<String, String> item_list = new HashMap<>();
+        item_list.put("affettati", "3");
+
+        assertThat(agent.getReservations().size(), is(equalTo(0)));
+    }
+    @Test
     public void AgentControllerInsertReservation() throws XMLStreamException {
         ReservationsAgent agent = new ReservationsAgent("username", "password", true);
 
         Queue<User> users = new LinkedList<>();
         users.add(new ReservationsAgent("username", "password", true));
 
-        ReservationsAgentController raController = new ReservationsAgentController(new UserController(users).getQueue(), agent);
+        ReservationsAgentController raController = new ReservationsAgentController(users, agent);
 
         HashMap<String, String> item_list = new HashMap<>();
         item_list.put("affettati", "3");

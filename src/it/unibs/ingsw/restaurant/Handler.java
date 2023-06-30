@@ -763,6 +763,7 @@ public class Handler {
             }while(doYouWantToContinue && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
             controller.insertReservation(name, Integer.toString(resCover), item_list);
+            controller.writeAgenda();
 
             // aggiorno i coperti
             controller.updateCopertiRaggiunti(resCover);

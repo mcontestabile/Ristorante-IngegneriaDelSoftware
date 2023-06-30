@@ -130,7 +130,9 @@ public class ReservationsAgentController extends UserController {
         r = new ReservationItemList(r, itemList);
 
         agent.getReservations().add((ReservationItemList) r);
+    }
 
+    public void writeAgenda() {
         try {
             agendaWritingTask(agent.getReservations());
         } catch (XMLStreamException e) {
