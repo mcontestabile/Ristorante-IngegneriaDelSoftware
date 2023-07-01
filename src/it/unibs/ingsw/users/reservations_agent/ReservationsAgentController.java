@@ -30,7 +30,6 @@ public class ReservationsAgentController extends UserController {
 
     public double getCaricoRaggiunto() {return agent.getCaricoRaggiunto();}
 
-    //public double getOverallWorkload() {return agent.getRestaurantWorkload();}
 
     public void parseCourses(){
         try {
@@ -104,7 +103,7 @@ public class ReservationsAgentController extends UserController {
      *
      * @return menu
      */
-    public ArrayList<Course> getMenu(){return agent.getMenu();}
+    public ArrayList<Course> getMenu(){return (ArrayList<Course>) agent.getMenu();}
 
     /**
      * Metodo che restituisce i coperti del ristorante attualmente raggiunti.
