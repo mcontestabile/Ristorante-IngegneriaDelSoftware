@@ -65,8 +65,6 @@ public class ReservationItemList extends ReservationDecorator implements Writabl
         return new String[]{ReservationItemList.START_STRING};
     }
 
-
-
     /**
      * Metodo per decretare quali nodi figli scrivere.
      * @return i nodi figli.
@@ -75,7 +73,6 @@ public class ReservationItemList extends ReservationDecorator implements Writabl
     public ArrayList<XMLTag> getChildTagsToWrite() {
         setGetters();
         ArrayList<XMLTag> XMLTags = new ArrayList<>();
-
 
         for(Map.Entry m : item_list.entrySet()) {
             XMLTags.add(new XMLTag("item", new XMLAttribute("item_name", (String)m.getKey()), new XMLAttribute("item_cover", (String)m.getValue())));

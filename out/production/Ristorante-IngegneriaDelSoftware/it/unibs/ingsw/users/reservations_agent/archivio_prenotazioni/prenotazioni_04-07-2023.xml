@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Elenco prenotazioni del 04-07-2023-->
 <agenda>
 	<reservation name="anto" resCover="3">
 		<item item_name="affettati e formaggi" item_cover="3"/>

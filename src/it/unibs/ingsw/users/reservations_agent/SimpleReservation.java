@@ -23,7 +23,6 @@ public class SimpleReservation implements Reservable{
         this.resCover = resCover;
     }
 
-
     @Override
     public String getName() {
         return name;
