@@ -22,10 +22,7 @@ public class WarehouseWorker extends User {
     private ArrayList<WareHouseArticle> wareHouseArticles = new ArrayList<>();  //articoli nel magazzino
     private HashMap<String, WareHouseArticle> wareHouseArticlesMap;     //articoli nel magazzino
     private ArrayList<CookbookRecipe> cookbookRecipes;
-    private ArrayList<Recipe> recipes;
     private ArrayList<Article> shoppingList;
-    private HashMap<String, Article> shoppingListMap;
-    private HashMap<String, Integer> menuReservations = new HashMap<>();    //menu presenti in una prenotazione
     private ArrayList<Course> courses;  //Arraylist di menu (ogni menu ha i suoi piatti)
     private HashMap<String, Course> coursesMap;
     private HashMap<String, CookbookRecipe> recipeMap;  //ricetta di ogni piatto
@@ -38,9 +35,6 @@ public class WarehouseWorker extends User {
     private static final int GAP = 10;
 
 
-    // Questo oggetto consente il calcolo del tempo trascorso.
-    Timer timer;
-
     /**
      * Costruttore dell'oggetto articolo
      * @param username nome del magazziniere.
@@ -50,11 +44,20 @@ public class WarehouseWorker extends User {
     public WarehouseWorker(String username, String password, boolean canIWork) throws XMLStreamException {
         super(username, password, canIWork);
 
+        setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
+        setCourses(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+        setWareHouseArticles(parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
+        drinksPerCustomer = parsingTask(UsefulStrings.DRINKS_FILE, Drink.class);
+        appetizersPerCustomer = parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class);
+
+        /*
         setCookbook(cookbookParsingTask());
         setCourses(coursesParsingTask());
         setWareHouseArticles(wareHouseParsingTask());
         drinksPerCustomer = drinkParsingTask();
         appetizersPerCustomer = appetizerParsingTask();
+
+         */
     }
 
     /**
@@ -62,7 +65,7 @@ public class WarehouseWorker extends User {
      */
     public boolean readReservations() {
         try {
-            setReservations(reservationParsingTask());
+            setReservations(parsingTask(UsefulStrings.AGENDA_FILE, ReservationItems.class));
         } catch (XMLStreamException e) {
             e.printStackTrace();
             return false;
@@ -106,53 +109,7 @@ public class WarehouseWorker extends User {
         wareHouseArticles.forEach(a -> wareHouseArticlesMap.put(a.getName(), a));
     }
 
-    /**
-     * Parsing del file delle prenotazioni
-     */
-    public ArrayList<ReservationItems> reservationParsingTask() throws XMLStreamException {
-        XMLParser reservationParser = new XMLParser(UsefulStrings.AGENDA_FILE);
-        return new ArrayList<>(reservationParser.parseXML(ReservationItems.class));
-    }
 
-    /**
-     * Parsing del file del ricettario
-     */
-    public ArrayList<CookbookRecipe> cookbookParsingTask() throws XMLStreamException {
-        XMLParser cookbookParser = new XMLParser(UsefulStrings.COOKBOOK_FILE);
-        return new ArrayList<>(cookbookParser.parseXML(CookbookRecipe.class));
-    }
-
-    /**
-     * Parsing del file delle bevande
-     */
-    public ArrayList<Drink> drinkParsingTask() throws XMLStreamException {
-        XMLParser drinkParser = new XMLParser(UsefulStrings.DRINKS_FILE);
-        return new ArrayList<>(drinkParser.parseXML(Drink.class));
-    }
-
-    /**
-     * Parsing del file degli antipasti
-     */
-    public ArrayList<Appetizer> appetizerParsingTask() throws XMLStreamException {
-        XMLParser appetizerParser = new XMLParser(UsefulStrings.APPETIZERS_FILE);
-        return new ArrayList<>(appetizerParser.parseXML(Appetizer.class));
-    }
-
-    /**
-     * Parsing del file del magazzino
-     */
-    public ArrayList<WareHouseArticle> wareHouseParsingTask() throws XMLStreamException {
-        XMLParser wareHouseParser = new XMLParser(UsefulStrings.WAREHOUSE_FILE);
-        return new ArrayList<>(wareHouseParser.parseXML(WareHouseArticle.class));
-    }
-
-    /**
-     * Parsing del file del menu
-     */
-    public ArrayList<Course> coursesParsingTask() throws XMLStreamException {
-        XMLParser coursesParser = new XMLParser(UsefulStrings.COURSES_FILE);
-        return new ArrayList<>(coursesParser.parseXML(Course.class));
-    }
 
     /**
      * Writing del file del magazzino
@@ -168,7 +125,7 @@ public class WarehouseWorker extends User {
      * @return articles lista di articoli
      */
     public ArrayList<Article> getWareHouseArticles() throws XMLStreamException{
-        setWareHouseArticles(wareHouseParsingTask());
+        setWareHouseArticles(parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
         articles = new ArrayList<>();
         wareHouseArticlesMap.forEach((wareHouseArticleName, wareHouseArticle) -> {
             articles.add(new Article(wareHouseArticleName, wareHouseArticle.getQuantity(), wareHouseArticle.getMeasure()));
@@ -217,7 +174,7 @@ public class WarehouseWorker extends User {
      * @throws XMLStreamException
      */
     public boolean insertArticle(String name, double quantity, String measure) throws XMLStreamException {
-        setWareHouseArticles(wareHouseParsingTask());
+        setWareHouseArticles(parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
         articles = new ArrayList<>();
         if(wareHouseArticlesMap.get(name) != null) {
             wareHouseArticlesMap.get(name).incrementQuantity(quantity);
@@ -284,8 +241,8 @@ public class WarehouseWorker extends User {
      */
     public HashMap <String, Article> getNecessaryIngredients() throws XMLStreamException {
 
-        setCookbook(cookbookParsingTask());
-        setCourses(coursesParsingTask());
+        setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
+        setCourses(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
 
         HashMap <String, Article> necessaryIngredients = new HashMap<>();
 
@@ -396,7 +353,7 @@ public class WarehouseWorker extends User {
             drinksPerCustomer.forEach((d) -> {
                 double qty = d.getQuantityDouble()*(r.getRes_cover());
                 if(necessaryDrinksMap.get(d.getName()) != null)
-                    necessaryDrinksMap.get(d.getName()).incrementQuantity((double)Math.round(qty*100.0)/100.0);
+                    necessaryDrinksMap.get(d.getName()).incrementQuantity(Math.round(qty*100.0)/100.0);
                 else
                     necessaryDrinksMap.put(d.getName(), new Article(d.getName(), qty, "l"));
             });
@@ -420,7 +377,7 @@ public class WarehouseWorker extends User {
             appetizersPerCustomer.forEach((a) -> {
                 double qty = a.getQuantityDouble()*(r.getRes_cover());
                 if(necessaryAppetizersMap.get(a.getGenre()) != null)
-                    necessaryAppetizersMap.get(a.getGenre()).incrementQuantity((double)Math.round(qty*100.0)/100.0);
+                    necessaryAppetizersMap.get(a.getGenre()).incrementQuantity(Math.round(qty*100.0)/100.0);
                 else
                     necessaryAppetizersMap.put(a.getGenre(), new Article(a.getGenre(), qty, "hg"));
             });
@@ -437,7 +394,7 @@ public class WarehouseWorker extends User {
      * @throws XMLStreamException
      */
     public ArrayList<Article> createShoppingList() throws XMLStreamException {
-        setWareHouseArticles(wareHouseParsingTask());
+        setWareHouseArticles(parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
         readReservations();
         HashMap<String, Article> necessaryIngredients = getNecessaryIngredients();
         ArrayList<Article> necessaryDrinks = getNecessaryDrinks();
