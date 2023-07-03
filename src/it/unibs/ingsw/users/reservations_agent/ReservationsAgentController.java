@@ -28,9 +28,11 @@ public class ReservationsAgentController extends UserController {
         this.agent = agent;
     }
 
-    public double getCaricoRaggiunto() {return agent.getCaricoRaggiunto();}
-
-
+    /**
+     * Metodo che effettua il parsing del file XML necessario
+     * per configurare il menu disponibile;
+     * il menu servirà al ReservationAgent in fase di prenotazione.
+     */
     public void parseCourses(){
         try {
             agent.setMenu(agent.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
@@ -38,6 +40,12 @@ public class ReservationsAgentController extends UserController {
             throw new RuntimeException(e);
         }
     }
+
+    /**
+     * Metodo che effettua il parsing del file XML necessario
+     * per configurare il carico di lavoro di ciascun menu/piatto disponibile;
+     *  il carico di lavoro di ciascun menu/piatto disponibile servirà al ReservationAgent in fase di prenotazione.
+     */
     public void parseWorkloads(){
         try {
             agent.setWorkloads(agent.parsingTask(UsefulStrings.WORKLOADS_FILE, Workload.class));
@@ -92,11 +100,18 @@ public class ReservationsAgentController extends UserController {
     public boolean moreItemsNeeded(int nItems, int nMenu, int resCover){
         int sumItemsCover = nItems + nMenu;
 
-        if(sumItemsCover < resCover && nMenu <= resCover)
+        if((sumItemsCover < resCover) && (nMenu <= resCover))
             return true;
 
         return false;
     }
+
+    /**
+     * Metodo che ritorna il carico di lavoro raggiunto dal ristorante,
+     *
+     * @return caricoRaggiunto
+     */
+    public double getCaricoRaggiunto() {return agent.getCaricoRaggiunto();}
 
     /**
      * Metodo che ritorna il menù disponibile.
@@ -114,9 +129,16 @@ public class ReservationsAgentController extends UserController {
         return agent.getCopertiRaggiunti();
     }
 
-
     /**
-     * Metodo che inserisce una Reservation e la scrive nell'agenda.
+     * Metodo che inserisce una Reservation.
+     * SimpleReservation è una prenotazione caratterizzata solamente da un nome
+     * e da un numero coperti.
+     * Mentre ReservationItemList è una prenotazione "completa". Oltre ad avere le caratteristiche
+     * della SimpleReservation, sarà caratterizzata anche da un insieme di item (menu/piatto) che
+     * caratterrizzano la prenotazione in questione (difatti questa verrà scritta nell'agenda).
+     * I due concetti sono stati divisi in vista di un ipotetico cambiamento a livello dell'insieme di item,
+     * che potrà comportare diverse scelte gestionali, non andando però ad intaccare la SimpleReservation,
+     * che a meno di casi eccezionali dovrebbe rimanere pressoché stabile.
      *
      * @param name nome prenotazione.
      * @param resCover coperti prenotazione.
@@ -131,9 +153,12 @@ public class ReservationsAgentController extends UserController {
         agent.getReservations().add((ReservationItemList) r);
     }
 
+    /**
+     * Metodo che scrive effettivamente su file quanto presente nell'elenco delle prenotazioni.
+     */
     public void writeAgenda() {
         try {
-            agendaWritingTask(agent.getReservations());
+            agent.writingTask(agent.getReservations(), UsefulStrings.AGENDA_FILE, UsefulStrings.AGENDA_OUTER_TAG);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -163,17 +188,6 @@ public class ReservationsAgentController extends UserController {
     }
 
     /**
-     * Metodo che scrive effettivamente su file quanto presente nell'elenco delle prenotazioni.
-     *
-     * @param reservations l'elenco delle prenotazioni.
-     * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
-     */
-    public void agendaWritingTask(ArrayList<ReservationItemList> reservations) throws XMLStreamException{
-        XMLWriter writer = new XMLWriter(UsefulStrings.AGENDA_FILE);
-        writer.writeArrayListXML(reservations, UsefulStrings.AGENDA_OUTER_TAG);
-    }
-
-    /**
      * Metodo che fornisce l'elenco dei nomi presenti nell'elenco prenotazioni dell'addetto.
      * Utile in fase di controllo per evitare l'inserimento di nomi duplicati.
      *
@@ -187,8 +201,6 @@ public class ReservationsAgentController extends UserController {
         }
         return names;
     }
-
-
 
     /**
      * Metodo che controlla se un nome, dato in input, è già presente nella
@@ -206,7 +218,6 @@ public class ReservationsAgentController extends UserController {
         }
         return false;
     }
-
 
     /**
      * Metodo per controllare se l'item in input sia effetteivamente disponibile
@@ -248,8 +259,6 @@ public class ReservationsAgentController extends UserController {
 
         return false;
     }
-
-
 
     /**
      * Metodo che controlla se la totalità dei menù tematici estesa all'itemCover in input,
@@ -357,6 +366,9 @@ public class ReservationsAgentController extends UserController {
         return true;
     }
 
+    /**
+     * Metodo che si occupa del salvataggio delle prenotazioni nell'apposito archivio.
+     */
     public void saveInReservationArchive(){
         agent.getReservationArchiveRepository().save(RestaurantDates.workingDay.format(RestaurantDates.formatter));
     }
