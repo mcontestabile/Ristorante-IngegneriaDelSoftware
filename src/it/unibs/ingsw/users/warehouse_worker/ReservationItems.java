@@ -24,7 +24,7 @@ public class ReservationItems implements Parsable {
 
     static {
         ATTRIBUTE_STRINGS.add("name");
-        ATTRIBUTE_STRINGS.add("res_cover");
+        ATTRIBUTE_STRINGS.add("resCover");
         ATTRIBUTE_STRINGS.add("item_name");
         ATTRIBUTE_STRINGS.add("item_cover");
     }
