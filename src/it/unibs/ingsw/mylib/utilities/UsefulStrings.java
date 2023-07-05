@@ -218,7 +218,7 @@ public class UsefulStrings {
     public static final String COVER_EXCEEDED_AVAILABLE = "Così si supera la capienza massima!\nPosti rimanenti: ";
     public static final String ACTUAL_COVER_MESSAGE = "\nCoperti attuali raggiunti: ";
     public static final String ACTUAL_COVER_AVAILABLE_MESSAGE = "Coperti attuali disponibili: ";
-    public static final String ACTUAL_WORKLOAD_MESSAGE = "\nCarico di lavoro ragginto: ";
+    public static final String ACTUAL_WORKLOAD_MESSAGE = "\nCarico di lavoro raggiunto: ";
     public static final String ACTUAL_WORKLOAD_AVAILABLE_MESSAGE = "Carico di lavoro rimanente: ";
     public static final String DRINKS_CONSUMPTION = "Inserire il consumo pro capite (in cl)\n:» ";
     public static final String RES_COVER = "Inserire il numero di coperti\n:» ";

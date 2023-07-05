@@ -663,8 +663,8 @@ public class Handler {
         } else {
             MenuItem[] items = new MenuItem[]{
                     new MenuItem(UsefulStrings.UPDATE_AGENDA_MENU_VOICE, () -> {
-                        if(user.getCopertiRaggiunti() < raController.getCovered() && raController.getCaricoRaggiunto() < controller.getRestaurantWorkload())
-                            updateAgenda(user, raController);
+                        if(raController.getCopertiRaggiunti() < raController.getCovered() && raController.getCaricoRaggiunto() < raController.getRestaurantWorkload())
+                            updateAgenda(raController);
                         else
                             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
                     }),
@@ -681,7 +681,7 @@ public class Handler {
     /**
      * Metodo per l'aggiornamento dell'agenda riguardante le prenotazioni.
      */
-    public void updateAgenda(ReservationsAgent user, ReservationsAgentController controller){
+    public void updateAgenda(ReservationsAgentController controller){
         controller.parseCourses();
         controller.parseWorkloads();
 
@@ -711,6 +711,7 @@ public class Handler {
 
 
             AsciiArt.seeInfoCovered(controller.getCopertiRaggiunti(), (int)controller.getCovered());
+            AsciiArt.seeInfoWorkload(controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
 
             do{
                 name = DataInput.readNotEmptyString(UsefulStrings.RESERVATION_NAME);
@@ -724,7 +725,7 @@ public class Handler {
             sumMenuItemCover = 0;
 
             do{
-                AsciiArt.seeInfoWorkload((int)controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
+                AsciiArt.seeInfoWorkload(controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
 
                 do{
                     menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
@@ -752,27 +753,25 @@ public class Handler {
                     System.out.println(UsefulStrings.ONE_MENU_PER_PERSON);
                 }
 
-                // aggiorno il carico di lavoro
-                controller.updateCaricoRaggiunto(controller.calculateWorkload(menu_piatto, itemCover));
-
-
                 if(!controller.moreItemsNeeded(sumItemCover, sumMenuItemCover, resCover))
                     doYouWantToContinue = DataInput.yesOrNo(UsefulStrings.MORE_ITEMS);
 
 
+                controller.insertReservation(name, Integer.toString(resCover), item_list);
+
+                controller.updateCopertiRaggiunti(resCover);
+
+                controller.updateCaricoRaggiunto(controller.calculateWorkload(menu_piatto, itemCover));
+
+                controller.writeAgenda();
+
             }while(doYouWantToContinue && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
-            controller.insertReservation(name, Integer.toString(resCover), item_list);
-            controller.writeAgenda();
-
-            // aggiorno i coperti
-            controller.updateCopertiRaggiunti(resCover);
 
         }while((DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
                 controller.restaurantNotFull((int) controller.getCovered())) &&
                 controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload()));
 
-        // salvataggio nell'archivio prenotazioni
         saveInArchiveTask(controller);
 
         // ora che l'agenda è stata scritta, il magazziniere potrà creare la lista della spesa a seconda delle prenotazioni raccolte
