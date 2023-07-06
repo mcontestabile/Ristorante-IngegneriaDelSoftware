@@ -60,7 +60,7 @@ public class ReservationsAgentController extends UserController {
      * @param totCover capienza massima del ristorante.
      */
     public boolean restaurantNotFull(int totCover){
-        if(this.getCopertiRaggiunti() >= totCover){
+        if(getCopertiRaggiunti() >= totCover){
             System.out.println(UsefulStrings.NO_MORE_RES_COVER);
             return false;
         }
@@ -172,7 +172,7 @@ public class ReservationsAgentController extends UserController {
      */
     public void updateCopertiRaggiunti(int nuoviCoperti) {
         int copertiRaggiunti = agent.getCopertiRaggiunti();
-        agent.setCovered(copertiRaggiunti + nuoviCoperti);
+        agent.setCopertiRaggiunti((copertiRaggiunti + nuoviCoperti));
     }
 
     /**

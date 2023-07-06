@@ -405,7 +405,7 @@ public class AsciiArt {
      *
      * @param restaurantWorkload il carico sostenibile del ristorante.
      */
-    public static void seeInfoWorkload(int caricoRaggiunto, double restaurantWorkload){
+    public static void seeInfoWorkload(double caricoRaggiunto, double restaurantWorkload){
         System.out.println(UsefulStrings.ACTUAL_WORKLOAD_MESSAGE+(caricoRaggiunto));
         System.out.println(UsefulStrings.ACTUAL_WORKLOAD_AVAILABLE_MESSAGE+Math.floor((restaurantWorkload - caricoRaggiunto) *100)/100+"\n");
     }

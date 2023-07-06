@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<courses>
-	<course name="menu del giorno" type="menu alla carta" validation="tutto l'anno">
-		<dish has="affettati e formaggi"/>
-		<dish has="pasta al pesto"/>
-	</course>
-</courses>
