@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Elenco prenotazioni del 07-07-2023-->
-<agenda>
-	<reservation name="matteo" resCover="1">
-		<item item_name="affettati e formaggi" item_cover="1"/>
-	</reservation>
-</agenda>

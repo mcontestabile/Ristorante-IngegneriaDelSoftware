@@ -1,6 +1,9 @@
 package it.unibs.ingsw.users.registered_users;
 
+import it.unibs.ingsw.entrees.resturant_courses.Carte;
 import it.unibs.ingsw.entrees.resturant_courses.Course;
+import it.unibs.ingsw.mylib.utilities.DataInput;
+import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
