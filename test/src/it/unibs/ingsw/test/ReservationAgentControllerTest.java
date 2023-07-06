@@ -2,7 +2,6 @@ package it.unibs.ingsw.test;
 
 
 import it.unibs.ingsw.users.registered_users.User;
-import it.unibs.ingsw.users.registered_users.UserController;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgent;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgentController;
 import org.junit.Test;
@@ -15,7 +14,6 @@ import java.util.Queue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertEquals;
 
 public class ReservationAgentControllerTest {
     @Test
