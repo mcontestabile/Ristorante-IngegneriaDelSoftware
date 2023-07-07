@@ -1,8 +1,12 @@
 package it.unibs.ingsw.users.registered_users;
 
+import it.unibs.ingsw.entrees.resturant_courses.Course;
+import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.users.manager.Manager;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class UserController {
@@ -64,6 +68,7 @@ public class UserController {
         return model.getUserCategory(user);
     }
 
+
     public boolean getCanIWork(User user) {
         return user.isCanIWork();
     }
@@ -71,6 +76,8 @@ public class UserController {
     public Queue<User> getQueue() {
         return users;
     }
+
+    public List<Course> getMenu() {return getUserFromQueue(getQueue(), "manager").getMenu();}
 
     public double getWorkloadPerPerson() {return getUserFromQueue(getQueue(), "gestore").getWorkloadPerPerson();}
 

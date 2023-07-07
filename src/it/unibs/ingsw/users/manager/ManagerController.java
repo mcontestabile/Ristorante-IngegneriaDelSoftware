@@ -112,6 +112,10 @@ public class ManagerController extends UserController {
 
         recipes.add(new Recipe(name, availability, Integer.toString(portions), workloadPerPortion, ingredients));
 
+        recipeWritingTask(recipes);
+    }
+
+    private void recipeWritingTask(ArrayList<Recipe> recipes) {
         try {
             manager.writingTask(recipes, UsefulStrings.COOKBOOK_FILE, UsefulStrings.RECIPES_OUTER_TAG);
             manager.setCookbook(manager.parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
@@ -160,14 +164,7 @@ public class ManagerController extends UserController {
 
         manager.getCookbookRecipes().forEach(r -> recipes.add(new Recipe(r.getName(), manager.getDishesMap().get(r.getName()).getAvailability(), r.getPortion(), new Fraction(r.getNumerator(), r.getDenominator()), r.getIngredients())));
 
-        try {
-            manager.writingTask(recipes, UsefulStrings.COOKBOOK_FILE, UsefulStrings.RECIPES_OUTER_TAG);
-            manager.setCookbook(manager.parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
-            System.out.println(UsefulStrings.COOKBOOK_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        recipeWritingTask(recipes);
     }
 
     /**
@@ -203,14 +200,7 @@ public class ManagerController extends UserController {
     public void insertCourse(String name, ArrayList<String> dishes, String availability, Fraction menuWorkload) {
         ArrayList<Carte> newCourse = new ArrayList<>();
 
-        for (Course c : manager.getMenu()) {
-            ArrayList<Dish> courseDishes = new ArrayList<>();
-
-            for (String s : c.getDishesArraylist())
-                courseDishes.add(manager.getDishesMap().get(s));
-
-            newCourse.add(new Carte(c.getName(), c.getType(), c.getValidation(), courseDishes));
-        }
+        courseIteration(newCourse);
 
         ArrayList<Dish> newMenuDishes = new ArrayList<>();
         dishes.forEach(d -> newMenuDishes.add(manager.getDishesMap().get(d)));
@@ -219,13 +209,17 @@ public class ManagerController extends UserController {
 
         manager.getWorkloads().add(new WorkloadOfTheDay(name, "menu", menuWorkload));
 
-        try {
-            manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
-            manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
-            System.out.println(UsefulStrings.COURSES_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
+        cursesWritingTask(newCourse);
+    }
+
+    private void courseIteration(ArrayList<Carte> newCourse) {
+        for (Course c : manager.getMenu()) {
+            ArrayList<Dish> courseDishes = new ArrayList<>();
+
+            for (String s : c.getDishesArraylist())
+                courseDishes.add(manager.getDishesMap().get(s));
+
+            newCourse.add(new Carte(c.getName(), c.getType(), c.getValidation(), courseDishes));
         }
     }
 
@@ -243,16 +237,12 @@ public class ManagerController extends UserController {
 
         manager.getWorkloads().removeIf(n -> n.getName().equals(name));
 
-        for (Course c : manager.getMenu()) {
-            ArrayList<Dish> courseDishes = new ArrayList<>();
+        courseIteration(newCourse);
 
-            for (String s : c.getDishesArraylist()) {
-                courseDishes.add(manager.getDishesMap().get(s));
-            }
+        cursesWritingTask(newCourse);
+    }
 
-            newCourse.add(new Carte(c.getName(), c.getType(), c.getValidation(), courseDishes));
-        }
-
+    private void cursesWritingTask(ArrayList<Carte> newCourse) {
         try {
             manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
             manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
@@ -295,14 +285,7 @@ public class ManagerController extends UserController {
 
         manager.getWorkloads().add(new WorkloadOfTheDay(name, "piatto", manager.getDishesMap().get(name).getWorkloadFraction()));
 
-        try {
-            manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
-            manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
-            System.out.println(UsefulStrings.COURSES_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        cursesWritingTask(newCourse);
     }
 
     /**
@@ -328,14 +311,7 @@ public class ManagerController extends UserController {
             newCourse.add(new Carte(c.getName(), c.getType(), c.getValidation(), courseDishes));
         }
 
-        try {
-            manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
-            manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
-            System.out.println(UsefulStrings.COURSES_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        cursesWritingTask(newCourse);
     }
 
     /**
@@ -372,14 +348,7 @@ public class ManagerController extends UserController {
             }
         }
 
-        try {
-            manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
-            manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
-            System.out.println(UsefulStrings.COURSES_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        cursesWritingTask(newCourse);
     }
 
     /**
@@ -395,6 +364,10 @@ public class ManagerController extends UserController {
         manager.getAppetizers().forEach(a -> newAppetizer.add(new Starter(a.getGenre(), Double.parseDouble(a.getQuantity()))));
         newAppetizer.add(new Starter(name, consumption));
 
+        appetizerWritingTask(newAppetizer);
+    }
+
+    private void appetizerWritingTask(ArrayList<Starter> newAppetizer) {
         try {
             manager.writingTask(newAppetizer, UsefulStrings.APPETIZERS_FILE, UsefulStrings.APPETIZERS_OUTER_TAG);
             manager.setAppetizers(manager.parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
@@ -418,14 +391,7 @@ public class ManagerController extends UserController {
         manager.getAppetizersMap().remove(name);
         manager.getAppetizers().forEach(a -> newAppetizer.add(new Starter(a.getGenre(), Double.parseDouble(a.getQuantity()))));
 
-        try {
-            manager.writingTask(newAppetizer, UsefulStrings.APPETIZERS_FILE, UsefulStrings.APPETIZERS_OUTER_TAG);
-            manager.setAppetizers(manager.parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
-            System.out.println(UsefulStrings.APPETIZERS_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        appetizerWritingTask(newAppetizer);
     }
 
     /**
@@ -441,6 +407,10 @@ public class ManagerController extends UserController {
         manager.getDrinks().forEach(d -> newDrinksMenu.add(new DrinksMenu(d.getName(), Double.parseDouble(d.getQuantity()))));
         newDrinksMenu.add(new DrinksMenu(name, consumption));
 
+        drinksWritingTask(newDrinksMenu);
+    }
+
+    private void drinksWritingTask(ArrayList<DrinksMenu> newDrinksMenu) {
         try {
             manager.writingTask(newDrinksMenu, UsefulStrings.DRINKS_FILE, UsefulStrings.DRINKS_OUTER_TAG);
             manager.setDrinks(manager.parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
@@ -464,14 +434,7 @@ public class ManagerController extends UserController {
         manager.getDrinksMap().remove(name);
         manager.getDrinks().forEach(d -> newDrinksMenu.add(new DrinksMenu(d.getName(), Double.parseDouble(d.getQuantity()))));
 
-        try {
-            manager.writingTask(newDrinksMenu, UsefulStrings.DRINKS_FILE, UsefulStrings.DRINKS_OUTER_TAG);
-            manager.setDrinks(manager.parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
-            System.out.println(UsefulStrings.DRINKS_UPDATED);
-            DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-        }
+        drinksWritingTask(newDrinksMenu);
     }
 
     /**
@@ -490,8 +453,8 @@ public class ManagerController extends UserController {
      * @param dishes i piatti che sono stati aggiunti al menù.
      * @return la frazione del carico di lavoro del menù da creare.
      */
-    public Fraction newMenuWorkload(@NotNull ArrayList<String> dishes) {
-        ArrayList<Dish> temp = new ArrayList<>();
+    public Fraction newMenuWorkload(@NotNull List<String> dishes) {
+        List<Dish> temp = new ArrayList<>();
         dishes.forEach(d -> temp.add(manager.getDishesMap().get(d)));
 
         return menuWorkload(temp);
@@ -504,7 +467,7 @@ public class ManagerController extends UserController {
      * @param dishes i piatti che sono stati aggiunti al menù.
      * @return la frazione del carico di lavoro del menù da creare.
      */
-    public Fraction menuWorkload(@NotNull ArrayList<Dish> dishes) {
+    public Fraction menuWorkload(@NotNull List<Dish> dishes) {
         Fraction f = dishes.get(0).getWorkloadFraction(); // prima frazione, quella del primo piatto.
         if(dishes.size() == 1) {
             // bisogna considerare che il menù potrebbe essere degenere ed avere 1 solo piatto.
@@ -571,4 +534,12 @@ public class ManagerController extends UserController {
     public Map<String, Appetizer> getAppetizersMap() {return manager.getAppetizersMap();}
 
     public void setWorkloadPerPerson(int workloadPerPerson) {manager.setWorkloadPerPerson(workloadPerPerson);}
+
+    public void setRestaurant() {
+        try {
+            manager.setRestaurant();
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+        }
+    }
 }

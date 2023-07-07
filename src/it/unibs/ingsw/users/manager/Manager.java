@@ -106,9 +106,11 @@ public class Manager extends User {
      *                 inizializzato il ristorante o meno.
      * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
      */
-    public Manager(String username, String password, boolean canIWork) throws XMLStreamException {
+    public Manager(String username, String password, boolean canIWork) {
         super(username, password, canIWork);
+    }
 
+    public void setRestaurant()  throws XMLStreamException {
         setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
         setDishes(parsingTask(UsefulStrings.DISHES_FILE, Dish.class));
         setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));

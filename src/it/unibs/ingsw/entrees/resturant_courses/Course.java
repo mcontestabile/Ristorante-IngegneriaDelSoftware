@@ -2,6 +2,7 @@ package it.unibs.ingsw.entrees.resturant_courses;
 
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe statica, serve per elaborare le informazioni contenute nel file .xml,
@@ -28,7 +29,7 @@ public class Course implements Parsable {
     /**
      * Piatti del menù.
      */
-    private ArrayList<String> dishes = new ArrayList<>();
+    private List<String> dishes = new ArrayList<>();
 
     /**
      * Tag di apertura.
@@ -37,7 +38,7 @@ public class Course implements Parsable {
     /**
      * Lista degli attributi.
      */
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente
@@ -126,5 +127,5 @@ public class Course implements Parsable {
      * Metodo che ritorna i piatti del menù.
      * @return {@link #dishes} i piatti del menù.
      */
-    public ArrayList<String> getDishesArraylist() {return dishes;}
+    public List<String> getDishesArraylist() {return dishes;}
 }

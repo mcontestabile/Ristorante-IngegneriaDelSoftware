@@ -12,8 +12,8 @@ import java.util.ArrayList;
 public class ManagerHandler {
     private ManagerController controller;
 
-    public ManagerHandler(ManagerController mController) {
-        this.controller = mController;
+    public ManagerHandler(ManagerController controller) {
+        this.controller = controller;
     }
 
     public void helloManager() {
@@ -87,6 +87,7 @@ public class ManagerHandler {
 
             // recupero informazioni precedentemente valide nel menù del ristorante.
             Time.pause(Time.MEDIUM_MILLIS_PAUSE);
+            controller.setRestaurant();
             AsciiArt.slowPrint(UsefulStrings.RESTAURANT_RETRIVE_INFOS);
             controller.checkRestaurantDishesAndCourses();
             AsciiArt.slowPrint(UsefulStrings.RESTAURANT_RETRIVE_INFOS_COMPLETED);

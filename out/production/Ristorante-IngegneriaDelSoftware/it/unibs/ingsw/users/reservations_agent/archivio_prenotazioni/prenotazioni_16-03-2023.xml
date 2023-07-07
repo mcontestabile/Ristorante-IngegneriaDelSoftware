@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Elenco prenotazioni del 16-03-2023-->
+<agenda>
+	<reservation name="gloriaz" res_cover="8">
+		<item item_name="venerdì" item_cover="3"/>
+		<item item_name="la primavera" item_cover="3"/>
+	</reservation>
+	<reservation name="diegoz" res_cover="2">
+		<item item_name="venerdì" item_cover="3"/>
+		<item item_name="la primavera" item_cover="3"/>
+	</reservation>
+</agenda>

@@ -1,7 +1,11 @@
 package it.unibs.ingsw.users.registered_users;
 
+import it.unibs.ingsw.entrees.appetizers.Appetizer;
+import it.unibs.ingsw.entrees.cookbook.Recipe;
+import it.unibs.ingsw.entrees.drinks.Drink;
 import it.unibs.ingsw.entrees.resturant_courses.Carte;
 import it.unibs.ingsw.entrees.resturant_courses.Course;
+import it.unibs.ingsw.entrees.resturant_courses.Dish;
 import it.unibs.ingsw.mylib.utilities.DataInput;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
@@ -44,11 +48,11 @@ public abstract class User {
     /**
      * Menù parsati formato ArrayList.
      */
-    private ArrayList<Course> menu;
+    private List<Course> menu;
     /**
      * Menù parsati formato HashMap.
      */
-    private HashMap<String, Course> coursesMap;
+    private Map<String, Course> coursesMap;
 
     // permette di istanziare un oggetto di tipo corpo celeste
     public User(String username, String password, boolean didIWork) {

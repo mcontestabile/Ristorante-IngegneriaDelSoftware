@@ -1,5 +1,6 @@
 package it.unibs.ingsw.restaurant;
 
+import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
