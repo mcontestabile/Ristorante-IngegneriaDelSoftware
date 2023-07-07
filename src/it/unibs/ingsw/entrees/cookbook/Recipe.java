@@ -1,6 +1,5 @@
 package it.unibs.ingsw.entrees.cookbook;
 
-import it.unibs.ingsw.entrees.resturant_courses.Dish;
 import it.unibs.ingsw.entrees.resturant_courses.NewPlate;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
@@ -8,6 +7,7 @@ import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che serve ad aggiornare il file XML delle Ricette.
@@ -15,10 +15,10 @@ import java.util.ArrayList;
  * @see Writable
  */
 public class Recipe extends NewPlate implements Writable {
-    private ArrayList<String> ingredients;
+    private List<String> ingredients;
     private String portion;
     public static final String START_STRING = "recipe";
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /**
      * Costruttore, accetta i parametri caratterizzanti una ricetta.
@@ -28,7 +28,7 @@ public class Recipe extends NewPlate implements Writable {
      * @param workload carico di lavoro della ricetta.
      * @param ingredients ingredienti della ricetta.
      */
-    public Recipe(String name, String availability, String portions, Fraction workload, ArrayList<String> ingredients) {
+    public Recipe(String name, String availability, String portions, Fraction workload, List<String> ingredients) {
         super(name, availability, workload);
         this.portion = portions;
         this.ingredients = ingredients;

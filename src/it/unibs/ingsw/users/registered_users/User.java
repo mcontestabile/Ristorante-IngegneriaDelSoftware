@@ -1,13 +1,10 @@
 package it.unibs.ingsw.users.registered_users;
 
 import it.unibs.ingsw.entrees.appetizers.Appetizer;
-import it.unibs.ingsw.entrees.cookbook.Recipe;
+import it.unibs.ingsw.entrees.cookbook.CookbookRecipe;
 import it.unibs.ingsw.entrees.drinks.Drink;
-import it.unibs.ingsw.entrees.resturant_courses.Carte;
 import it.unibs.ingsw.entrees.resturant_courses.Course;
 import it.unibs.ingsw.entrees.resturant_courses.Dish;
-import it.unibs.ingsw.mylib.utilities.DataInput;
-import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
 import it.unibs.ingsw.mylib.xml_utils.XMLParser;
@@ -54,6 +51,46 @@ public abstract class User {
      */
     private Map<String, Course> coursesMap;
 
+    /**
+     * Ricette parsate formato ArrayList.
+     */
+    private List<CookbookRecipe> cookbookRecipes;
+
+    /**
+     * Ricette parsate formato HashMap.
+     */
+    private Map<String, CookbookRecipe> recipeMap;
+
+    /**
+     * Bevande parsate formato ArrayList.
+     */
+    private List<Drink> drinks;
+
+    /**
+     * Bevande parsate formato HashMap.
+     */
+    private Map<String, Drink> drinksMap;
+
+    /**
+     * Generi alimentari (extra) parsati formato ArrayList.
+     */
+    private List<Appetizer> appetizers;
+
+    /**
+     * Generi alimentari (extra) parsati formato HashMap.
+     */
+    private Map<String, Appetizer> appetizersMap;
+
+    /**
+     * Piatti parsati formato ArrayList.
+     */
+    private List<Dish> dishes;
+
+    /**
+     * Piatti parsati formato HashMap.
+     */
+    private Map<String, Dish> dishesMap;
+
     // permette di istanziare un oggetto di tipo corpo celeste
     public User(String username, String password, boolean didIWork) {
         this.username = username;
@@ -75,9 +112,9 @@ public abstract class User {
      * @param obj l'oggetto da scrivere, compresa quello appena aggiunto.
      * @throws XMLStreamException nel caso in cui il parsing lanci eccezioni, causa errori nel formato, nome del file…
      */
-    public <T extends Writable> void writingTask(ArrayList<T> obj, String path, String tag) throws XMLStreamException {
+    public <T extends Writable> void writingTask(List<T> obj, String path, String tag) throws XMLStreamException {
         XMLWriter writer = new XMLWriter(path);
-        writer.writeArrayListXML(obj, tag);
+        writer.writeArrayListXML((ArrayList<? extends Writable>) obj, tag);
     }
 
     /**
@@ -150,13 +187,37 @@ public abstract class User {
 
     public void setRestaurantWorkload(double restaurantWorkload) {this.restaurantWorkload = restaurantWorkload;}
 
+    public void setCookbook(@NotNull List<CookbookRecipe> cookbookRecipes) {
+        this.cookbookRecipes = cookbookRecipes;
+        recipeMap = new HashMap<>();
+        cookbookRecipes.forEach(e -> recipeMap.put(e.getName(), e));
+    }
+
+    public void setDishes(@NotNull List<Dish> dishes) {
+        this.dishes = dishes;
+        dishesMap = new HashMap<>();
+        dishes.forEach(d -> dishesMap.put(d.getName(), d));
+    }
+
+    public void setAppetizers(@NotNull List<Appetizer> appetizers) {
+        this.appetizers = appetizers;
+        appetizersMap = new HashMap<>();
+        appetizers.forEach(a -> appetizersMap.put(a.getGenre(), a));
+    }
+
+    public void setDrinks(@NotNull List<Drink> drinks) {
+        this.drinks = drinks;
+        drinksMap = new HashMap<>();
+        drinks.forEach(d -> drinksMap.put(d.getName(), d));
+    }
+
     /**
      * Metodo che ritorna i menù.
      * @return i menù.
      */
     public List<Course> getMenu() {return menu;}
 
-    public void setMenu(@NotNull ArrayList<Course> menu) {
+    public void setMenu(@NotNull List<Course> menu) {
         this.menu = menu;
         coursesMap = new HashMap<>();
         menu.forEach(m -> coursesMap.put(m.getName(), m));
@@ -167,4 +228,56 @@ public abstract class User {
      * @return l'HashMap dei menù.
      */
     public Map<String, Course> getCoursesMap() {return coursesMap;}
+
+    /**
+     * Metodo che ritorna le bevande.
+     * @return le bevande.
+     */
+    public List<Drink> getDrinks() {return drinks;}
+
+    /**
+     * Metodo che ritorna i generi alimentari (extra).
+     * @return i generi alimentari (extra).
+     */
+    public List<Appetizer> getAppetizers() {return appetizers;}
+
+    /**
+     * Metodo che ritorna i piatti.
+     * @return i piatti.
+     */
+    public List<Dish> getDishes() {return dishes;}
+
+    /**
+     * Metodo che ritorna il ricettario.
+     * @return il ricettario.
+     */
+    public List<CookbookRecipe> getCookbook() {return cookbookRecipes;}
+
+    /**
+     * Metodo che ritorna l'HashMap delle bevande.
+     * @return l'HashMap delle bevande.
+     */
+    public Map<String, Drink> getDrinksMap() {return drinksMap;}
+
+    /**
+     * Metodo che ritorna l'HashMap dei generi alimentari (extra).
+     * @return l'HashMap dei generi alimentari (extra).
+     */
+    public Map<String, Appetizer> getAppetizersMap() {return appetizersMap;}
+
+    /**
+     * Metodo che ritorna l'HashMap delle ricette.
+     * @return l'HashMap delle ricette.
+     */
+    public Map<String, CookbookRecipe> getRecipeMap() {
+        return recipeMap;
+    }
+
+    /**
+     * Metodo che ritorna l'HashMap dei piatti.
+     * @return l'HashMap dei piatti.
+     */
+    public Map<String, Dish> getDishesMap() {return dishesMap;}
+
+    public List<CookbookRecipe> getCookbookRecipes() {return cookbookRecipes;}
 }

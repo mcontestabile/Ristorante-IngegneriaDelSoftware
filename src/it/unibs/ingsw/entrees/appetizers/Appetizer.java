@@ -3,6 +3,7 @@ package it.unibs.ingsw.entrees.appetizers;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che identifica un genere alimentare extra,
@@ -27,7 +28,7 @@ public class Appetizer implements Parsable {
     /**
      * Lista degli attributi.
      */
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente

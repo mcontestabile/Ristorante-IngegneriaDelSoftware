@@ -3,6 +3,7 @@ package it.unibs.ingsw.entrees.resturant_courses;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Ha una denominazione precisa, stabilita dal gestore e
@@ -34,7 +35,7 @@ public class Dish implements Parsable {
     private int denominator;
 
     public static final String START_STRING = "dish";
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente

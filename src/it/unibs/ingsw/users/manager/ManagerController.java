@@ -57,7 +57,7 @@ public class ManagerController extends UserController {
         for(Course c : manager.getMenu()) {
             // Se la data di validità del menù è coerente, bisogna controllare all'interno del menù se i suoi piatti lo sono.
             if (RestaurantDates.checkDate(c.getValidation())) {
-                ArrayList<Dish> courseDishes = new ArrayList<>();
+                List<Dish> courseDishes = new ArrayList<>();
 
                 for (String s : c.getDishesArraylist()) {
                     if (RestaurantDates.checkDate(manager.getDishesMap().get(s).getAvailability()))
@@ -80,7 +80,7 @@ public class ManagerController extends UserController {
         }
 
         try {
-            manager.writingTask((ArrayList<Carte>) newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
+            manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
             manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
             System.out.println(UsefulStrings.COURSES_UPDATED);
             DataInput.readString(UsefulStrings.ENTER_TO_CONTINUE);
@@ -102,8 +102,8 @@ public class ManagerController extends UserController {
      * @param portions     porzioni prodotte.
      * @param availability periodo in cui il piatto è disponibile (tutto l'anno/una stagione precisa).
      */
-    public void insertRecipe(String name, ArrayList<String> ingredients, String availability, int portions, Fraction workloadPerPortion) {
-        ArrayList<Recipe> recipes = new ArrayList<>();
+    public void insertRecipe(String name, List<String> ingredients, String availability, int portions, Fraction workloadPerPortion) {
+        List<Recipe> recipes = new ArrayList<>();
 
         for (CookbookRecipe r : manager.getCookbookRecipes()) {
             Fraction workload = new Fraction(r.getNumerator(), r.getDenominator());
@@ -115,7 +115,7 @@ public class ManagerController extends UserController {
         recipeWritingTask(recipes);
     }
 
-    private void recipeWritingTask(ArrayList<Recipe> recipes) {
+    private void recipeWritingTask(List<Recipe> recipes) {
         try {
             manager.writingTask(recipes, UsefulStrings.COOKBOOK_FILE, UsefulStrings.RECIPES_OUTER_TAG);
             manager.setCookbook(manager.parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
@@ -135,7 +135,7 @@ public class ManagerController extends UserController {
      * @param availability periodo in cui il piatto è disponibile (tutto l'anno/una stagione precisa).
      */
     public void insertDish(String name, String availability, Fraction workloadPerPerson) {
-        ArrayList<NewPlate> newDish = new ArrayList<>();
+        List<NewPlate> newDish = new ArrayList<>();
 
         for (Dish d : manager.getDishes())
             newDish.add(new NewPlate(d.getName(), manager.getDishesMap().get(d.getName()).getAvailability(), d.getWorkloadFraction()));
@@ -157,7 +157,7 @@ public class ManagerController extends UserController {
      * @param name nome della ricetta da togliere.
      */
     public void removeRecipe(String name) {
-        ArrayList<Recipe> recipes = new ArrayList<>();
+        List<Recipe> recipes = new ArrayList<>();
 
         manager.getCookbookRecipes().remove(manager.getRecipeMap().get(name));
         manager.getRecipeMap().remove(name);
@@ -174,7 +174,7 @@ public class ManagerController extends UserController {
      * @param name nome della piatto da togliere.
      */
     public void removeDish(String name) {
-        ArrayList<NewPlate> newDish = new ArrayList<>();
+        List<NewPlate> newDish = new ArrayList<>();
 
         manager.getDishes().remove(manager.getDishesMap().get(name));
         manager.getDishesMap().remove(name);
@@ -197,12 +197,12 @@ public class ManagerController extends UserController {
      * @param dishes       i piatti da aggiungere al menù tematico.
      * @param availability periodo di validità del menù tematico.
      */
-    public void insertCourse(String name, ArrayList<String> dishes, String availability, Fraction menuWorkload) {
-        ArrayList<Carte> newCourse = new ArrayList<>();
+    public void insertCourse(String name, List<String> dishes, String availability, Fraction menuWorkload) {
+        List<Carte> newCourse = new ArrayList<>();
 
         courseIteration(newCourse);
 
-        ArrayList<Dish> newMenuDishes = new ArrayList<>();
+        List<Dish> newMenuDishes = new ArrayList<>();
         dishes.forEach(d -> newMenuDishes.add(manager.getDishesMap().get(d)));
 
         newCourse.add(new Carte(name, UsefulStrings.THEMED_COURSE, availability, newMenuDishes));
@@ -212,9 +212,9 @@ public class ManagerController extends UserController {
         cursesWritingTask(newCourse);
     }
 
-    private void courseIteration(ArrayList<Carte> newCourse) {
+    private void courseIteration(List<Carte> newCourse) {
         for (Course c : manager.getMenu()) {
-            ArrayList<Dish> courseDishes = new ArrayList<>();
+            List<Dish> courseDishes = new ArrayList<>();
 
             for (String s : c.getDishesArraylist())
                 courseDishes.add(manager.getDishesMap().get(s));
@@ -230,7 +230,7 @@ public class ManagerController extends UserController {
      * @param name nome del menù tematico da rimuovere.
      */
     public void removeCourse(String name) {
-        ArrayList<Carte> newCourse = new ArrayList<>();
+        List<Carte> newCourse = new ArrayList<>();
 
         manager.getMenu().remove(manager.getCoursesMap().get(name));
         manager.getCoursesMap().remove(name);
@@ -242,7 +242,7 @@ public class ManagerController extends UserController {
         cursesWritingTask(newCourse);
     }
 
-    private void cursesWritingTask(ArrayList<Carte> newCourse) {
+    private void cursesWritingTask(List<Carte> newCourse) {
         try {
             manager.writingTask(newCourse, UsefulStrings.COURSES_FILE, UsefulStrings.COURSE_OUTER_TAG);
             manager.setMenu(manager.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
@@ -260,7 +260,7 @@ public class ManagerController extends UserController {
      * @param name nome del piatto da rimuovere dal menu alla carta.
      */
     public void insertDishInALaCarteCourse(String name) {
-        ArrayList<Carte> newCourse = new ArrayList<>();
+        List<Carte> newCourse = new ArrayList<>();
 
         /*
          * Scopo del codice: prendere e aggiungere il piatto al menu alla carta.
@@ -271,7 +271,7 @@ public class ManagerController extends UserController {
          *           c menu tematico -> è come prima.
          */
         for (Course c : manager.getMenu()) {
-            ArrayList<Dish> courseDishes = new ArrayList<>();
+            List<Dish> courseDishes = new ArrayList<>();
 
             for (String s : c.getDishesArraylist())
                 courseDishes.add(manager.getDishesMap().get(s));
@@ -295,13 +295,13 @@ public class ManagerController extends UserController {
      * @param name nome del piatto da rimuovere dal menu alla carta.
      */
     public void removeDishInALaCarteCourse(String name) {
-        ArrayList<Carte> newCourse = new ArrayList<>();
+        List<Carte> newCourse = new ArrayList<>();
 
         manager.getWorkloads().removeIf(n -> n.getName().equalsIgnoreCase(name));
 
         // ATTENZIONE: il piatto potrebbe essere in un menù tematico! Il for deve ciclare anche in quelli!
         for (Course c : manager.getMenu()) {
-            ArrayList<Dish> courseDishes = new ArrayList<>();
+            List<Dish> courseDishes = new ArrayList<>();
 
             for (String s : c.getDishesArraylist()) {
                 if (!c.getType().equalsIgnoreCase(UsefulStrings.A_LA_CARTE_COURSE) || !s.equalsIgnoreCase(name))
@@ -321,10 +321,10 @@ public class ManagerController extends UserController {
      * @param name nome del menù tematico da rimuovere.
      */
     public void removeDishInThemedMenu(String name) {
-        ArrayList<Carte> newCourse = new ArrayList<>();
+        List<Carte> newCourse = new ArrayList<>();
 
         for (Course c : manager.getMenu()) {
-            ArrayList<Dish> courseDishes = new ArrayList<>();
+            List<Dish> courseDishes = new ArrayList<>();
 
             if (c.getType().equalsIgnoreCase(UsefulStrings.THEMED_COURSE) && c.getDishesArraylist().contains(name)) {
                 manager.getWorkloads().removeIf(n -> n.getName().equalsIgnoreCase(c.getName()));
@@ -359,7 +359,7 @@ public class ManagerController extends UserController {
      * @param consumption consumo pro capite.
      */
     public void insertAppetizer(String name, double consumption) {
-        ArrayList<Starter> newAppetizer = new ArrayList<>();
+        List<Starter> newAppetizer = new ArrayList<>();
 
         manager.getAppetizers().forEach(a -> newAppetizer.add(new Starter(a.getGenre(), Double.parseDouble(a.getQuantity()))));
         newAppetizer.add(new Starter(name, consumption));
@@ -367,7 +367,7 @@ public class ManagerController extends UserController {
         appetizerWritingTask(newAppetizer);
     }
 
-    private void appetizerWritingTask(ArrayList<Starter> newAppetizer) {
+    private void appetizerWritingTask(List<Starter> newAppetizer) {
         try {
             manager.writingTask(newAppetizer, UsefulStrings.APPETIZERS_FILE, UsefulStrings.APPETIZERS_OUTER_TAG);
             manager.setAppetizers(manager.parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
@@ -385,7 +385,7 @@ public class ManagerController extends UserController {
      * @param name nome del genere alimentare extra da rimuovere.
      */
     public void removeAppetizer(String name) {
-        ArrayList<Starter> newAppetizer = new ArrayList<>();
+        List<Starter> newAppetizer = new ArrayList<>();
 
         manager.getAppetizers().remove(manager.getAppetizersMap().get(name));
         manager.getAppetizersMap().remove(name);
@@ -402,7 +402,7 @@ public class ManagerController extends UserController {
      * @param consumption consumo pro capite.
      */
     public void insertDrink(String name, double consumption) {
-        ArrayList<DrinksMenu> newDrinksMenu = new ArrayList<>();
+        List<DrinksMenu> newDrinksMenu = new ArrayList<>();
 
         manager.getDrinks().forEach(d -> newDrinksMenu.add(new DrinksMenu(d.getName(), Double.parseDouble(d.getQuantity()))));
         newDrinksMenu.add(new DrinksMenu(name, consumption));
@@ -410,7 +410,7 @@ public class ManagerController extends UserController {
         drinksWritingTask(newDrinksMenu);
     }
 
-    private void drinksWritingTask(ArrayList<DrinksMenu> newDrinksMenu) {
+    private void drinksWritingTask(List<DrinksMenu> newDrinksMenu) {
         try {
             manager.writingTask(newDrinksMenu, UsefulStrings.DRINKS_FILE, UsefulStrings.DRINKS_OUTER_TAG);
             manager.setDrinks(manager.parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
@@ -428,7 +428,7 @@ public class ManagerController extends UserController {
      * @param name nome della bevanda da rimuovere.
      */
     public void removeDrink(String name) {
-        ArrayList<DrinksMenu> newDrinksMenu = new ArrayList<>();
+        List<DrinksMenu> newDrinksMenu = new ArrayList<>();
 
         manager.getDrinks().remove(manager.getDrinksMap().get(name));
         manager.getDrinksMap().remove(name);
@@ -505,7 +505,7 @@ public class ManagerController extends UserController {
 
     public void writeWorkload() {
         try {
-            manager.writingTask((ArrayList)manager.getWorkloads(), UsefulStrings.WORKLOADS_FILE, UsefulStrings.WORKLOAD_OUTER_TAG);
+            manager.writingTask(manager.getWorkloads(), UsefulStrings.WORKLOADS_FILE, UsefulStrings.WORKLOAD_OUTER_TAG);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }

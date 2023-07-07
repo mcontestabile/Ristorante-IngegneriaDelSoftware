@@ -6,6 +6,7 @@ import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che permette di aggiornare il file XML dei generi alimentari (extra).
@@ -17,7 +18,7 @@ public class Starter implements Writable {
     private Double quantity;
 
     public static final String START_STRING = "starter";
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente

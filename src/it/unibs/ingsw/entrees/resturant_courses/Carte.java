@@ -5,6 +5,7 @@ import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che serve ad aggiornare il file XML dei menù.
@@ -27,7 +28,7 @@ public class Carte implements Writable {
     /**
      * Piatti che compongono il menù.
      */
-    private ArrayList<Dish> dishes;
+    private List<Dish> dishes;
     /**
      * Tag di apertura.
      */
@@ -35,7 +36,7 @@ public class Carte implements Writable {
     /**
      * Lista degli attributi.
      */
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /**
      * Costruttore, accetta i parametri caratterizzanti un menù.
@@ -44,7 +45,7 @@ public class Carte implements Writable {
      * @param validation periodo di validità del menù.
      * @param dishes piatti che compongono il menù.
      */
-    public Carte(String name, String type, String validation, ArrayList<Dish> dishes) {
+    public Carte(String name, String type, String validation, List<Dish> dishes) {
         this.name = name;
         this.type = type;
         this.validation = validation;
@@ -99,7 +100,7 @@ public class Carte implements Writable {
      * Metodo che ritorna i piatti del menù.
      * @return {@link #dishes} i piatti del menù.
      */
-    public ArrayList<Dish> getDishes() {
+    public List<Dish> getDishes() {
         return dishes;
     }
 

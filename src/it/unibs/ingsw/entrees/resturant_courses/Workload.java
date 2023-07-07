@@ -4,6 +4,7 @@ import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Metodo che serve per memorizzare le informazioni, prelevate da un file XML,
@@ -17,7 +18,7 @@ public class Workload implements Parsable {
     private int numerator;
     private int denominator;
     public static final String START_STRING = "today";
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente

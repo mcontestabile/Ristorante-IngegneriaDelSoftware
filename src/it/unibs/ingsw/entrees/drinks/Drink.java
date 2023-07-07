@@ -3,6 +3,7 @@ package it.unibs.ingsw.entrees.drinks;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Bevanda è un oggetto costituita da due attributi, bevanda e quantità,
@@ -42,7 +43,7 @@ public class Drink implements Parsable {
     /**
      * Lista degli attributi.
      */
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente

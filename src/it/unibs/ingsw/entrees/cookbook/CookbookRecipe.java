@@ -3,6 +3,7 @@ package it.unibs.ingsw.entrees.cookbook;
 import it.unibs.ingsw.mylib.xml_utils.Parsable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che identifica una ricetta, salvata in un file XML.
@@ -29,7 +30,7 @@ public class CookbookRecipe implements Parsable {
     /**
      * Ingredienti della ricetta.
      */
-    private ArrayList<String> ingredients = new ArrayList<>();
+    private List<String> ingredients = new ArrayList<>();
 
     /**
      * Tag di apertura.
@@ -38,7 +39,7 @@ public class CookbookRecipe implements Parsable {
     /**
      * Lista degli attributi.
      */
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente
@@ -140,7 +141,7 @@ public class CookbookRecipe implements Parsable {
      * Metodo che ritorna la struttura dati, l'ArrayList, che memorizza gli ingredienti.
      * @return {@link #ingredients} gòi ingredienti.
      */
-    public ArrayList<String> getIngredients() {return ingredients;}
+    public List<String> getIngredients() {return ingredients;}
 
     /**
      * Metodo che ritorna gli ingredienti della ricetta in formato stringa.

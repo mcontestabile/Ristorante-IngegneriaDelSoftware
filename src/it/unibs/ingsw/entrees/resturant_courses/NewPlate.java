@@ -6,6 +6,7 @@ import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che si occupa di memorizzare i valori con cui aggiornare il file XML dei piatti.
@@ -18,7 +19,7 @@ public class NewPlate implements Writable {
     private Fraction workload;
 
     public static final String START_STRING = "dish";
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /**
      * Costruttore, accetta i parametri caratterizzanti un piatto.

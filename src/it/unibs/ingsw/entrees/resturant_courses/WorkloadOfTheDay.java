@@ -4,6 +4,7 @@ import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.xml_utils.Writable;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Metodo che serve per memorizzare le informazioni da scrivere nel file XML dei carichi di lavoro di piatti e menù tematici.
@@ -15,7 +16,7 @@ public class WorkloadOfTheDay implements Writable {
     private String type; // se è un menù oppure un piatto.
     private Fraction workload;
     public static final String START_STRING = "today";
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     public WorkloadOfTheDay(String name, String type, Fraction workload) {
         this.name = name;

@@ -5,6 +5,7 @@ import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Classe che serve per memorizzare i valori con cui aggiornare il file XML delle bevande.
@@ -27,7 +28,7 @@ public class DrinksMenu implements Writable {
     /**
      * Lista degli attributi.
      */
-    private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+    private static final List<String> ATTRIBUTE_STRINGS = new ArrayList<>();
 
     /*
      * La keyword static è usata per creare metodi che esistono indipendentemente
