@@ -13,7 +13,7 @@ public class ReservationDecorator implements Reservable{
     }
 
     @Override
-    public String getResCover() {
+    public int getResCover() {
         return decoratedReservation.getResCover();
     }
 }

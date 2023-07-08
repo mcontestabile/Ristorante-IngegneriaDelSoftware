@@ -5,15 +5,11 @@ import it.unibs.ingsw.entrees.resturant_courses.Workload;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
-import it.unibs.ingsw.mylib.xml_utils.XMLWriter;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Queue;
+import java.util.*;
 
 public class ReservationsAgentController extends UserController {
     private ReservationsAgent agent;
@@ -78,7 +74,7 @@ public class ReservationsAgentController extends UserController {
      * @param item_list lista di item della prenotazione.
      * @return sumGenericItemCover, la nuova somma coperti attuale dell'item, dopo l'inserimento nella lista.
      */
-    public int addItem(int itemCover, int sumGenericItemCover, String menu_piatto, HashMap<String, String> item_list){
+    public int addItem(int itemCover, int sumGenericItemCover, String menu_piatto, Map<String, String> item_list){
         sumGenericItemCover += itemCover;
 
         String item_cover = Integer.toString(itemCover);
@@ -130,26 +126,39 @@ public class ReservationsAgentController extends UserController {
     }
 
     /**
-     * Metodo che inserisce una Reservation.
      * SimpleReservation è una prenotazione caratterizzata solamente da un nome
-     * e da un numero coperti.
-     * Mentre ReservationItemList è una prenotazione "completa". Oltre ad avere le caratteristiche
+     * e da un numero coperti. E' la base di una prenotazione.
+     *
+     * @param name, nome della prenotazione
+     * @param resCover, coperti occupati
+     * @return nuova prenotazione base
+     */
+    public SimpleReservation createSimpleReservation(String name, int resCover) {
+        return new SimpleReservation(name, resCover);
+    }
+
+    /**
+     * ReservationItemList è una prenotazione "completa". Oltre ad avere le caratteristiche
      * della SimpleReservation, sarà caratterizzata anche da un insieme di item (menu/piatto) che
      * caratterrizzano la prenotazione in questione (difatti questa verrà scritta nell'agenda).
      * I due concetti sono stati divisi in vista di un ipotetico cambiamento a livello dell'insieme di item,
      * che potrà comportare diverse scelte gestionali, non andando però ad intaccare la SimpleReservation,
      * che a meno di casi eccezionali dovrebbe rimanere pressoché stabile.
      *
-     * @param name nome prenotazione.
-     * @param resCover coperti prenotazione.
-     * @param itemList lista di item (menù/piatti) di una prenotazione.
+     * @param decoratedRes, prenotazione base alla quale verrà aggiunta la lista di menu/piatti
+     * @param itemList, la lista di menu/piatti
+     * @return nuova prenotazione completa
      */
-    public void insertReservation(String name, String resCover, HashMap<String, String> itemList) {
-
-        Reservable r = new SimpleReservation(name, resCover);
-
-        r = new ReservationItemList(r, itemList);
-
+    public ReservationItemList createReservationItemList(Reservable decoratedRes, Map<String, String> itemList){
+        return new ReservationItemList(decoratedRes, itemList);
+    }
+    /**
+     * Metodo che inserisce una Reservatio nell'insieme delle prenotazioni gestito dall'addetto.
+     *
+     * @param r, una prenotazione completa pronta per essere
+     *           aggiunta all'insieme delle prenotazioni gestito dall'addetto
+     */
+    public void insertReservation(Reservable r) {
         agent.getReservations().add((ReservationItemList) r);
     }
 
@@ -209,7 +218,7 @@ public class ReservationsAgentController extends UserController {
      * @param s nome sul quale effettuare il controllo.
      * @param names collezione generica di nomi.
      */
-    public boolean isRepeated(String s, Collection<String> names){
+    public boolean isAlreadyIn(String s, Collection<String> names){
         for (String x : names){
             if(x.equals(s)){
                 System.out.println(UsefulStrings.ELEMENT_ALREADY_IN);

@@ -7,10 +7,13 @@ import it.unibs.ingsw.mylib.utilities.AsciiArt;
 import it.unibs.ingsw.mylib.utilities.DataInput;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
 import it.unibs.ingsw.users.registered_users.UserController;
+import it.unibs.ingsw.users.reservations_agent.ReservationItemList;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgent;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgentController;
+import it.unibs.ingsw.users.reservations_agent.SimpleReservation;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ReservationsAgentHandler {
     private ReservationsAgentController controller;
@@ -60,6 +63,26 @@ public class ReservationsAgentHandler {
             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
     }
 
+    public String askName(){
+        String name;
+
+        do{
+            name = DataInput.readNotEmptyString(UsefulStrings.RESERVATION_NAME);
+        }while(controller.isAlreadyIn(name, controller.getReservationNameList()));
+
+        return name;
+    }
+
+    public int askResCover(){
+        int resCover;
+
+        do{
+            resCover = DataInput.readPositiveInt(UsefulStrings.RES_COVER);
+        }while(controller.exceedsCover(resCover, controller.getCopertiRaggiunti(), (int) controller.getCovered()));
+
+        return resCover;
+    }
+
     /**
      * Metodo per l'aggiornamento dell'agenda riguardante le prenotazioni.
      */
@@ -70,10 +93,8 @@ public class ReservationsAgentHandler {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint(UsefulStrings.UPDATE_AGENDA);
 
-        String name;
         String menu_piatto;
 
-        int resCover;
         int itemCover = 0;
 
         // somma dei coperti di un item (non menu) di una prenotazione per la relativa item_list
@@ -83,25 +104,19 @@ public class ReservationsAgentHandler {
 
         boolean doYouWantToContinue = true;
 
-        AsciiArt.printALaCarteMenu(controller.getMenu());
-        AsciiArt.printThemedMenu(controller.getMenu());
+        seeMenus();
 
 
         do{
 
-            HashMap<String, String> item_list = new HashMap<>();
+            Map<String, String> item_list = new HashMap<>();
 
 
-            AsciiArt.seeInfoCovered(controller.getCopertiRaggiunti(), (int) controller.getCovered());
-            AsciiArt.seeInfoWorkload(controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
+            seeInfos();
 
-            do{
-                name = DataInput.readNotEmptyString(UsefulStrings.RESERVATION_NAME);
-            }while(controller.isRepeated(name, controller.getReservationNameList()));
 
-            do{
-                resCover = DataInput.readPositiveInt(UsefulStrings.RES_COVER);
-            }while(controller.exceedsCover(resCover, controller.getCopertiRaggiunti(), (int) controller.getCovered()));
+            SimpleReservation sr = controller.createSimpleReservation(askName(), askResCover());
+
 
             sumItemCover = 0;
             sumMenuItemCover = 0;
@@ -112,14 +127,14 @@ public class ReservationsAgentHandler {
                 do{
                     menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
                 }while(!controller.isInMenu(menu_piatto) ||
-                        controller.isRepeated(menu_piatto, item_list.keySet()) ||
+                        controller.isAlreadyIn(menu_piatto, item_list.keySet()) ||
                         controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, 1), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
-                if(!controller.isDish(menu_piatto) && (sumMenuItemCover < resCover)){ // se non è un Dish -> è un menù tematico  &&  un menù a testa!
+                if(!controller.isDish(menu_piatto) && (sumMenuItemCover < sr.getResCover())){ // se non è un Dish -> è un menù tematico  &&  un menù a testa!
 
                     do {
                         itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-                    } while (controller.exceedsOneMenuPerPerson(itemCover, sumMenuItemCover, resCover) ||
+                    } while (controller.exceedsOneMenuPerPerson(itemCover, sumMenuItemCover, sr.getResCover()) ||
                             controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, itemCover), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()));
 
                     sumMenuItemCover += controller.addItem(itemCover, sumMenuItemCover, menu_piatto, item_list);
@@ -135,13 +150,13 @@ public class ReservationsAgentHandler {
                     System.out.println(UsefulStrings.ONE_MENU_PER_PERSON);
                 }
 
-                if(!controller.moreItemsNeeded(sumItemCover, sumMenuItemCover, resCover))
+                if(!controller.moreItemsNeeded(sumItemCover, sumMenuItemCover, sr.getResCover()))
                     doYouWantToContinue = DataInput.yesOrNo(UsefulStrings.MORE_ITEMS);
 
+                ReservationItemList res = controller.createReservationItemList(sr, item_list);
+                controller.insertReservation(res);
 
-                controller.insertReservation(name, Integer.toString(resCover), item_list);
-
-                controller.updateCopertiRaggiunti(resCover);
+                controller.updateCopertiRaggiunti(res.getResCover());
 
                 controller.updateCaricoRaggiunto(controller.calculateWorkload(menu_piatto, itemCover));
 
@@ -158,6 +173,16 @@ public class ReservationsAgentHandler {
 
         // ora che l'agenda è stata scritta, il magazziniere potrà creare la lista della spesa a seconda delle prenotazioni raccolte
         controller.updateUserTurn();
+    }
+
+    private void seeInfos() {
+        AsciiArt.seeInfoCovered(controller.getCopertiRaggiunti(), (int) controller.getCovered());
+        AsciiArt.seeInfoWorkload(controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
+    }
+
+    private void seeMenus() {
+        AsciiArt.printALaCarteMenu(controller.getMenu());
+        AsciiArt.printThemedMenu(controller.getMenu());
     }
 
     /**

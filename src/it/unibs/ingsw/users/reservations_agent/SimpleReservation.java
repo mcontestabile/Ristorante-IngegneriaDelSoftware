@@ -8,7 +8,7 @@ public class SimpleReservation implements Reservable{
     /**
      * Numero coperti prenotazione.
      */
-     protected String resCover;
+     protected int resCover;
 
     /**
      * Costruttore, accetta i parametri caratterizzanti di una prenotazione
@@ -18,7 +18,7 @@ public class SimpleReservation implements Reservable{
      * @param resCover numero coperti prenotazione.
      *
      */
-    public SimpleReservation(String name, String resCover) {
+    public SimpleReservation(String name, int resCover) {
         this.name = name;
         this.resCover = resCover;
     }
@@ -29,7 +29,7 @@ public class SimpleReservation implements Reservable{
     }
 
     @Override
-    public String getResCover() {
+    public int getResCover() {
         return resCover;
     }
 

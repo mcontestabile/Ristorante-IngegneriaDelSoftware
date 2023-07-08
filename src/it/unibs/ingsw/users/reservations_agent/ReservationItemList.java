@@ -9,11 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ReservationItemList extends ReservationDecorator implements Writable {
-    private HashMap<String, String> item_list;
+    private Map<String, String> item_list;
 
     public static final String START_STRING = "reservation";
     private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
-    public ReservationItemList(Reservable decoratedReservation, HashMap<String, String> itemList) {
+    public ReservationItemList(Reservable decoratedReservation, Map<String, String> itemList) {
         super(decoratedReservation);
         item_list = itemList;
     }
@@ -28,6 +28,10 @@ public class ReservationItemList extends ReservationDecorator implements Writabl
         ATTRIBUTE_STRINGS.add("resCover");
     }
 
+    public String getStringResCover(){
+        return Integer.toString(getResCover());
+    }
+
     /**
      * Metodo che serve per settare i valori dei singoli tag della prenotazione, in particolar modo il nome il numero coperti.
      */
@@ -35,7 +39,7 @@ public class ReservationItemList extends ReservationDecorator implements Writabl
     public void setGetters() {
         getters.clear();
         getters.put(ATTRIBUTE_STRINGS.get(0), this::getName);
-        getters.put(ATTRIBUTE_STRINGS.get(1), this::getResCover);
+        getters.put(ATTRIBUTE_STRINGS.get(1), this::getStringResCover);
     }
 
     /**
