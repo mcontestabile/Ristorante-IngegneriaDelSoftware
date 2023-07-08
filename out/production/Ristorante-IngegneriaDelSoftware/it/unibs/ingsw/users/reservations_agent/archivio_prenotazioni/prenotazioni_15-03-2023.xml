@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Elenco prenotazioni del 15-03-2023-->
-<agenda>
-	<reservation name="antonello" res_cover="5">
-		<item item_name="la primavera" item_cover="5"/>
-	</reservation>
-</agenda>

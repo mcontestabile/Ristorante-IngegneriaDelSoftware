@@ -10,15 +10,19 @@ import it.unibs.ingsw.users.registered_users.UserController;
 
 import javax.xml.stream.XMLStreamException;
 
-public class WarehouseWorkerView {
+public class WarehouseWorkerHandler {
 
-    private WarehouseWorkerController warehouseWorkerController;
+    private WarehouseWorkerController controller;
 
-    public void wareHouseWorkerTask(WarehouseWorker user, UserController controller) {
+    public WarehouseWorkerHandler(WarehouseWorkerController controller) {
+        this.controller = controller;
+    }
+
+    public void init(WarehouseWorker user) {
         if (!controller.getCanIWork(user)) {
             AsciiArt.slowPrint(UsefulStrings.ACCESS_DENIED5);
         } else {
-            warehouseWorkerController = new WarehouseWorkerController(controller.getQueue(), user);
+
             MenuItem[] items = new MenuItem[]{
                     new MenuItem("Visualizza lo stato del magazzino.", () -> {
                         try {
@@ -84,13 +88,13 @@ public class WarehouseWorkerView {
     public void createShoppingList(WarehouseWorker user) throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         user.readReservations();
-        warehouseWorkerController.shoppingList = warehouseWorkerController.createShoppingList();
+        controller.shoppingList = controller.createShoppingList();
 
-        if(!warehouseWorkerController.shoppingList.isEmpty()) {
-            AsciiArt.printShoppingList(warehouseWorkerController.shoppingList);
+        if(!controller.shoppingList.isEmpty()) {
+            AsciiArt.printShoppingList(controller.shoppingList);
             if(DataInput.yesOrNo("Procedere all'acquisto? ")) {
-                warehouseWorkerController.buyShoppingList(warehouseWorkerController.shoppingList);
-                System.out.println("Acquistati correttamente "+ warehouseWorkerController.shoppingList.size() + " articoli.");
+                controller.buyShoppingList(controller.shoppingList);
+                System.out.println("Acquistati correttamente "+ controller.shoppingList.size() + " articoli.");
             }
         } else {
             System.out.println("Hai già tutti gli ingredienti occorrenti per le prenotazioni attuali.");
@@ -122,7 +126,7 @@ public class WarehouseWorkerView {
                         qty = DataInput.readDoubleWithMinimum("qtà da prelevare (max: " + article.getQuantity() + ") » ", 0);
                     } while (qty > article.getQuantity());
 
-                    if (warehouseWorkerController.removeArticle(name, qty, true)) {
+                    if (controller.removeArticle(name, qty, true)) {
                         System.out.println("Prelevati correttamente " + qty + article.getMeasure() + " di " + name + ".\n");
                         if (user.getArticle(name).getQuantity() == 0)
                             System.out.println("Attenzione: hai finito le scorte di " + name + "!\n");
@@ -161,7 +165,7 @@ public class WarehouseWorkerView {
                     qty = DataInput.readDoubleWithMinimum("quantità ingrediente (max: " + user.getKitchenMap().get(name).getQuantity() + ") »", 0);
                 } while (qty > user.getKitchenMap().get(name).getQuantity());
 
-                if (warehouseWorkerController.insertArticle(name, qty, user.getKitchenMap().get(name).getMeasure())) {
+                if (controller.insertArticle(name, qty, user.getKitchenMap().get(name).getMeasure())) {
                     user.getKitchenMap().get(name).decrementQuantity(qty);
                     if(user.getKitchenMap().get(name).getQuantity() == 0) user.getKitchenMap().remove(name);
                     System.out.println("\nInseriti correttamente " + qty + user.getKitchenMap().get(name).getMeasure() + " di " + name + ".\n");
@@ -194,7 +198,7 @@ public class WarehouseWorkerView {
                         qty = DataInput.readDoubleWithMinimum("qtà da prelevare (max: " + article.getQuantity() + ") » ", 0);
                     } while (qty > article.getQuantity());
 
-                    if (warehouseWorkerController.removeArticle(name, qty, false)) {
+                    if (controller.removeArticle(name, qty, false)) {
                         System.out.println("\nScartati correttamente " + qty + article.getMeasure() + " di " + name + ".\n");
                         if (user.getArticle(name).getQuantity() == 0)
                             System.out.println("Attenzione hai finito le scorte di " + name + "!\n");

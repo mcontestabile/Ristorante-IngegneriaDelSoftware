@@ -8,14 +8,13 @@ import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.manager.*;
 import it.unibs.ingsw.users.registered_users.UserController;
 import it.unibs.ingsw.users.registered_users.UserDAO;
-import it.unibs.ingsw.users.reservations_agent.Reservable;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgent;
 import it.unibs.ingsw.users.reservations_agent.ReservationsAgentController;
 import it.unibs.ingsw.users.warehouse_worker.Article;
-import it.unibs.ingsw.users.warehouse_worker.WarehouseWorkerView;
+import it.unibs.ingsw.users.warehouse_worker.WarehouseWorkerController;
+import it.unibs.ingsw.users.warehouse_worker.WarehouseWorkerHandler;
 import it.unibs.ingsw.users.warehouse_worker.WarehouseWorker;
 
-import javax.xml.stream.XMLStreamException;
 import java.util.*;
 
 /**
@@ -23,13 +22,6 @@ import java.util.*;
  * i quali si occupano del funzionamento ottimale del ristorante.
  */
 public class Handler {
-
-    /**
-     * Merce da acquistare per il giorno lavorativo successivo.
-     */
-    List<Article> shoppingList;
-
-    WarehouseWorkerView warehouseWorkerView = new WarehouseWorkerView();
 
     /**
      * Questo metodo lancia il messaggio di benvenuto una volta
@@ -102,7 +94,7 @@ public class Handler {
             switch (controller.findUserCategory(user)) {
                 case "gestore" -> managerTask((Manager) user, controller);
                 case "addetto alle prenotazioni" -> reservationsAgentTask((ReservationsAgent) user, controller);
-                case "magazziniere" -> warehouseWorkerView.wareHouseWorkerTask((WarehouseWorker) user, controller);
+                case "magazziniere" -> warehouseWorkerTask((WarehouseWorker) user, controller);
             }
         } else
             System.out.println(UsefulStrings.ACCESS_DENIED);
@@ -127,6 +119,16 @@ public class Handler {
     public void reservationsAgentTask(ReservationsAgent user, UserController controller){
         ReservationsAgentHandler handler = new ReservationsAgentHandler(new ReservationsAgentController(controller.getQueue(), user));
         handler.runAgentIfCanWork(user, controller);
+    }
+
+    /**
+     * Metodo rappresentativo dell'interazione con l'addetto, il quale
+     * permette l'aggiunta delle prenotazioni e il loro salvataggio nell'agenda delle prenotazioni,
+     * nonché il salvataggio di quest'ultime nell'apposito archivio.
+     */
+    public void warehouseWorkerTask(WarehouseWorker user, UserController controller) {
+        WarehouseWorkerHandler handler = new WarehouseWorkerHandler(new WarehouseWorkerController(controller.getQueue(), user));
+        handler.init(user);
     }
 
     /**
