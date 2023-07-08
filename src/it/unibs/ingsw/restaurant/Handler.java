@@ -122,9 +122,10 @@ public class Handler {
     }
 
     /**
-     * Metodo rappresentativo dell'interazione con l'addetto, il quale
-     * permette l'aggiunta delle prenotazioni e il loro salvataggio nell'agenda delle prenotazioni,
-     * nonché il salvataggio di quest'ultime nell'apposito archivio.
+     * Metodo rappresentativo dell'interazione con il magazziniere, il quale
+     * permette attraverso la lettura delle prenotazioni di creare la lista della spesa,
+     * basando la scelta dei prodotti attraverso lo stato del magazzino.
+     * Inoltre permette di portare in cucina, riportare in magazzino o scartare un articolo.
      */
     public void warehouseWorkerTask(WarehouseWorker user, UserController controller) {
         WarehouseWorkerHandler handler = new WarehouseWorkerHandler(new WarehouseWorkerController(controller.getQueue(), user));
