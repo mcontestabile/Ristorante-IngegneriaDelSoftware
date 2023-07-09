@@ -144,52 +144,60 @@ public class ReservationsAgentHandler {
                 controller.restaurantNotFull((int) controller.getCovered())) &&
                 controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload());
     }
+
     /**
      * Metodo per l'aggiornamento dell'agenda riguardante le prenotazioni.
      */
     public void updateAgenda(){
+        initialTask();
+        buildReservation();
+        saveInArchiveTask();
+
+        // ora che l'agenda è stata scritta, il magazziniere potrà creare la lista della spesa a seconda delle prenotazioni raccolte
+        controller.updateUserTurn();
+    }
+
+    private void initialTask() {
         parsingTask();
-
         welcome();
-
-        Reservable sr;
-        Item item;
-        ItemList il;
-
         seeMenus();
         seeInfos();
+    }
+
+    private void buildReservation() {
+        Reservable sr;
+        ItemList il;
 
         do{
-
             il = new ItemList();
 
             sr = controller.createSimpleReservation(askName(), askResCover());
 
             seeInfos();
-            do{
 
-                item = createItem(il, sr);
+            itemTask(sr, il);
 
-                il.putInList(item);
-                il.updateOccurences(item);
-
-            }while(againControl(il, sr));
-
-            ReservationItemList res = controller.createReservationItemList(sr, il);
-            controller.insertReservation(res);
-
-            controller.updateCopertiRaggiunti(res.getResCover());
-
-            controller.updateCaricoRaggiunto(controller.calculateWorkload(item.getName(), item.getResCover()));
-
-            controller.writeAgenda();
+            closeResInsertion(sr, il);
 
         }while(lastControl());
+    }
 
-        saveInArchiveTask();
+    private void closeResInsertion(Reservable sr, ItemList il) {
+        ReservationItemList res = controller.createReservationItemList(sr, il);
+        controller.insertReservation(res);
+        controller.updateCopertiRaggiunti(res.getResCover());
+        controller.writeAgenda();
+    }
 
-        // ora che l'agenda è stata scritta, il magazziniere potrà creare la lista della spesa a seconda delle prenotazioni raccolte
-        controller.updateUserTurn();
+    private void itemTask(Reservable sr, ItemList il) {
+        Item item;
+        do{
+            item = createItem(il, sr);
+            il.putInList(item);
+            il.updateOccurences(item);
+
+            controller.updateCaricoRaggiunto(controller.calculateWorkload(item.getName(), item.getResCover()));
+        }while(againControl(il, sr));
     }
 
     private static void welcome() {

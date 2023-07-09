@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--Elenco prenotazioni del 10-07-2023-->
 <agenda>
 	<reservation name="anto" resCover="4">
 		<item item_name="estate23" item_cover="4"/>
