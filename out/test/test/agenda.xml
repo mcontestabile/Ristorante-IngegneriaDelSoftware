@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<agenda>
-	<reservation name="test1" resCover="6">
-		<item item_name="pasta" item_cover="3"/>
-	</reservation>
-</agenda>

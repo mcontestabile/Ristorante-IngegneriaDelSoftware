@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -16,7 +17,7 @@ public class ReservationAgentControllerTest {
     ReservationsAgent agent;
     Queue<User> users;
     ReservationsAgentController controller;
-    Map<String, String> itemList;
+    ItemList itemList;
 
     @Before
     public void setUp(){
@@ -24,8 +25,8 @@ public class ReservationAgentControllerTest {
         users = new LinkedList<>();
         users.add(agent);
         controller = new ReservationsAgentController(users, agent);
-        itemList = new HashMap<>();
-        itemList.put("pasta", "3");
+        itemList = new ItemList();
+        itemList.putInList(new DishItem("pasta al pesto", 3));
     }
 
     @Test
@@ -161,5 +162,17 @@ public class ReservationAgentControllerTest {
         }
 
         assertThat(agent.getReservations().size(), is(equalTo(1)));
+    }
+
+    @Test
+    public void itemTest(){
+        Map<Item, String> itemL = new HashMap<>();
+
+        itemL.put(new ItemListMenu("pasta", 3), "3");
+
+        System.out.println(controller.isAlreadyIn("pasta", itemL.keySet()
+                .stream()
+                .map(item -> item.getName())
+                .collect(Collectors.toList())));
     }
 }

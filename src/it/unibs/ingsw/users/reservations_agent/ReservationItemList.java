@@ -6,16 +6,20 @@ import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ReservationItemList extends ReservationDecorator implements Writable {
-    private Map<String, String> item_list;
+
+    private ItemList itemList;
+
 
     public static final String START_STRING = "reservation";
     private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
-    public ReservationItemList(Reservable decoratedReservation, Map<String, String> itemList) {
+    public ReservationItemList(Reservable decoratedReservation, ItemList itemList) {
         super(decoratedReservation);
-        item_list = itemList;
+        this.itemList = itemList;
     }
     
     /*
@@ -78,8 +82,8 @@ public class ReservationItemList extends ReservationDecorator implements Writabl
         setGetters();
         ArrayList<XMLTag> XMLTags = new ArrayList<>();
 
-        for(Map.Entry m : item_list.entrySet()) {
-            XMLTags.add(new XMLTag("item", new XMLAttribute("item_name", (String)m.getKey()), new XMLAttribute("item_cover", (String)m.getValue())));
+        for(Item i: itemList.getItemList().keySet()) {
+            XMLTags.add(new XMLTag("item", new XMLAttribute("item_name", i.getName()), new XMLAttribute("item_cover", Integer.toString(i.getResCover()))));
         }
 
         return XMLTags;

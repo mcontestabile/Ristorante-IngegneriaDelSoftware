@@ -10,9 +10,11 @@ import it.unibs.ingsw.users.registered_users.UserController;
 
 import javax.xml.stream.XMLStreamException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ReservationsAgentController extends UserController {
     private ReservationsAgent agent;
+
 
     /**
      * Costruttore del controller.
@@ -149,7 +151,7 @@ public class ReservationsAgentController extends UserController {
      * @param itemList, la lista di menu/piatti
      * @return nuova prenotazione completa
      */
-    public ReservationItemList createReservationItemList(Reservable decoratedRes, Map<String, String> itemList){
+    public ReservationItemList createReservationItemList(Reservable decoratedRes, ItemList itemList){
         return new ReservationItemList(decoratedRes, itemList);
     }
     /**
