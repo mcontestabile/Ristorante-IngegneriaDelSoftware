@@ -120,7 +120,7 @@ public class ReservationsAgentHandler {
         }
     }
 
-    public boolean doYouWantToContinue(ItemList il, Reservable sr){
+    public boolean askMoreItemsIfNeededOrUserDecision(ItemList il, Reservable sr){
         boolean doYouWantToContinue = true;
 
         if(!controller.moreItemsNeeded(il.getHowManyDishes(), il.getHowManyMenus(), sr.getResCover()))
@@ -129,11 +129,11 @@ public class ReservationsAgentHandler {
         return doYouWantToContinue;
     }
 
-    public boolean againControl(ItemList il, Reservable sr){
-        return doYouWantToContinue(il, sr) && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload());
+    public boolean itemTaskIterationControl(ItemList il, Reservable sr){
+        return askMoreItemsIfNeededOrUserDecision(il, sr) && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload());
     }
 
-    public boolean lastControl(){
+    public boolean endUpdateIterationControl(){
         return (DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
                 controller.restaurantNotFull((int) controller.getCovered())) &&
                 controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload());
@@ -171,7 +171,7 @@ public class ReservationsAgentHandler {
 
             closeResInsertion(sr, il);
 
-        }while(lastControl());
+        }while(endUpdateIterationControl());
     }
 
     private void closeResInsertion(Reservable sr, ItemList il) {
@@ -189,7 +189,7 @@ public class ReservationsAgentHandler {
             il.updateOccurences(item);
 
             controller.updateCaricoRaggiunto(controller.calculateWorkload(item.getName(), item.getResCover()));
-        }while(againControl(il, sr));
+        }while(itemTaskIterationControl(il, sr));
     }
 
     private static void welcome() {
