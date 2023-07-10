@@ -5,17 +5,16 @@ import it.unibs.ingsw.entrees.resturant_courses.Workload;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
-import it.unibs.ingsw.restaurant.ReservationsAgentHandler;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Queue;
 
 public class ReservationsAgentController extends UserController {
     private ReservationsAgent agent;
-
 
     /**
      * Costruttore del controller.
@@ -64,26 +63,6 @@ public class ReservationsAgentController extends UserController {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Metodo che aggiunge un item (menù/piatto) nella lista di items di una prenotazione.
-     * Aggiungerà l'elemento alla lista e restituirà quindi la nuova quantità selezionata per il tipo dell'item (menù/piatto) in questione.
-     * Sarà la somma dei piatti normali, o la somma dei menù, presi durante una prenotazione.
-     *
-     * @param itemCover numero coperti per l'item da aggiungere.
-     * @param sumGenericItemCover somma coperti attuale dell'item (può essere la somma dei coperti presi per un piatto, o per un menù)
-     * @param menu_piatto nome dell'item da aggiungere.
-     * @param item_list lista di item della prenotazione.
-     * @return sumGenericItemCover, la nuova somma coperti attuale dell'item, dopo l'inserimento nella lista.
-     */
-    public int addItem(int itemCover, int sumGenericItemCover, String menu_piatto, Map<String, String> item_list){
-        sumGenericItemCover += itemCover;
-
-        String item_cover = Integer.toString(itemCover);
-        item_list.put(menu_piatto, item_cover);
-
-        return sumGenericItemCover;
     }
 
     /**

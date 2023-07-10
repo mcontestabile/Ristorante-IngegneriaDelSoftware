@@ -11,13 +11,26 @@ public class ItemList {
     public void putInList(Item i){
         itemList.put(i, i.getResCover());
     }
+
+    /**
+     * Occorrenze dei menu nella lista di item.
+     */
     private int howManyMenus = 0;
+    /**
+     * Occorrenze dei piatti nella lista di item.
+     */
     private int getHowManyDishes = 0;
 
     public ItemList() {
         itemList = new HashMap<>();
     }
 
+    /**
+     * Metodo che restituisce la sola lista dei nomi degli item
+     * presenti nella lista.
+     *
+     * @return lista dei soli nomi degli item.
+     */
     public List<String> getItemsName(){
         return itemList
                 .keySet()
@@ -34,7 +47,7 @@ public class ItemList {
         return howManyMenus;
     }
 
-    public void setHowManyMenus(int m) {
+    public void updateHowManyMenusBy(int m) {
         this.howManyMenus += m;
     }
 
@@ -42,14 +55,14 @@ public class ItemList {
         return getHowManyDishes;
     }
 
-    public void setHowManyDishes(int d) {
+    public void updateHowManyDishesBy(int d) {
         this.getHowManyDishes += d;
     }
 
     public void updateOccurences(Item i){
         if(i instanceof DishItem)
-            setHowManyDishes(i.getResCover());
+            updateHowManyDishesBy(i.getResCover());
         else
-            setHowManyMenus(i.getResCover());
+            updateHowManyMenusBy(i.getResCover());
     }
 }

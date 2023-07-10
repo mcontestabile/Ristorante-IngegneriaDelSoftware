@@ -11,12 +11,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ReservationItemList extends ReservationDecorator implements Writable {
-
+    /**
+     * Lista di item che caratterizza una prenotazione completa.
+     */
     private ItemList itemList;
-
 
     public static final String START_STRING = "reservation";
     private static final ArrayList<String> ATTRIBUTE_STRINGS = new ArrayList<>();
+
+    /**
+     * Costruttore. La ReservationItemList sarà una prenotazione decorata
+     * con una lista di item.
+     *
+     * @param decoratedReservation reservation da decorare.
+     * @param itemList lista di item.
+     */
     public ReservationItemList(Reservable decoratedReservation, ItemList itemList) {
         super(decoratedReservation);
         this.itemList = itemList;

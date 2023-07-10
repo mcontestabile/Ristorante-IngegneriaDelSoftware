@@ -120,7 +120,7 @@ public class ReservationsAgent extends User {
     /**
      * Metodo per impostare il nuovo numero di coperti raggiunto.
      *
-     * @param newCopertiRaggiunti
+     * @param newCopertiRaggiunti, il nuovo numero di coperti da impostare
      */
     public void setCopertiRaggiunti(int newCopertiRaggiunti){this.copertiRaggiunti = newCopertiRaggiunti;}
 
@@ -128,7 +128,7 @@ public class ReservationsAgent extends User {
      * Metodo per impostare il nuovo carico di lavoro raggiunto.
      * Utile ai controlli per evitare di eccedere il carico di lavoro totale del ristorante.
      *
-     * @param newCaricoRaggiunto
+     * @param newCaricoRaggiunto, il nuovo carico da impostare
      */
     public void setCaricoRaggiunto(double newCaricoRaggiunto) {
         this.caricoRaggiunto = newCaricoRaggiunto;
