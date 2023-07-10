@@ -11,7 +11,6 @@ import it.unibs.ingsw.users.reservations_agent.*;
 
 public class ReservationsAgentHandler {
     private ReservationsAgentController controller;
-
     public ReservationsAgentHandler(ReservationsAgentController controller) {
         this.controller = controller;
     }
@@ -36,8 +35,8 @@ public class ReservationsAgentHandler {
      */
     public void agentMenu() {
             MenuItem[] items = new MenuItem[]{
-                    new MenuItem(UsefulStrings.UPDATE_AGENDA_MENU_VOICE, () -> updateAgendaIfParametersNotExcedeed()),
-                    new MenuItem(UsefulStrings.SAVE_IN_RES_ARCHIVE_MENU_VOICE, () -> saveInArchiveTask())
+                    new MenuItem(UsefulStrings.UPDATE_AGENDA_MENU_VOICE, this::updateAgendaIfParametersNotExcedeed),
+                    new MenuItem(UsefulStrings.SAVE_IN_RES_ARCHIVE_MENU_VOICE, this::saveInArchiveTask)
             };
 
             Menu menu = new Menu(UsefulStrings.MAIN_TASK_REQUEST, items);
@@ -57,6 +56,12 @@ public class ReservationsAgentHandler {
             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
     }
 
+    /**
+     * Metodo che chiede all'utente un nome per la prenotazione,
+     * fintantoché non venga immesso un valore che non sia già presente nella lista delle prenotazioni.
+     *
+     * @return nome della prenotazione
+     */
     public String askName(){
         String name;
 
@@ -67,6 +72,12 @@ public class ReservationsAgentHandler {
         return name;
     }
 
+    /**
+     * Metodo che chiede all'utente il numero dei coperti della prenotazione,
+     * fintantiché non venga immesso un valore che non superi il massimo numero raggiungibile.
+     *
+     * @return coperti della prenotazione
+     */
     public int askResCover(){
         int resCover;
 
@@ -77,6 +88,16 @@ public class ReservationsAgentHandler {
         return resCover;
     }
 
+    /**
+     * Metodo che chiede all'utente il nome di un item (menu/piatto)
+     * fintantoché non venga immesso un valore già presente nella lista di item,
+     * il nome non si trovi nel menu del ristorante,
+     * il carico di lavoro del menu/piatto (esteso ad una persona) supera il carico di lavoro massimo.
+     * Basta solamente una condizione per far ripetere l'inserimento.
+     *
+     * @param itemList, la lista di item
+     * @return nome del menu/piatto valido inserito dall'utente
+     */
     public String askItemName(ItemList itemList){
         String menu_piatto;
 
@@ -87,7 +108,7 @@ public class ReservationsAgentHandler {
         return menu_piatto;
     }
 
-    public boolean control(ItemList list, int itemCover, String itemName, Reservable r){
+    public boolean itemControl(ItemList list, int itemCover, String itemName, Reservable r){
         if(!controller.isDish(itemName))
             return controlForMenu(itemCover, list, itemName, r);
         else
@@ -105,7 +126,7 @@ public class ReservationsAgentHandler {
 
         do {
             itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-        } while (control(list, itemCover, itemName, r));
+        } while (itemControl(list, itemCover, itemName, r));
 
         return itemCover;
     }
@@ -192,21 +213,34 @@ public class ReservationsAgentHandler {
         }while(itemTaskIterationControl(il, sr));
     }
 
+    /**
+     * Messaggio iniziale di benvenuto al task di aggiornamento agenda.
+     */
     private static void welcome() {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint(UsefulStrings.UPDATE_AGENDA);
     }
 
+    /**
+     * Acquisizione del menu e dei carichi di lavoro dei menu/piatti,
+     * dal relativo file.
+     */
     private void parsingTask() {
         controller.parseCourses();
         controller.parseWorkloads();
     }
 
+    /**
+     * Visualizza le informazioni utili all'addetto.
+     */
     private void seeInfos() {
         AsciiArt.seeInfoCovered(controller.getCopertiRaggiunti(), (int) controller.getCovered());
         AsciiArt.seeInfoWorkload(controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
     }
 
+    /**
+     * Visualizza le informazioni riguardanti i menu.
+     */
     private void seeMenus() {
         AsciiArt.printALaCarteMenu(controller.getMenu());
         AsciiArt.printThemedMenu(controller.getMenu());
