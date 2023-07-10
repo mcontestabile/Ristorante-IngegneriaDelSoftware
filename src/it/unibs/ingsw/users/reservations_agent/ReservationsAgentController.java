@@ -5,6 +5,7 @@ import it.unibs.ingsw.entrees.resturant_courses.Workload;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
+import it.unibs.ingsw.restaurant.ReservationsAgentHandler;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
@@ -169,7 +170,7 @@ public class ReservationsAgentController extends UserController {
      */
     public void writeAgenda() {
         try {
-            agent.writingTask(agent.getReservations(), UsefulStrings.AGENDA_FILE, UsefulStrings.AGENDA_OUTER_TAG);
+            agent.writingTask((agent.getReservations()), UsefulStrings.AGENDA_FILE, UsefulStrings.AGENDA_OUTER_TAG);
         } catch (XMLStreamException e) {
             e.printStackTrace();
         }
@@ -301,9 +302,9 @@ public class ReservationsAgentController extends UserController {
      */
     public boolean exceedsRestaurantWorkload(double workloadSum, double workload_raggiunti, double resturantWorkload){
         double partialSum = workload_raggiunti + workloadSum;
-        double workloadRestante = resturantWorkload - workload_raggiunti;
 
         if(partialSum > resturantWorkload){
+            double workloadRestante = resturantWorkload - workload_raggiunti;
             System.out.println(UsefulStrings.WORKLOAD_EXCEEDED_AVAILABLE + workloadRestante + "\n\n");
             return true;
         }
@@ -382,5 +383,11 @@ public class ReservationsAgentController extends UserController {
      */
     public void saveInReservationArchive(){
         agent.getReservationArchiveRepository().save(RestaurantDates.workingDay.format(RestaurantDates.formatter));
+    }
+
+    public boolean controlIfAskItemNameAgain(String menu_piatto, ItemList itemList){
+        return !isInMenu(menu_piatto) ||
+                isAlreadyIn(menu_piatto, itemList.getItemsName()) ||
+                exceedsRestaurantWorkload(calculateWorkload(menu_piatto, 1), getCaricoRaggiunto(), getRestaurantWorkload());
     }
 }

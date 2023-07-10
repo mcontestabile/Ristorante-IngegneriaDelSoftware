@@ -82,15 +82,9 @@ public class ReservationsAgentHandler {
 
         do{
             menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
-        }while(controlIfAskItemNameAgain(menu_piatto, itemList));
+        }while(controller.controlIfAskItemNameAgain(menu_piatto, itemList));
 
         return menu_piatto;
-    }
-
-    public boolean controlIfAskItemNameAgain(String menu_piatto, ItemList itemList){
-        return !controller.isInMenu(menu_piatto) ||
-                controller.isAlreadyIn(menu_piatto, itemList.getItemsName()) ||
-                controller.exceedsRestaurantWorkload(controller.calculateWorkload(menu_piatto, 1), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
     }
 
     public boolean control(ItemList list, int itemCover, String itemName, Reservable r){
@@ -172,8 +166,6 @@ public class ReservationsAgentHandler {
             il = new ItemList();
 
             sr = controller.createSimpleReservation(askName(), askResCover());
-
-            seeInfos();
 
             itemTask(sr, il);
 
