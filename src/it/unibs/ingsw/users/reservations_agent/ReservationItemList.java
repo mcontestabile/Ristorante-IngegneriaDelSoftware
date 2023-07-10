@@ -5,10 +5,6 @@ import it.unibs.ingsw.mylib.xml_utils.XMLAttribute;
 import it.unibs.ingsw.mylib.xml_utils.XMLTag;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ReservationItemList extends ReservationDecorator implements Writable {
     /**
@@ -92,7 +88,7 @@ public class ReservationItemList extends ReservationDecorator implements Writabl
         ArrayList<XMLTag> XMLTags = new ArrayList<>();
 
         for(Item i: itemList.getItemList().keySet()) {
-            XMLTags.add(new XMLTag("item", new XMLAttribute("item_name", i.getName()), new XMLAttribute("item_cover", Integer.toString(i.getResCover()))));
+            XMLTags.add(new XMLTag("item", new XMLAttribute("item_name", i.getName()), new XMLAttribute("item_cover", Integer.toString(i.getCover()))));
         }
 
         return XMLTags;

@@ -49,8 +49,7 @@ public class ReservationsAgentHandler {
      * previo controllo dei parametri (coperti non superati, carico di lavoro non superato).
      */
     public void updateAgendaIfParametersNotExcedeed(){
-        if((controller.getCopertiRaggiunti() < controller.getCovered())
-                && (controller.getCaricoRaggiunto() < controller.getRestaurantWorkload()))
+        if(controller.restaurantNotFull() && (controller.workloadRestaurantNotExceeded()))
             updateAgenda();
         else
             System.out.println(UsefulStrings.NO_MORE_RESERVATION_MESSAGE);
@@ -83,7 +82,7 @@ public class ReservationsAgentHandler {
 
         do{
             resCover = DataInput.readPositiveInt(UsefulStrings.RES_COVER);
-        }while(controller.exceedsCover(resCover, controller.getCopertiRaggiunti(), (int) controller.getCovered()));
+        }while(controller.exceedsCover(resCover));
 
         return resCover;
     }
@@ -116,10 +115,10 @@ public class ReservationsAgentHandler {
     }
     public boolean controlForMenu(int itemCover, ItemList il, String menuName, Reservable r){
         return controller.exceedsOneMenuPerPerson(itemCover, il.getHowManyMenus(), r.getResCover()) ||
-                controller.exceedsRestaurantWorkload(controller.calculateWorkload(menuName, itemCover), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
+                controller.controlIfExceedsRestaurantWorkload(menuName, itemCover);
     }
     public boolean controlForDish(int itemCover, String dishName){
-        return controller.exceedsRestaurantWorkload(controller.calculateWorkload(dishName, itemCover), controller.getCaricoRaggiunto(), controller.getRestaurantWorkload());
+        return controller.controlIfExceedsRestaurantWorkload(dishName, itemCover);
     }
     public int askItemCover(ItemList list, Reservable r, String itemName){
         int itemCover;
@@ -151,13 +150,13 @@ public class ReservationsAgentHandler {
     }
 
     public boolean itemTaskIterationControl(ItemList il, Reservable sr){
-        return askMoreItemsIfNeededOrUserDecision(il, sr) && controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload());
+        return askMoreItemsIfNeededOrUserDecision(il, sr) && controller.workloadRestaurantNotExceeded();
     }
 
     public boolean endUpdateIterationControl(){
         return (DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
-                controller.restaurantNotFull((int) controller.getCovered())) &&
-                controller.workloadRestaurantNotExceeded(controller.getRestaurantWorkload());
+                controller.restaurantNotFull() &&
+                controller.workloadRestaurantNotExceeded());
     }
 
     /**
@@ -209,7 +208,7 @@ public class ReservationsAgentHandler {
             il.putInList(item);
             il.updateOccurences(item);
 
-            controller.updateCaricoRaggiunto(controller.calculateWorkload(item.getName(), item.getResCover()));
+            controller.updateCaricoRaggiunto(controller.calculateWorkload(item.getName(), item.getCover()));
         }while(itemTaskIterationControl(il, sr));
     }
 

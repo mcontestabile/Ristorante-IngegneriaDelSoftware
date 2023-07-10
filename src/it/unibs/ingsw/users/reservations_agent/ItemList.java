@@ -9,7 +9,7 @@ public class ItemList {
     private Map<Item,Integer> itemList;
 
     public void putInList(Item i){
-        itemList.put(i, i.getResCover());
+        itemList.put(i, i.getCover());
     }
 
     /**
@@ -61,8 +61,8 @@ public class ItemList {
 
     public void updateOccurences(Item i){
         if(i instanceof DishItem)
-            updateHowManyDishesBy(i.getResCover());
+            updateHowManyDishesBy(i.getCover());
         else
-            updateHowManyMenusBy(i.getResCover());
+            updateHowManyMenusBy(i.getCover());
     }
 }

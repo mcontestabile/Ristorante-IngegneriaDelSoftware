@@ -15,16 +15,16 @@ public class ReservationsAgent extends User {
     /**
      * Coperti attualmente raggiunti con le prenotazioni.
      */
-    private int copertiRaggiunti;
+    private int copertiRaggiunti = 0;
     /**
      * Carico di lavoro attualmente raggiunto con i menù/piatti delle prenotazioni.
      */
-    private double caricoRaggiunto;
+    private double caricoRaggiunto = 0.0;
 
     /**
      * La lista delle prenotazioni.
      */
-    private ArrayList<ReservationItemList> reservations = new ArrayList<>();
+    private ArrayList<ReservationItemList> reservations;
 
     /**
      * Repository archivio prenotazioni
@@ -53,10 +53,7 @@ public class ReservationsAgent extends User {
     public ReservationsAgent(String username, String password, boolean canIWork) {
         super(username, password, canIWork);
         this.reservationArchiveRepository = new XMLReservationArchiveRepository();
-
-        // a inizio giornata quando si crea l'oggetto ReservationAgent
-        this.copertiRaggiunti = 0;
-        this.caricoRaggiunto = 0.0;
+        reservations = new ArrayList<>();
     }
 
     /**

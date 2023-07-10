@@ -2,11 +2,11 @@ package it.unibs.ingsw.users.reservations_agent;
 
 public abstract class Item {
     String name;
-    int resCover;
+    int cover;
 
-    public Item(String name, int resCover) {
+    public Item(String name, int cover) {
         this.name = name;
-        this.resCover = resCover;
+        this.cover = cover;
     }
 
     public String getName() {
@@ -17,11 +17,11 @@ public abstract class Item {
         this.name = name;
     }
 
-    public int getResCover() {
-        return resCover;
+    public int getCover() {
+        return cover;
     }
 
-    public void setResCover(int resCover) {
-        this.resCover = resCover;
+    public void setCover(int cover) {
+        this.cover = cover;
     }
 }

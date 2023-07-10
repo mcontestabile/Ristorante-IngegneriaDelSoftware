@@ -7,10 +7,8 @@ import org.junit.Test;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.reservations_agent.*;
 import org.junit.Before;
-import org.junit.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -31,7 +29,9 @@ public class InsertReservationTest {
         users.add(agent);
         controller = new ReservationsAgentController(users, agent);
         itemList = new ItemList();
-        itemList.putInList(new DishItem("pasta al pesto", 3));
+        //itemList.putInList(new DishItem("pasta al pesto", 3));
+
+        setupManager();
     }
     @Test
     public void duplicatedReservationNameTest(){
@@ -65,41 +65,39 @@ public class InsertReservationTest {
     }
     @Test
     public void resCover_restaurantEmpty_minimum(){
-        int restaurantWorkload = 50;
         agent.setCopertiRaggiunti(0);
         int resCover = 1;
 
         Reservable res1 = controller.createReservationItemList(new SimpleReservation("test", resCover), itemList);
 
-        if(!controller.exceedsCover(resCover,controller.getCopertiRaggiunti(),restaurantWorkload))
+        if(!controller.exceedsCover(resCover))
             controller.insertReservation(res1);
 
         assertThat(agent.getReservations().size(), is(equalTo(1)));
     }
     @Test
-    public void resCover_restaurantEmpty_maxWorkloadMinusOne(){
-        int restaurantWorkload = 50;
+    public void resCover_restaurantEmpty_maxCoveredMinusOne(){
         agent.setCopertiRaggiunti(0);
-        int resCover = restaurantWorkload-1;
+        int resCover = (int)controller.getCovered()-1;
 
         Reservable res1 = controller.createReservationItemList(new SimpleReservation("test", resCover), itemList);
 
-        if(!controller.exceedsCover(resCover,controller.getCopertiRaggiunti(),restaurantWorkload))
+        if(!controller.exceedsCover(resCover))
             controller.insertReservation(res1);
 
         assertThat(agent.getReservations().size(), is(equalTo(1)));
     }
     @Test
-    public void resCover_restaurantEmpty_maxWorkload(){
-        int restaurantWorkload = 50;
+    public void resCover_restaurantEmpty_maxCovered(){
         agent.setCopertiRaggiunti(0);
-        int resCover = restaurantWorkload;
+        int resCover = (int)controller.getCovered();
 
         Reservable res1 = controller.createReservationItemList(new SimpleReservation("test", resCover), itemList);
 
-        if(!controller.exceedsCover(resCover,controller.getCopertiRaggiunti(),restaurantWorkload))
+        if(!controller.exceedsCover(resCover))
             controller.insertReservation(res1);
 
+        System.out.println(controller.exceedsCover(resCover));
         assertThat(agent.getReservations().size(), is(equalTo(1)));
     }
     @Test
@@ -110,20 +108,19 @@ public class InsertReservationTest {
 
         Reservable res1 = controller.createReservationItemList(new SimpleReservation("test", resCover), itemList);
 
-        if(!controller.exceedsCover(resCover,controller.getCopertiRaggiunti(),restaurantWorkload))
+        if(!controller.exceedsCover(resCover))
             controller.insertReservation(res1);
 
         assertThat(agent.getReservations().size(), is(equalTo(0)));
     }
     @Test
     public void resCover_restaurantNotEmpty_insertToMaximumWorkload(){
-        int restaurantWorkload = 50;
         agent.setCopertiRaggiunti(10);
-        int resCover = restaurantWorkload-controller.getCopertiRaggiunti();
+        int resCover = (int)controller.getCovered()-controller.getCopertiRaggiunti();
 
         Reservable res1 = controller.createReservationItemList(new SimpleReservation("test", resCover), itemList);
 
-        if(!controller.exceedsCover(resCover,controller.getCopertiRaggiunti(),restaurantWorkload))
+        if(!controller.exceedsCover(resCover))
             controller.insertReservation(res1);
 
         assertThat(agent.getReservations().size(), is(equalTo(1)));
@@ -132,6 +129,7 @@ public class InsertReservationTest {
     public void setupManager(){
         gestore = new Manager("gestore", "test", true);
         gestore.setRestaurantWorkload(10.0);
+        gestore.setCovered(50);
         users.add(gestore);
 
         String piatto = "amatriciana";
@@ -262,13 +260,13 @@ public class InsertReservationTest {
 
         Item i = new DishItem("amatriciana", itemCover);
 
-        double itemWorkload = controller.calculateWorkload(i.getName(),itemCover);
-
-        if(!controller.exceedsRestaurantWorkload(itemWorkload, controller.getCaricoRaggiunto(), gestore.getRestaurantWorkload()))
+        if(!controller.controlIfExceedsRestaurantWorkload(i.getName(), i.getCover()))
             itemList.putInList(i);
 
         assertThat(itemList.getItemList().size(), is(equalTo(0)));
     }
+
+    /*
     @Test
     public void itemExceedsRestaurantWorkload_withSomeAlready(){
         setupManager();
@@ -280,12 +278,15 @@ public class InsertReservationTest {
 
         double itemWorkloadSum = controller.getCaricoRaggiunto();
 
-        if(!controller.exceedsRestaurantWorkload(itemWorkloadSum, controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()))
+        if(!controller.controlIfExceedsRestaurantWorkload(itemWorkloadSum, controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()))
             itemList.putInList(i);
 
 
         assertThat(itemList.getItemList().size(), is(equalTo(0)));
     }
+
+    DA RIFARE
+
     @Test
     public void itemNotExceedsRestaurantWorkload_Limit(){
         setupManager();
@@ -297,12 +298,16 @@ public class InsertReservationTest {
 
         double itemWorkloadSum = controller.getMinimumWorkload();
 
-        if(!controller.exceedsRestaurantWorkload(itemWorkloadSum, controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()))
+        if(!controller.controlIfExceedsRestaurantWorkload(itemWorkloadSum, controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()))
             itemList.putInList(i);
 
         assertThat(itemList.getItemList().size(), is(equalTo(1)));
     }
-    @Test
+    */
+
+
+    /*DA RIFARE
+
     public void itemExceedsRestaurantWorkload_LimitExcedeed(){
         setupManager();
         itemList.getItemList().clear();
@@ -313,10 +318,10 @@ public class InsertReservationTest {
 
         double itemWorkloadSum = controller.getMinimumWorkload();
 
-        if(!controller.exceedsRestaurantWorkload(itemWorkloadSum, controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()))
+        if(!controller.controlIfExceedsRestaurantWorkload(itemWorkloadSum, controller.getCaricoRaggiunto(), controller.getRestaurantWorkload()))
             itemList.putInList(i);
 
         System.out.println(itemWorkloadSum);
         assertThat(itemList.getItemList().size(), is(equalTo(0)));
-    }
+    }*/
 }

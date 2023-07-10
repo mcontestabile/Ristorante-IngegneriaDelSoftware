@@ -54,11 +54,9 @@ public class ReservationsAgentController extends UserController {
 
     /**
      * Metodo che controlla se il ristorante non è pieno.
-     *
-     * @param totCover capienza massima del ristorante.
      */
-    public boolean restaurantNotFull(int totCover){
-        if(getCopertiRaggiunti() >= totCover){
+    public boolean restaurantNotFull(){
+        if(getCopertiRaggiunti() >= (int)getCovered()){
             System.out.println(UsefulStrings.NO_MORE_RES_COVER);
             return false;
         }
@@ -236,14 +234,12 @@ public class ReservationsAgentController extends UserController {
      * la capienza totale del ristorante.
      *
      * @param resCover parametro da sommare alla totalità dei coperti raggiunti.
-     * @param coperti_raggiunti coperti attualmente raggiunti.
-     * @param cover_totali capienza massima del ristorante.
      */
-    public boolean exceedsCover(int resCover, int coperti_raggiunti, int cover_totali){
-        int partialSum = coperti_raggiunti + resCover;
-        int postiDispondibili = cover_totali - coperti_raggiunti;
+    public boolean exceedsCover(int resCover){
+        int partialSum = getCopertiRaggiunti() + resCover;
+        int postiDispondibili = (int)getCovered() - getCopertiRaggiunti();
 
-        if(partialSum > cover_totali){
+        if(partialSum > (int)getCovered()){
             System.out.println(UsefulStrings.COVER_EXCEEDED_AVAILABLE + postiDispondibili + "\n\n");
             return true;
         }
@@ -275,15 +271,14 @@ public class ReservationsAgentController extends UserController {
      * Metodo che controlla se il carico di lavoro raggiunto, esteso al parametro workloadSum in input, superi
      * il carico di lavoro sostenibile dal ristorante.
      *
-     * @param workloadSum parametro da sommare alla totalità di workload raggiunta.
-     * @param workload_raggiunti carico di lavoro attualmente raggiunto.
-     * @param resturantWorkload carico di lavoro sostenibile del ristorante.
+     * @param itemName, nome dell'item
+     * @param itemCover, numero coperti dell'item
      */
-    public boolean exceedsRestaurantWorkload(double workloadSum, double workload_raggiunti, double resturantWorkload){
-        double partialSum = workload_raggiunti + workloadSum;
+    public boolean controlIfExceedsRestaurantWorkload(String itemName, int itemCover){
+        double partialSum = getCaricoRaggiunto() + calculateWorkload(itemName, itemCover);
 
-        if(partialSum > resturantWorkload){
-            double workloadRestante = resturantWorkload - workload_raggiunti;
+        if(partialSum > getRestaurantWorkload()){
+            double workloadRestante = getRestaurantWorkload() - getCaricoRaggiunto();
             System.out.println(UsefulStrings.WORKLOAD_EXCEEDED_AVAILABLE + workloadRestante + "\n\n");
             return true;
         }
@@ -293,12 +288,10 @@ public class ReservationsAgentController extends UserController {
 
     /**
      * Metodo che controlla se il carico di lavoro sostenibile del ristorante non è stato superato.
-     *
-     * @param restaurantWorkload il carico sostenibile del ristorante.
      */
-    public boolean workloadRestaurantNotExceeded(double restaurantWorkload){
-        double workloadRimanente = restaurantWorkload - this.getCaricoRaggiunto();
-        if(this.getCaricoRaggiunto() >= restaurantWorkload || workloadRimanente < getMinimumWorkload()){
+    public boolean workloadRestaurantNotExceeded(){
+        double workloadRimanente = getRestaurantWorkload() - this.getCaricoRaggiunto();
+        if(this.getCaricoRaggiunto() >= getRestaurantWorkload() || workloadRimanente < getMinimumWorkload()){
             System.out.println(UsefulStrings.NO_MORE_RES_WORKLOAD);
             return false;
         }
@@ -367,6 +360,6 @@ public class ReservationsAgentController extends UserController {
     public boolean controlIfAskItemNameAgain(String menu_piatto, ItemList itemList){
         return !isInMenu(menu_piatto) ||
                 isAlreadyIn(menu_piatto, itemList.getItemsName()) ||
-                exceedsRestaurantWorkload(calculateWorkload(menu_piatto, 1), getCaricoRaggiunto(), getRestaurantWorkload());
+                controlIfExceedsRestaurantWorkload(menu_piatto, 1);
     }
 }
