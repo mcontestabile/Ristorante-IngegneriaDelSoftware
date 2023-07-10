@@ -24,7 +24,7 @@ public class WarehouseWorker extends User {
     private List<WareHouseArticle> wareHouseArticles;
     private Map<String, WareHouseArticle> wareHouseArticlesMap;     //articoli nel magazzino
     private List<Article> shoppingList;
-    private Map<String, Article> kitchenMap;
+    private Map<String, Article> kitchenMap = new HashMap<>();
     private int gap = 10;
 
 
@@ -42,20 +42,7 @@ public class WarehouseWorker extends User {
         setWareHouseArticles(parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
         setDrinks(parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
         setAppetizers(parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
-        kitchenMap = new HashMap<>();
-    }
 
-    /**
-     * Metodo che legge le prenotazioni
-     */
-    public boolean readReservations() {
-        try {
-            setReservations(parsingTask(UsefulStrings.AGENDA_FILE, ReservationItems.class));
-        } catch (XMLStreamException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     /**

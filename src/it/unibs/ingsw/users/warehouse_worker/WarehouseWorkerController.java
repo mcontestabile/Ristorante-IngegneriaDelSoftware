@@ -5,7 +5,9 @@ import it.unibs.ingsw.entrees.cookbook.CookbookRecipe;
 import it.unibs.ingsw.entrees.cookbook.Recipe;
 import it.unibs.ingsw.entrees.drinks.Drink;
 import it.unibs.ingsw.entrees.resturant_courses.Course;
+import it.unibs.ingsw.entrees.resturant_courses.Dish;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
+import it.unibs.ingsw.users.manager.Manager;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
@@ -23,6 +25,18 @@ public class WarehouseWorkerController extends UserController {
         this.warehouseWorker = warehouseWorker;
     }
 
+    /**
+     * Metodo che legge le prenotazioni
+     */
+    public boolean readReservations() {
+        try {
+            warehouseWorker.setReservations(warehouseWorker.parsingTask(UsefulStrings.AGENDA_FILE, ReservationItems.class));
+        } catch (XMLStreamException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Metodo che inserisce un articolo
@@ -272,7 +286,7 @@ public class WarehouseWorkerController extends UserController {
      */
     public List<Article> createShoppingList() throws XMLStreamException {
         warehouseWorker.setWareHouseArticles(warehouseWorker.parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
-        warehouseWorker.readReservations();
+        readReservations();
 
         Map <String, WareHouseArticle> wareHouseArticlesMap = warehouseWorker.getWareHouseArticlesMap();
         Map<String, Article> necessaryIngredients = getNecessaryIngredients();
@@ -333,4 +347,35 @@ public class WarehouseWorkerController extends UserController {
     }
 
 
+    public WarehouseWorker getUser() {return warehouseWorker;}
+
+    public List<Course> getMenu() {return warehouseWorker.getMenu();}
+
+    public List<Appetizer> getAppetizers() {return warehouseWorker.getAppetizers();}
+
+    public List<Drink> getDrinks() {return warehouseWorker.getDrinks();}
+
+    public List<CookbookRecipe> getCookbook() {return warehouseWorker.getCookbook();}
+
+    public Map<String, CookbookRecipe> getRecipeMap() {return warehouseWorker.getRecipeMap();}
+
+    public List<Dish> getDishes() {return warehouseWorker.getDishes();}
+
+    public Map<String,Dish> getDishesMap() {return warehouseWorker.getDishesMap();}
+
+    public Map<String, Course> getCoursesMap() {return warehouseWorker.getCoursesMap();}
+
+    public Map<String, Drink> getDrinksMap() {return warehouseWorker.getDrinksMap();}
+
+    public Map<String, Appetizer> getAppetizersMap() {return warehouseWorker.getAppetizersMap();}
+
+    public List<Article> getKitchenList() {return warehouseWorker.getKitchenList();}
+
+    public Map<String, Article> getKitchenMap() {return warehouseWorker.getKitchenMap();}
+
+    public List<Article> getWareHouseArticles() throws XMLStreamException {return warehouseWorker.getWareHouseArticles();}
+
+    public Map<String, WareHouseArticle> getWareHouseArticlesMap() throws XMLStreamException {return warehouseWorker.getWareHouseArticlesMap();}
+
+    public Article getArticle(String name) { return warehouseWorker.getArticle(name); }
 }

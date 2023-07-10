@@ -26,35 +26,35 @@ public class WarehouseWorkerHandler {
             MenuItem[] items = new MenuItem[]{
                     new MenuItem("Visualizza lo stato del magazzino.", () -> {
                         try {
-                            printWareHouse(user);
+                            printWareHouse();
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Lista della spesa.", () -> {
                         try {
-                            createShoppingList(user);
+                            createShoppingList();
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Porta ingrediente in cucina.", () -> {
                         try {
-                            getIngredientFromWareHouse(user);
+                            getIngredientFromWareHouse();
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Riporta ingrediente in magazzino.", () -> {
                         try {
-                            putIngredientInWareHouse(user);
+                            putIngredientInWareHouse();
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
                     }),
                     new MenuItem("Scarta prodotto.", () -> {
                         try {
-                            trashIngredientFromWareHouse(user);
+                            trashIngredientFromWareHouse();
                         } catch (XMLStreamException e) {
                             throw new RuntimeException(e);
                         }
@@ -71,23 +71,23 @@ public class WarehouseWorkerHandler {
      *
      * @throws XMLStreamException
      */
-    public void printWareHouse(WarehouseWorker user) throws XMLStreamException {
-        if(!user.getWareHouseArticles().isEmpty())
-            AsciiArt.printWareHouse(user.getWareHouseArticles());
+    public void printWareHouse() throws XMLStreamException {
+        if(!controller.getWareHouseArticles().isEmpty())
+            AsciiArt.printWareHouse(controller.getWareHouseArticles());
         else
             System.out.println("Il magazzino è vuoto.");
 
-        if(!user.getKitchenList().isEmpty())
-            AsciiArt.printKitchen(user.getKitchenList());
+        if(!controller.getKitchenList().isEmpty())
+            AsciiArt.printKitchen(controller.getKitchenList());
     }
 
     /**
      *
      * @throws XMLStreamException
      */
-    public void createShoppingList(WarehouseWorker user) throws XMLStreamException {
+    public void createShoppingList() throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
-        user.readReservations();
+        controller.readReservations();
         controller.shoppingList = controller.createShoppingList();
 
         if(!controller.shoppingList.isEmpty()) {
@@ -106,18 +106,18 @@ public class WarehouseWorkerHandler {
      *
      * @throws XMLStreamException
      */
-    public void getIngredientFromWareHouse(WarehouseWorker user) throws XMLStreamException {
+    public void getIngredientFromWareHouse() throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint("Prelievo ingredienti \n");
-        if(!user.getWareHouseArticles().isEmpty()) {
+        if(!controller.getWareHouseArticles().isEmpty()) {
 
 
-            AsciiArt.printWareHouse(user.getWareHouseArticles());
+            AsciiArt.printWareHouse(controller.getWareHouseArticles());
 
             do {
                 String name = DataInput.readNotEmptyString("nome ingrediente » ");
-                if (user.getArticle(name) != null) {
-                    Article article = user.getArticle(name);
+                if (controller.getArticle(name) != null) {
+                    Article article = controller.getArticle(name);
 
                     double qty = 0;
                     do {
@@ -128,7 +128,7 @@ public class WarehouseWorkerHandler {
 
                     if (controller.removeArticle(name, qty, true)) {
                         System.out.println("Prelevati correttamente " + qty + article.getMeasure() + " di " + name + ".\n");
-                        if (user.getArticle(name).getQuantity() == 0)
+                        if (controller.getArticle(name).getQuantity() == 0)
                             System.out.println("Attenzione: hai finito le scorte di " + name + "!\n");
                     } else {
                         System.out.println("\nNome ingrediente errato");
@@ -146,29 +146,29 @@ public class WarehouseWorkerHandler {
      *
      * @throws XMLStreamException
      */
-    public void putIngredientInWareHouse(WarehouseWorker user) throws XMLStreamException {
+    public void putIngredientInWareHouse() throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint("Reinserimento ingredienti in magazzino\n");
-        if(!user.getKitchenList().isEmpty()) {
+        if(!controller.getKitchenList().isEmpty()) {
 
 
             String name;
             double qty;
             //stampa degli ingredienti in cucina
-            AsciiArt.printKitchen(user.getKitchenList());
+            AsciiArt.printKitchen(controller.getKitchenList());
 
             do {
                 do {
                     name = DataInput.readNotEmptyString("nome ingrediente » ");
-                } while (user.getKitchenMap().get(name) == null);
+                } while (controller.getKitchenMap().get(name) == null);
                 do {
-                    qty = DataInput.readDoubleWithMinimum("quantità ingrediente (max: " + user.getKitchenMap().get(name).getQuantity() + ") »", 0);
-                } while (qty > user.getKitchenMap().get(name).getQuantity());
+                    qty = DataInput.readDoubleWithMinimum("quantità ingrediente (max: " + controller.getKitchenMap().get(name).getQuantity() + ") »", 0);
+                } while (qty > controller.getKitchenMap().get(name).getQuantity());
 
-                if (controller.insertArticle(name, qty, user.getKitchenMap().get(name).getMeasure())) {
-                    user.getKitchenMap().get(name).decrementQuantity(qty);
-                    if(user.getKitchenMap().get(name).getQuantity() == 0) user.getKitchenMap().remove(name);
-                    System.out.println("\nInseriti correttamente " + qty + user.getKitchenMap().get(name).getMeasure() + " di " + name + ".\n");
+                if (controller.insertArticle(name, qty, controller.getKitchenMap().get(name).getMeasure())) {
+                    controller.getKitchenMap().get(name).decrementQuantity(qty);
+                    if(controller.getKitchenMap().get(name).getQuantity() == 0) controller.getKitchenMap().remove(name);
+                    System.out.println("\nInseriti correttamente " + qty + controller.getWareHouseArticlesMap().get(name).getMeasure() + " di " + name + ".\n");
                 }
             } while (DataInput.yesOrNo("Vuoi inserire qualcos'altro? "));
         } else {
@@ -180,16 +180,16 @@ public class WarehouseWorkerHandler {
      *
      * @throws XMLStreamException
      */
-    public void trashIngredientFromWareHouse(WarehouseWorker user) throws XMLStreamException {
+    public void trashIngredientFromWareHouse() throws XMLStreamException {
         Time.pause(Time.MEDIUM_MILLIS_PAUSE);
         AsciiArt.slowPrint("Scarta ingrediente dal magazzino \n");
-        if(!user.getWareHouseArticles().isEmpty()) {
+        if(!controller.getWareHouseArticles().isEmpty()) {
 
             do {
 
                 String name = DataInput.readNotEmptyString("nome ingrediente » ");
-                if (user.getArticle(name) != null) {
-                    Article article = user.getArticle(name);
+                if (controller.getArticle(name) != null) {
+                    Article article = controller.getArticle(name);
 
                     double qty = 0;
                     do {
@@ -200,7 +200,7 @@ public class WarehouseWorkerHandler {
 
                     if (controller.removeArticle(name, qty, false)) {
                         System.out.println("\nScartati correttamente " + qty + article.getMeasure() + " di " + name + ".\n");
-                        if (user.getArticle(name).getQuantity() == 0)
+                        if (controller.getArticle(name).getQuantity() == 0)
                             System.out.println("Attenzione hai finito le scorte di " + name + "!\n");
                     } else {
                         System.out.println("\nNome ingrediente errato!");
