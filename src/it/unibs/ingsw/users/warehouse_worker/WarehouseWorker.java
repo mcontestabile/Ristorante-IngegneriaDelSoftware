@@ -19,18 +19,12 @@ import java.util.Map;
 import java.util.Timer;
 
 public class WarehouseWorker extends User {
-    private ArrayList<ReservationItems> reservations;   //prenotazioni
-    private HashMap<String, ReservationItems> reservationsMap;  //prenotazioni per nome
-    private List<WareHouseArticle> wareHouseArticles = new ArrayList<>();  //articoli nel magazzino
+    private List<ReservationItems> reservations;   //prenotazioni
+    private Map<String, ReservationItems> reservationsMap;  //prenotazioni per nome
+    private List<WareHouseArticle> wareHouseArticles;
     private Map<String, WareHouseArticle> wareHouseArticlesMap;     //articoli nel magazzino
-    private ArrayList<CookbookRecipe> cookbookRecipes;
-    private ArrayList<Article> shoppingList;
-    private ArrayList<Course> courses;  //Arraylist di menu (ogni menu ha i suoi piatti)
-    private Map<String, Course> coursesMap;
-    private HashMap<String, CookbookRecipe> recipeMap;  //ricetta di ogni piatto
-    private Map<String, Article> kitchenMap = new HashMap<>();
-    private List<Drink> drinksPerCustomer;
-    private List<Appetizer> appetizersPerCustomer;
+    private List<Article> shoppingList;
+    private Map<String, Article> kitchenMap;
     private int gap = 10;
 
 
@@ -44,11 +38,11 @@ public class WarehouseWorker extends User {
         super(username, password, canIWork);
 
         setCookbook(parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
-        setCourses(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+        setMenu(parsingTask(UsefulStrings.COURSES_FILE, Course.class));
         setWareHouseArticles(parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
-        drinksPerCustomer = parsingTask(UsefulStrings.DRINKS_FILE, Drink.class);
-        appetizersPerCustomer = parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class);
-
+        setDrinks(parsingTask(UsefulStrings.DRINKS_FILE, Drink.class));
+        setAppetizers(parsingTask(UsefulStrings.APPETIZERS_FILE, Appetizer.class));
+        kitchenMap = new HashMap<>();
     }
 
     /**
@@ -65,17 +59,6 @@ public class WarehouseWorker extends User {
     }
 
     /**
-     * Metodo che setta il la map degli ingredienti
-     */
-    public void setCookbook(@NotNull ArrayList<CookbookRecipe> cookbookRecipes) {
-        this.cookbookRecipes = cookbookRecipes;
-        recipeMap = new HashMap<>();
-        cookbookRecipes.forEach(e -> recipeMap.put(e.getName(), e));
-    }
-
-    public Map <String, CookbookRecipe> getRecipeMap() { return recipeMap; }
-
-    /**
      * Metodo che setta il la map delle prenotazioni
      */
     public void setReservations(@NotNull ArrayList<ReservationItems> reservations) {
@@ -85,17 +68,6 @@ public class WarehouseWorker extends User {
     }
 
     public List <ReservationItems> getReservations() { return reservations; }
-
-    /**
-     * Metodo che setta il la map dei menu
-     */
-    public void setCourses(@NotNull ArrayList<Course> courses) {
-        this.courses = courses;
-        coursesMap = new HashMap<>();
-        courses.forEach(c -> coursesMap.put(c.getName(), c));
-    }
-
-    public Map<String, Course> getCoursesMap() { return coursesMap; }
 
     /**
      * Metodo che setta il la map del magazzino
@@ -143,8 +115,8 @@ public class WarehouseWorker extends User {
      * Metodo che ritorna la lista degli ingredienti in cucina
      * @return kitchenArticles
      */
-    public ArrayList<Article> getKitchenList() {
-        ArrayList<Article> kitchenArticles = new ArrayList<>();
+    public List<Article> getKitchenList() {
+        List<Article> kitchenArticles = new ArrayList<>();
         kitchenMap.forEach((name, article) -> {
             kitchenArticles.add(article);
         });
@@ -162,10 +134,6 @@ public class WarehouseWorker extends User {
             return new Article(wareHouseArticlesMap.get(name).getName(),wareHouseArticlesMap.get(name).getQuantity(), wareHouseArticlesMap.get(name).getMeasure());
         else return null;
     }
-
-    public List<Drink> getDrinksPerCustomer() { return drinksPerCustomer; }
-
-    public List<Appetizer> getAppetizersPerCustomer() { return appetizersPerCustomer; }
 
     public int getGap() {
         return gap;

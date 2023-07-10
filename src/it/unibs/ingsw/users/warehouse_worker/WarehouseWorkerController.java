@@ -34,7 +34,7 @@ public class WarehouseWorkerController extends UserController {
      */
     public boolean insertArticle(String name, double quantity, String measure) throws XMLStreamException {
         warehouseWorker.setWareHouseArticles(warehouseWorker.parsingTask(UsefulStrings.WAREHOUSE_FILE, WareHouseArticle.class));
-        ArrayList <Article> articles = new ArrayList<>();
+        List <Article> articles = new ArrayList<>();
         Map <String, WareHouseArticle> wareHouseArticlesMap = warehouseWorker.getWareHouseArticlesMap();
         if(wareHouseArticlesMap.get(name) != null) {
             wareHouseArticlesMap.get(name).incrementQuantity(quantity);
@@ -71,7 +71,7 @@ public class WarehouseWorkerController extends UserController {
      */
     public boolean removeArticle(String name, double quantity, boolean toKitchen) throws XMLStreamException {
 
-        ArrayList <Article> articles = new ArrayList<>();
+        List <Article> articles = new ArrayList<>();
         Map <String, WareHouseArticle> wareHouseArticlesMap = warehouseWorker.getWareHouseArticlesMap();
         Map <String, Article> kitchenMap = warehouseWorker.getKitchenMap();
 
@@ -113,7 +113,7 @@ public class WarehouseWorkerController extends UserController {
     public Map<String, Article> getNecessaryIngredients() throws XMLStreamException {
 
         warehouseWorker.setCookbook(warehouseWorker.parsingTask(UsefulStrings.COOKBOOK_FILE, CookbookRecipe.class));
-        warehouseWorker.setCourses(warehouseWorker.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
+        warehouseWorker.setMenu(warehouseWorker.parsingTask(UsefulStrings.COURSES_FILE, Course.class));
 
         Map <String, Article> necessaryIngredients = new HashMap<>();
         List <ReservationItems> reservations = warehouseWorker.getReservations();
@@ -221,7 +221,7 @@ public class WarehouseWorkerController extends UserController {
         List<Article> necessaryDrinks = new ArrayList<>();
         Map<String, Article> necessaryDrinksMap = new HashMap<>();
         List<ReservationItems> reservations = warehouseWorker.getReservations();
-        List<Drink> drinksPerCustomer = warehouseWorker.getDrinksPerCustomer();
+        List<Drink> drinksPerCustomer = warehouseWorker.getDrinks();
 
         //per ogni reservation, guardo le covers e moltiplico ogni bevanda per le covers per vedere quante ne ho bisogno
         reservations.forEach((r) -> {
@@ -243,11 +243,11 @@ public class WarehouseWorkerController extends UserController {
      * Metodo che ritorna gli antipasti necessari
      * @return necessaryAppetizers
      */
-    public ArrayList<Article> getNecessaryAppetizers() {
-        ArrayList<Article> necessaryAppetizers = new ArrayList<>();
-        HashMap<String, Article> necessaryAppetizersMap = new HashMap<>();
+    public List<Article> getNecessaryAppetizers() {
+        List<Article> necessaryAppetizers = new ArrayList<>();
+        Map<String, Article> necessaryAppetizersMap = new HashMap<>();
         List<ReservationItems> reservations = warehouseWorker.getReservations();
-        List<Appetizer> appetizersPerCustomer = warehouseWorker.getAppetizersPerCustomer();
+        List<Appetizer> appetizersPerCustomer = warehouseWorker.getAppetizers();
 
         //per ogni reservation, guardo le covers e moltiplico ogni bevanda per le covers per vedere quante ne ho bisogno
         reservations.forEach((r) -> {
