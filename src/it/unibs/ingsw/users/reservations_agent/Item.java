@@ -20,8 +20,4 @@ public abstract class Item {
     public int getCover() {
         return cover;
     }
-
-    public void setCover(int cover) {
-        this.cover = cover;
-    }
 }

@@ -108,37 +108,14 @@ public class ReservationsAgentHandler {
         return menu_piatto;
     }
 
-    public boolean itemControl(ItemList list, int itemCover, String itemName, Reservable r){
-        if(controller.isMenu(itemName))
-            return controlForMenu(itemCover, list, itemName, r);
-        else
-            return controlForDish(itemCover, itemName);
-    }
-    public boolean controlForMenu(int itemCover, ItemList il, String menuName, Reservable r){
-        return controller.exceedsOneMenuPerPerson(itemCover, il.getHowManyMenus(), r.getResCover()) ||
-                controller.controlIfExceedsRestaurantWorkload(menuName, itemCover);
-    }
-    public boolean controlForDish(int itemCover, String dishName){
-        return controller.controlIfExceedsRestaurantWorkload(dishName, itemCover);
-    }
     public int askItemCover(ItemList list, Reservable r, String itemName){
         int itemCover;
 
         do {
             itemCover = DataInput.readPositiveInt(UsefulStrings.MENU_DISH_COVER);
-        } while (itemControl(list, itemCover, itemName, r));
+        } while (controller.itemControl(list, itemCover, itemName, r));
 
         return itemCover;
-    }
-
-    public Item createItem(ItemList il, Reservable r){
-        String n = askItemName(il);
-
-        if(controller.isMenu(n)){
-            return new ItemListMenu(n, askItemCover(il, r, n));
-        }else{
-            return new DishItem(n, askItemCover(il, r, n));
-        }
     }
 
     public boolean askMoreItemsIfNeededOrUserDecision(ItemList il, Reservable sr){
@@ -152,12 +129,6 @@ public class ReservationsAgentHandler {
 
     public boolean itemTaskIterationControl(ItemList il, Reservable sr){
         return askMoreItemsIfNeededOrUserDecision(il, sr) && controller.workloadRestaurantNotExceeded();
-    }
-
-    public boolean endUpdateIterationControl(){
-        return (DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
-                controller.restaurantNotFull() &&
-                controller.workloadRestaurantNotExceeded());
     }
 
     /**
@@ -189,26 +160,26 @@ public class ReservationsAgentHandler {
 
             itemTask(sr, il);
 
-            closeResInsertion(sr, il);
+            controller.closeResInsertion(sr, il);
+            controller.writeAgenda();
 
-        }while(endUpdateIterationControl());
-    }
-
-    private void closeResInsertion(Reservable sr, ItemList il) {
-        ReservationItemList res = controller.createReservationItemList(sr, il);
-        controller.insertReservation(res);
-        controller.updateCopertiRaggiunti(res.getResCover());
-        controller.writeAgenda();
+        }while(controller.endUpdateAgendaIterationControl());
     }
 
     private void itemTask(Reservable sr, ItemList il) {
-        Item item;
+        String name;
+        int cover;
+
         do{
-            item = createItem(il, sr);
+            name = askItemName(il);
+            cover = askItemCover(il,sr,name);
+
+            Item item = controller.createItem(name, cover);
             il.putInList(item);
             il.updateOccurences(item);
 
             controller.updateCaricoRaggiunto(controller.calculateWorkload(item.getName(), item.getCover()));
+
         }while(itemTaskIterationControl(il, sr));
     }
 

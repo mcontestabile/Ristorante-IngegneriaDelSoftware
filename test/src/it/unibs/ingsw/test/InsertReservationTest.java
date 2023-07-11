@@ -184,7 +184,7 @@ public class InsertReservationTest {
 
         int menuCover = resCover-1;
         int n_menu_already = 0;
-        Item menu = new ItemListMenu("menu", menuCover);
+        Item menu = new ThMenuItem("menu", menuCover);
 
         if(!controller.exceedsOneMenuPerPerson(menuCover, n_menu_already, sr.getResCover()))
             itemList.putInList(menu);
@@ -203,7 +203,7 @@ public class InsertReservationTest {
 
         int menuCover = resCover;
         int n_menu_already = 0;
-        Item menu = new ItemListMenu("menu", menuCover);
+        Item menu = new ThMenuItem("menu", menuCover);
 
         if(!controller.exceedsOneMenuPerPerson(menuCover, n_menu_already, sr.getResCover()))
             itemList.putInList(menu);
@@ -222,7 +222,7 @@ public class InsertReservationTest {
 
         int menuCover = resCover+1;
         int n_menu_already = 0;
-        Item menu = new ItemListMenu("menu", menuCover);
+        Item menu = new ThMenuItem("menu", menuCover);
 
         if(!controller.exceedsOneMenuPerPerson(menuCover, n_menu_already, sr.getResCover()))
             itemList.putInList(menu);
@@ -241,7 +241,7 @@ public class InsertReservationTest {
 
         int menuCover = resCover;
         int n_menu_already = 1;
-        Item menu = new ItemListMenu("menu", menuCover);
+        Item menu = new ThMenuItem("menu", menuCover);
 
         if(!controller.exceedsOneMenuPerPerson(menuCover, n_menu_already, sr.getResCover()))
             itemList.putInList(menu);
