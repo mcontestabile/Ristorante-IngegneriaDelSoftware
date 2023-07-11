@@ -247,7 +247,7 @@ public class InsertReservationTest {
 
         Item i = new DishItem("amatriciana", itemCover);
 
-        if(!controller.controlIfExceedsRestaurantWorkload(i.getName(), i.getCover()))
+        if(!controller.controlIfItemExceedsRestaurantWorkload(i.getName(), i.getCover()))
             itemList.putInList(i);
 
         assertThat(itemList.getItemList().size(), is(equalTo(0)));
@@ -262,7 +262,7 @@ public class InsertReservationTest {
 
         Item i = new DishItem("amatriciana", 1);
 
-        if(!controller.controlIfExceedsRestaurantWorkload(i.getName(), i.getCover()))
+        if(!controller.controlIfItemExceedsRestaurantWorkload(i.getName(), i.getCover()))
             itemList.putInList(i);
 
 
@@ -299,7 +299,7 @@ public class InsertReservationTest {
         Item i = new DishItem("test", 1);
 
         // should be true  ->  49.05 + 0.05  ->  arriva al limite
-        if(!controller.controlIfExceedsRestaurantWorkload(i.getName(), i.getCover()))
+        if(!controller.controlIfItemExceedsRestaurantWorkload(i.getName(), i.getCover()))
             itemList.putInList(i);
 
         assertThat(itemList.getItemList().size(), is(equalTo(1)));
@@ -312,7 +312,7 @@ public class InsertReservationTest {
 
         Item i = new DishItem("amatriciana", 1);
 
-        if(!controller.controlIfExceedsRestaurantWorkload(i.getName(), i.getCover()))
+        if(!controller.controlIfItemExceedsRestaurantWorkload(i.getName(), i.getCover()))
             itemList.putInList(i);
 
         assertThat(itemList.getItemList().size(), is(equalTo(0)));

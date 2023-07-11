@@ -289,7 +289,7 @@ public class ReservationsAgentController extends UserController {
      * @param itemName, nome dell'item
      * @param itemCover, numero coperti dell'item
      */
-    public boolean controlIfExceedsRestaurantWorkload(String itemName, int itemCover){
+    public boolean controlIfItemExceedsRestaurantWorkload(String itemName, int itemCover){
         double partialSum = getCaricoRaggiunto() + calculateWorkload(itemName, itemCover);
 
         if(partialSum > getRestaurantWorkload()){
@@ -306,6 +306,7 @@ public class ReservationsAgentController extends UserController {
      */
     public boolean workloadRestaurantNotExceeded(){
         double workloadRimanente = getRestaurantWorkload() - this.getCaricoRaggiunto();
+
         if(this.getCaricoRaggiunto() >= getRestaurantWorkload() || workloadRimanente < getMinimumWorkload()){
             System.out.println(UsefulStrings.NO_MORE_RES_WORKLOAD);
             return false;
@@ -375,7 +376,15 @@ public class ReservationsAgentController extends UserController {
     public boolean invalidItemName(String menu_piatto, ItemList itemList){
         return !isInMenu(menu_piatto) ||
                 isAlreadyIn(menu_piatto, itemList.getItemsName()) ||
-                controlIfExceedsRestaurantWorkload(menu_piatto, 1);
+                controlIfItemExceedsRestaurantWorkload(menu_piatto, 1);
+    }
+
+    public Item createItem(String n, int cover){
+        if(isMenu(n)){
+            return new ThMenuItem(n, cover);
+        }else{
+            return new DishItem(n, cover);
+        }
     }
 
     public boolean endUpdateAgendaIterationControl(){
@@ -392,11 +401,11 @@ public class ReservationsAgentController extends UserController {
 
     public boolean controlForMenu(int itemCover, ItemList il, String menuName, Reservable r){
         return exceedsOneMenuPerPerson(itemCover, il.getHowManyMenus(), r.getResCover()) ||
-                controlIfExceedsRestaurantWorkload(menuName, itemCover);
+                controlIfItemExceedsRestaurantWorkload(menuName, itemCover);
     }
 
     public boolean controlForDish(int itemCover, String dishName){
-        return controlIfExceedsRestaurantWorkload(dishName, itemCover);
+        return controlIfItemExceedsRestaurantWorkload(dishName, itemCover);
     }
 
     public boolean itemControl(ItemList list, int itemCover, String itemName, Reservable r){
@@ -404,13 +413,5 @@ public class ReservationsAgentController extends UserController {
             return controlForMenu(itemCover, list, itemName, r);
         else
             return controlForDish(itemCover, itemName);
-    }
-
-    public Item createItem(String n, int cover){
-        if(isMenu(n)){
-            return new ThMenuItem(n, cover);
-        }else{
-            return new DishItem(n, cover);
-        }
     }
 }

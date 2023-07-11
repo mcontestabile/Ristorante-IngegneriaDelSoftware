@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Classe rappresentativa dell'addetto, il quale
@@ -25,7 +26,7 @@ public class ReservationsAgent extends User {
     /**
      * La lista delle prenotazioni.
      */
-    private ArrayList<ReservationItemList> reservations;
+    private List<ReservationItemList> reservations;
 
     /**
      * Repository archivio prenotazioni
@@ -40,7 +41,7 @@ public class ReservationsAgent extends User {
     /**
      * Map per reperire i carichi di lavoro in maniera pronta e rapida.
      */
-    private HashMap<String, Workload> workloadsMap;
+    private Map<String, Workload> workloadsMap;
 
     /**
      * Costruttore dell'oggetto addetto. Quando inizializzato, esso deve recuperare
@@ -81,7 +82,7 @@ public class ReservationsAgent extends User {
      *
      * @return reservations
      */
-    public ArrayList<ReservationItemList> getReservations() {
+    public List<ReservationItemList> getReservations() {
         return reservations;
     }
 
@@ -101,7 +102,7 @@ public class ReservationsAgent extends User {
      *
      * @return workloadsMap
      */
-    public HashMap<String, Workload> getWorkloadsMap() {
+    public Map<String, Workload> getWorkloadsMap() {
         return workloadsMap;
     }
 
