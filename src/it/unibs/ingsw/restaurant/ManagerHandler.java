@@ -228,7 +228,7 @@ public class ManagerHandler {
         String availability;
         do {
             availability = DataInput.readNotEmptyString(UsefulStrings.COURSE_VALIDITY);
-        } while (!RestaurantDates.checkDate(availability)); // controllo, per evitare di aggiungere un menù che abbia una validità nel formato scorretto.
+        } while (!RestaurantDates.checkAvailability(availability)); // controllo, per evitare di aggiungere un menù che abbia una validità nel formato scorretto.
 
         // scelta di quanti piatti compongono il nuovo menù.
         System.out.println();
@@ -272,7 +272,7 @@ public class ManagerHandler {
         do {
             newDish = DataInput.readNotEmptyString(UsefulStrings.DISH_NAME);
         } while ((!controller.getDishesMap().containsKey(newDish) || controller.checkDishInMenu(newDish)) ||
-                !RestaurantDates.checkDate(controller.getDishesMap().get(newDish).getAvailability())); // string deve trovare nei piatti, ma non nel menù alla carta.
+                !RestaurantDates.checkAvailability(controller.getDishesMap().get(newDish).getAvailability())); // string deve trovare nei piatti, ma non nel menù alla carta.
 
         controller.insertDishInALaCarteCourse(newDish);
     }

@@ -11,6 +11,7 @@ import it.unibs.ingsw.mylib.utilities.DataInput;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
+import it.unibs.ingsw.mylib.xml_utils.Parsable;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 import org.jetbrains.annotations.NotNull;
@@ -257,7 +258,7 @@ public class ManagerController extends UserController {
      * Metodo che permette di aggiornare il menù sulla base della richiesta del gestore, in questo caso
      * di aggiungere un piatto al menu alla carta sulla base delle informazioni fornite dall'utente.
      *
-     * @param name nome del piatto da rimuovere dal menu alla carta.
+     * @param name nome del piatto da aggiungere dal menu alla carta.
      */
     public void insertDishInALaCarteCourse(String name) {
         List<Carte> newCourse = new ArrayList<>();

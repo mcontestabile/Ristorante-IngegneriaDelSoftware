@@ -6,6 +6,7 @@
 		<dish has="spaghetti allo scoglio"/>
 		<dish has="platessa con panatura di frutta secca"/>
 		<dish has="maritozzi golosi"/>
+		<dish has="avocado toast"/>
 	</course>
 	<course name="estate23" type="menu tematico" validation="estate">
 		<dish has="spaghetti allo scoglio"/>

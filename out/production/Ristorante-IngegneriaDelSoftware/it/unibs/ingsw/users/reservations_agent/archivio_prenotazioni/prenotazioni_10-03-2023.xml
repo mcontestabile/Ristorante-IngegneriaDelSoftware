@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Elenco prenotazioni del 10-03-2023-->
-<agenda>
-	<reservation name="prova6" res_cover="3">
-		<item item_name="w" item_cover="5"/>
-	</reservation>
-</agenda>
