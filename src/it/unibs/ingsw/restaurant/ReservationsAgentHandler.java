@@ -103,7 +103,7 @@ public class ReservationsAgentHandler {
 
         do{
             menu_piatto = DataInput.readNotEmptyString(UsefulStrings.MENU_DISH_NAME);
-        }while(controller.controlIfAskItemNameAgain(menu_piatto, itemList));
+        }while(controller.invalidItemName(menu_piatto, itemList));
 
         return menu_piatto;
     }

@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Classe rappresentativa dell'addetto, il quale
@@ -34,7 +35,7 @@ public class ReservationsAgent extends User {
     /**
      * La lista dei workloads di giornata.
      */
-    private ArrayList<Workload> workloads;
+    private List<Workload> workloads;
 
     /**
      * Map per reperire i carichi di lavoro in maniera pronta e rapida.
@@ -90,7 +91,7 @@ public class ReservationsAgent extends User {
      *
      * @return workloads
      */
-    public ArrayList<Workload> getWorkloads() {
+    public List<Workload> getWorkloads() {
         return workloads;
     }
 
@@ -137,7 +138,7 @@ public class ReservationsAgent extends User {
      *
      * @param workloads la lista di workloads.
      */
-    public void setWorkloads(@NotNull ArrayList<Workload> workloads) {
+    public void setWorkloads(List<Workload> workloads) {
         this.workloads = workloads;
         workloadsMap = new HashMap<>();
         workloads.forEach(w -> workloadsMap.put(w.getName(), w));

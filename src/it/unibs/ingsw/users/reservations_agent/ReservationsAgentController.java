@@ -6,7 +6,6 @@ import it.unibs.ingsw.mylib.utilities.DataInput;
 import it.unibs.ingsw.mylib.utilities.Fraction;
 import it.unibs.ingsw.mylib.utilities.RestaurantDates;
 import it.unibs.ingsw.mylib.utilities.UsefulStrings;
-import it.unibs.ingsw.restaurant.ReservationsAgentHandler;
 import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
@@ -335,7 +334,7 @@ public class ReservationsAgentController extends UserController {
      * @return valore dell'workload minimo (a due cifre decimali).
      */
     public double getMinimumWorkload(){
-        ArrayList<Workload> workloads = agent.getWorkloads();
+        List<Workload> workloads = agent.getWorkloads();
 
         Fraction min = workloads.get(0).getWorkloadFraction();
         double dMin = min.getTwoDecimalNumber();
@@ -373,7 +372,7 @@ public class ReservationsAgentController extends UserController {
         agent.getReservationArchiveRepository().save(RestaurantDates.workingDay.format(RestaurantDates.formatter));
     }
 
-    public boolean controlIfAskItemNameAgain(String menu_piatto, ItemList itemList){
+    public boolean invalidItemName(String menu_piatto, ItemList itemList){
         return !isInMenu(menu_piatto) ||
                 isAlreadyIn(menu_piatto, itemList.getItemsName()) ||
                 controlIfExceedsRestaurantWorkload(menu_piatto, 1);
