@@ -224,8 +224,10 @@ public class UsefulStrings {
     public static final String RES_COVER = "Inserire il numero di coperti\n:» ";
     public static final String AGENDA_OUTER_TAG = "agenda";
     public static final String XML_FILE_EXTENSION = ".xml";
+    public static final String DAILY_MENU_NAME = "menu del giorno";
     public static final String LOCATION_RES_ARCHIVE = "src/it/unibs/ingsw/users/reservations_agent/archivio_prenotazioni/prenotazioni_";
     public static final String INVALID_MENU_DISH = "Il menu/piatto inserito non è disponibile, la preghiamo di inserire un nome valido.";
+    public static final String INVALID_DAILY_MENU = "La singola voce 'menu del giorno' non è ordinabile! Tutti i piatti del giorno ovviamente sì! La preghiamo quindi di inserire un nome valido.";
     public static final String OK_FILE_SAVED_MESSAGE = "File salvato correttamente.";
     public static final String ELEMENT_ALREADY_IN = "Elemento già presente!";
 }

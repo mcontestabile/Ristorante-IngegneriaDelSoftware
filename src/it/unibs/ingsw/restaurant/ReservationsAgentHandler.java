@@ -25,8 +25,9 @@ public class ReservationsAgentHandler {
     public void runAgentIfCanWork(ReservationsAgent user, UserController userController){
         if(!userController.getCanIWork(user))
             AsciiArt.slowPrint(UsefulStrings.ACCESS_DENIED4);
-        else
-            agentMenu();
+
+        parsingTask();
+        agentMenu();
     }
 
     /**
@@ -108,7 +109,7 @@ public class ReservationsAgentHandler {
     }
 
     public boolean itemControl(ItemList list, int itemCover, String itemName, Reservable r){
-        if(!controller.isDish(itemName))
+        if(controller.isMenu(itemName))
             return controlForMenu(itemCover, list, itemName, r);
         else
             return controlForDish(itemCover, itemName);
@@ -133,7 +134,7 @@ public class ReservationsAgentHandler {
     public Item createItem(ItemList il, Reservable r){
         String n = askItemName(il);
 
-        if(!controller.isDish(n)){
+        if(controller.isMenu(n)){
             return new ItemListMenu(n, askItemCover(il, r, n));
         }else{
             return new DishItem(n, askItemCover(il, r, n));
@@ -172,7 +173,6 @@ public class ReservationsAgentHandler {
     }
 
     private void initialTask() {
-        parsingTask();
         welcome();
         seeMenus();
         seeInfos();

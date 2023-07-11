@@ -9,9 +9,7 @@ import it.unibs.ingsw.users.registered_users.User;
 import it.unibs.ingsw.users.registered_users.UserController;
 
 import javax.xml.stream.XMLStreamException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Queue;
+import java.util.*;
 
 public class ReservationsAgentController extends UserController {
     private ReservationsAgent agent;
@@ -209,23 +207,39 @@ public class ReservationsAgentController extends UserController {
     }
 
     /**
-     * Metodo per controllare se l'item in input sia effetteivamente disponibile
-     * Se si tratta di un menu ritorna true se vi è esito positivo. Altrimenti si cerca nei piatti relativi
-     * e se vi è esito positivo ritorna true anche in questo caso, testimoniando la
-     * disponibilità dell'item in input. Se l'item non si trova in nessuno dei due casi, allora il metodo ritorna false.
-     *
+     * Metodo per controllare se l'item in input sia effetteivamente disponibile.
+
      * @param menu_piatto nome del menù/piatto da verificare.
      */
     public boolean isInMenu(String menu_piatto) {
-        for (Course c : agent.getMenu()) {
-            if(menu_piatto.equals(c.getName()))
-                return true;
-            for(String d : c.getDishesArraylist()){
-                if(menu_piatto.equals(d))
+        // il menu del giorno non è considerato parte del menu
+        if(isDailyMenu(menu_piatto))
+            return false;
+
+        if(isMenu(menu_piatto) || isDish(menu_piatto))
+            return true;
+
+        System.out.println(UsefulStrings.INVALID_MENU_DISH);
+        return false;
+    }
+
+    private boolean isDish(String menu_piatto) {
+        for (Course c : getMenu()) {
+            for (String dish : c.getDishesArraylist()) {
+                if (menu_piatto.equals(dish))
                     return true;
             }
         }
-        System.out.println(UsefulStrings.INVALID_MENU_DISH);
+
+        return false;
+    }
+
+
+    private boolean isDailyMenu(String menu_piatto) {
+        if(menu_piatto.equals(UsefulStrings.DAILY_MENU_NAME)){
+            System.out.println(UsefulStrings.INVALID_DAILY_MENU);
+            return true;
+        }
         return false;
     }
 
@@ -341,13 +355,13 @@ public class ReservationsAgentController extends UserController {
      *
      * @param menu_piatto nome del menù/piatto da verificare.
      */
-    public boolean isDish(String menu_piatto) {
-        for (Course c : agent.getMenu()) {
+    public boolean isMenu(String menu_piatto) {
+        for (Course c : getMenu()) {
             if(menu_piatto.equals(c.getName()))
-                return false;
+                return true;
         }
 
-        return true;
+        return false;
     }
 
     /**
