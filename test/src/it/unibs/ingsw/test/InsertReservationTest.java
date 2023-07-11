@@ -155,7 +155,7 @@ public class InsertReservationTest {
     }
 
     @Test
-    public void itemNameAlreadyInItemList(){
+    public void itemNameInvalid(){
         itemList.getItemList().clear();
 
         Item item = new DishItem("amatriciana", 3);
@@ -290,6 +290,7 @@ public class InsertReservationTest {
 
         itemList.getItemList().clear();
 
+        gestore.setRestaurantWorkload(50.0);
         agent.setCaricoRaggiunto(0);
 
         // should be ->  caricoRaggiunto = 50 - 0.05 = 49.95  ->  sono al limite
@@ -298,7 +299,7 @@ public class InsertReservationTest {
 
         Item i = new DishItem("test", 1);
 
-        // should be true  ->  49.05 + 0.05  ->  arriva al limite
+        // should be true  ->  49.95 + 0.05  ->  arriva al limite
         if(!controller.controlIfItemExceedsRestaurantWorkload(i.getName(), i.getCover()))
             itemList.putInList(i);
 
