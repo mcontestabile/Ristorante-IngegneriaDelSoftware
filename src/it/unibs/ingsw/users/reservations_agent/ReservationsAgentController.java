@@ -208,7 +208,8 @@ public class ReservationsAgentController extends UserController {
     }
 
     /**
-     * Metodo per controllare se l'item in input sia effetteivamente disponibile.
+     * Metodo per controllare se il nome dell'item in input
+     * rappresenti un item che sia effetteivamente disponibile nel menu.
 
      * @param menu_piatto nome del menù/piatto da verificare.
      */
@@ -224,10 +225,18 @@ public class ReservationsAgentController extends UserController {
         return false;
     }
 
-    private boolean isDish(String menu_piatto) {
+    /**
+     * Metodo per controllare se il nome dell'item in input
+     * rappresenti un piatto esistente.
+     * Si verifica quindi se è presente in un qualsiasi menu.
+     *
+     * @param piatto
+     * @return true se è presente in un menu, false altrimenti.
+     */
+    private boolean isDish(String piatto) {
         for (Course c : getMenu()) {
             for (String dish : c.getDishesArraylist()) {
-                if (menu_piatto.equals(dish))
+                if (piatto.equals(dish))
                     return true;
             }
         }
@@ -235,7 +244,15 @@ public class ReservationsAgentController extends UserController {
         return false;
     }
 
-
+    /**
+     * Metodo per controllare se il nome in input rappresenti il
+     * menu del giorno del ristorante.
+     * Se fosse così, quest'ultimo non è ordinabile nella sua interezza,
+     * ma al limite, scegliendo i piatti che lo compongono.
+     *
+     * @param menu_piatto, nome in input
+     * @return true, se il nome rappresenti il menu del giorno del ristorante, false altrimenti.
+     */
     private boolean isDailyMenu(String menu_piatto) {
         if(menu_piatto.equals(UsefulStrings.DAILY_MENU_NAME)){
             System.out.println(UsefulStrings.INVALID_DAILY_MENU);
@@ -373,12 +390,30 @@ public class ReservationsAgentController extends UserController {
         agent.getReservationArchiveRepository().save(RestaurantDates.workingDay.format(RestaurantDates.formatter));
     }
 
+    /**
+     * Metodo per controllare se il nome in input non sia valido,
+     * e quindi non rappresenti un menu/piatto esistente e disponibile,
+     * nonché controlla se è già presente nella lista di item.
+     *
+     * @param menu_piatto nome in input.
+     * @param itemList lista di item
+     * @return true, se il nome non è valido, false altrimenti.
+     */
     public boolean invalidItemName(String menu_piatto, ItemList itemList){
         return !isInMenu(menu_piatto) ||
                 isAlreadyIn(menu_piatto, itemList.getItemsName()) ||
                 controlIfItemExceedsRestaurantWorkload(menu_piatto, 1);
     }
 
+    /**
+     * Metodo per la creazione di un item.
+     * Se il nome in input rappresenta un menu, si procederà a creare
+     * un menu. Si creerà un piatto viceversa.
+     *
+     * @param n nome dell'item
+     * @param cover numero coperti dell'item
+     * @return un nuovo piatto/menu a seconda di che tipo di item rappresenti il nome immesso.
+     */
     public Item createItem(String n, int cover){
         if(isMenu(n)){
             return new ThMenuItem(n, cover);
@@ -387,27 +422,80 @@ public class ReservationsAgentController extends UserController {
         }
     }
 
+    /**
+     * Metodo di controllo prima di concludere l'inserimento di una prenotazione.
+     * Se il ristorante non è pieno e il carico di massimo non è stato raggiunto,
+     * si potrà proseguire con l'inserimento di un'ulteriore prenotazione, a
+     * discrezione dell'utente.
+     *
+     * @return true, se è possibile inserire un'ulteriore prenotazione, false altrimenti.
+     */
     public boolean endUpdateAgendaIterationControl(){
         return (DataInput.yesOrNo(UsefulStrings.QUE_ADD_ANOTHER_RESERVATION) &&
                 restaurantNotFull() &&
                 workloadRestaurantNotExceeded());
     }
 
+    /**
+     * Metodo che 'chiude' la procedura di inserimento di una prenotazione.
+     * Si crea la ReservationItemList decorata con l'item list,
+     * si aggiorneranno così i coperti raggiunti.
+     *
+     * @param sr prenotazione da decorare
+     * @param il lista di item
+     */
     public void closeResInsertion(Reservable sr, ItemList il) {
         ReservationItemList res = createReservationItemList(sr, il);
         insertReservation(res);
         updateCopertiRaggiunti(res.getResCover());
     }
 
+    /**
+     * Controllo attuato ad un item di tipo Menu.
+     * Si verifica che il numero coperti dell'item in input,
+     * non superi certe condizioni.
+     * Se vi saranno più menu del numero di coperti della prenotazione,
+     * il controllo restituirà true, così come se il carico del lavoro
+     * del menu, esteso al numero di coperti immesso, superi il massimo
+     * workload del ristorante.
+     *
+     * @param itemCover numero coperti del menu
+     * @param il lista di item
+     * @param menuName nome del menu
+     * @param r prenotazione corrente
+     *
+     * @return true se le condizioni limite vengono superate, false altrimenti.
+     */
     public boolean controlForMenu(int itemCover, ItemList il, String menuName, Reservable r){
         return exceedsOneMenuPerPerson(itemCover, il.getHowManyMenus(), r.getResCover()) ||
                 controlIfItemExceedsRestaurantWorkload(menuName, itemCover);
     }
 
+    /**
+     * Controllo attuato ad un item di tipo Dish.
+     * Si verifica che il carico del lavoro
+     * del piatto, esteso al numero di coperti immesso, superi il massimo
+     * workload del ristorante.
+     *
+     * @param itemCover numero di coperti del piatto
+     * @param dishName nome del piatto
+     *
+     * @return true se la condizione limite viene superata, false altrimenti.
+     */
     public boolean controlForDish(int itemCover, String dishName){
         return controlIfItemExceedsRestaurantWorkload(dishName, itemCover);
     }
 
+    /**
+     * Controllo attuato su un item.
+     * Se si tratta di un menu, si applicherà il controllo per un menu,
+     * altrimenti si applicherà il controllo per un piatto.
+     *
+     * @param list lista di item
+     * @param itemCover numero coperti dell'item
+     * @param itemName nome dell'item
+     * @param r prenotazione corrente
+     */
     public boolean itemControl(ItemList list, int itemCover, String itemName, Reservable r){
         if(isMenu(itemName))
             return controlForMenu(itemCover, list, itemName, r);

@@ -9,7 +9,7 @@ import java.text.ParseException;
  * tutti i metodi di interazione nella classe {@code Handler}.
  */
 public class RistoranteMain {
-    public static void main(String[] args) throws XMLStreamException {
+    public static void main(String[] args){
         Handler handler = new Handler();
         handler.welcomeMessage();
     }
