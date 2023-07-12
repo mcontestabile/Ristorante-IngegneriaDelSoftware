@@ -37,7 +37,6 @@ public class WareHouseArticle implements Parsable {
     public String getName() {return name;}
     public double getQuantity() {return quantity;}
     public String getMeasure() {return measure;}
-
     public void setName(String name) {this.name = name;}
     public void setQuantity(String quantity) {this.quantity = Double.parseDouble(quantity);}
     public void setQuantityDouble(double quantity) {this.quantity = quantity;}

@@ -20,6 +20,12 @@ public class WarehouseWorkerController extends UserController {
 
     private WarehouseWorker warehouseWorker;
 
+    /**
+     * Metodo costruttore
+     *
+     * @param userQueue
+     * @param warehouseWorker
+     */
     public WarehouseWorkerController(Queue<User> userQueue, WarehouseWorker warehouseWorker) {
         super(userQueue);
         this.warehouseWorker = warehouseWorker;
@@ -27,6 +33,7 @@ public class WarehouseWorkerController extends UserController {
 
     /**
      * Metodo che legge le prenotazioni
+     * @return true or false
      */
     public boolean readReservations() {
         try {
@@ -77,7 +84,7 @@ public class WarehouseWorkerController extends UserController {
     }
 
     /**
-     * Metodo che rimuove un articolo
+     * Metodo che rimuove un articolo scelto dal magazzino.
      * @param name
      * @param quantity
      * @param toKitchen

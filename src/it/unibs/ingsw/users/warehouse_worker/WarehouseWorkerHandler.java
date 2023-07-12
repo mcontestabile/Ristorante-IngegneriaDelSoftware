@@ -11,13 +11,22 @@ import it.unibs.ingsw.users.registered_users.UserController;
 import javax.xml.stream.XMLStreamException;
 
 public class WarehouseWorkerHandler {
-
     private WarehouseWorkerController controller;
 
+    /**
+     * Metodo costruttore
+     *
+     * @param controller
+     */
     public WarehouseWorkerHandler(WarehouseWorkerController controller) {
         this.controller = controller;
     }
 
+    /**
+     * Menù iniziale del magazziniere
+     *
+     * @param user
+     */
     public void init(WarehouseWorker user) {
         if (!controller.getCanIWork(user)) {
             AsciiArt.slowPrint(UsefulStrings.ACCESS_DENIED5);
@@ -68,6 +77,8 @@ public class WarehouseWorkerHandler {
     }
 
     /**
+     * Stampa lo stato del magazzino.
+     * Se sono presenti ingredienti in uso, stampa anche quelli attualmente in cucina o ai tavoli.
      *
      * @throws XMLStreamException
      */
@@ -82,6 +93,8 @@ public class WarehouseWorkerHandler {
     }
 
     /**
+     * Legge le prenotazioni e stampa la lista della spesa.
+     * Chiede conferma per procedere all'acquisto degli articoli.
      *
      * @throws XMLStreamException
      */
@@ -103,6 +116,7 @@ public class WarehouseWorkerHandler {
     }
 
     /**
+     * Preleva gli ingredienti scelti dal magazzino e li porta in cucina/tavoli
      *
      * @throws XMLStreamException
      */
@@ -143,6 +157,7 @@ public class WarehouseWorkerHandler {
     }
 
     /**
+     * Riporta gli ingredienti scelti dalla cucina/tavoli al magazzino
      *
      * @throws XMLStreamException
      */
@@ -177,6 +192,7 @@ public class WarehouseWorkerHandler {
     }
 
     /**
+     * Scarta gli ingredienti scelti presenti nel magazzino
      *
      * @throws XMLStreamException
      */
