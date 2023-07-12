@@ -23,7 +23,6 @@ public class WarehouseWorker extends User {
     private Map<String, ReservationItems> reservationsMap;  //prenotazioni per nome
     private List<WareHouseArticle> wareHouseArticles;
     private Map<String, WareHouseArticle> wareHouseArticlesMap;     //articoli nel magazzino
-    private List<Article> shoppingList;
     private Map<String, Article> kitchenMap = new HashMap<>();
     private int gap = 10;
 
@@ -125,5 +124,6 @@ public class WarehouseWorker extends User {
     public int getGap() {
         return gap;
     }
+
 
 }

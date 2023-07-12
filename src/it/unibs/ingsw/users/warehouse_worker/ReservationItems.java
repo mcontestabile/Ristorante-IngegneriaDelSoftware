@@ -57,20 +57,4 @@ public class ReservationItems implements Parsable {
     public HashMap<String, Integer> getReservation_items() {return reservation_items;}
 
 
-    @Override
-    public String toString() {
-
-        String toString = "Recipe{" +
-                "name='" + name + '\'' +
-                ", res_cover='" + res_cover + '\'';
-
-        for(Map.Entry r : reservation_items.entrySet()) {
-            toString+= "[" + (String)r.getKey() + ", n=" + r.getValue() + "]  ";
-        }
-
-        toString+= "]";
-
-
-        return toString;
-    }
 }
