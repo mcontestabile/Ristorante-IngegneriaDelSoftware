@@ -167,7 +167,7 @@ public class InsertReservationTest {
         assertThat(itemList.getItemList().size(), is(equalTo(1)));
     }
     @Test
-    public void itemCoverNotExceedsOneMenuPerPerson_limitMinusOne_ZeroMenusAlready(){
+    public void itemCoverNotExceedsOneMenuPerPerson_limitResCoverMinusOne_ZeroMenusAlready(){
         int n_menu_already = 0;
         int resCover = 3;
         int menuCover = resCover-1;
@@ -185,7 +185,7 @@ public class InsertReservationTest {
         assertThat(itemList.getItemList().size(), is(equalTo(1)));
     }
     @Test
-    public void itemCoverNotExceedsOneMenuPerPerson_limit_ZeroMenusAlready(){
+    public void itemCoverNotExceedsOneMenuPerPerson_limitResCover_ZeroMenusAlready(){
         int resCover = 3;
         int n_menu_already = 0;
         int menuCover = resCover;
@@ -203,7 +203,7 @@ public class InsertReservationTest {
         assertThat(itemList.getItemList().size(), is(equalTo(1)));
     }
     @Test
-    public void itemCoverExceedsOneMenuPerPerson_limitPlusOne_ZeroMenusAlready(){
+    public void itemCoverExceedsOneMenuPerPerson_limitResCoverPlusOne_ZeroMenusAlready(){
         int resCover = 3;
         int menuCover = resCover+1;
         int n_menu_already = 0;
@@ -221,7 +221,7 @@ public class InsertReservationTest {
         assertThat(itemList.getItemList().size(), is(equalTo(0)));
     }
     @Test
-    public void itemCoverExceedsOneMenuPerPerson_limit_OneMenuAlready(){
+    public void itemCoverExceedsOneMenuPerPerson_limitResCover_OneMenuAlready(){
         int resCover = 3;
         int menuCover = resCover;
         int n_menu_already = 1;
@@ -260,6 +260,8 @@ public class InsertReservationTest {
 
         controller.updateCaricoRaggiunto(9.0);
 
+        // il suo workload è di 2/3, esteso a 1  ->  2/3 * 1 = 0.66
+        // carico raggiunto = 9.0  ->  + 0.66  ->  9.66...non eccede il massimo raggiungibile (10.0)
         Item i = new DishItem("amatriciana", 1);
 
         if(!controller.controlIfItemExceedsRestaurantWorkload(i.getName(), i.getCover()))
