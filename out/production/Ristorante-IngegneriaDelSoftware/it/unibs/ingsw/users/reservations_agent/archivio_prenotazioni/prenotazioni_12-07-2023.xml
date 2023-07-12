@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--Elenco prenotazioni del 12-07-2023-->
-<agenda>
-	<reservation name="anto" resCover="3">
-		<item item_name="estate23" item_cover="2"/>
-		<item item_name="pasta al pesto" item_cover="1"/>
-	</reservation>
-</agenda>
