@@ -51,13 +51,4 @@ public class WareHouseArticle implements Parsable {
     }
 
 
-    @Override
-    public String toString() {
-
-        String toString = "Article{" +
-                "name='" + name + '\'' +
-                ", quantity='" + quantity + measure + '\'' + "} ";
-
-        return toString;
-    }
 }

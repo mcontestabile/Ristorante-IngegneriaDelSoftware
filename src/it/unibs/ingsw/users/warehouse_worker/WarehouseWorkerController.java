@@ -351,23 +351,9 @@ public class WarehouseWorkerController extends UserController {
 
     public List<Course> getMenu() {return warehouseWorker.getMenu();}
 
-    public List<Appetizer> getAppetizers() {return warehouseWorker.getAppetizers();}
-
     public List<Drink> getDrinks() {return warehouseWorker.getDrinks();}
 
     public List<CookbookRecipe> getCookbook() {return warehouseWorker.getCookbook();}
-
-    public Map<String, CookbookRecipe> getRecipeMap() {return warehouseWorker.getRecipeMap();}
-
-    public List<Dish> getDishes() {return warehouseWorker.getDishes();}
-
-    public Map<String,Dish> getDishesMap() {return warehouseWorker.getDishesMap();}
-
-    public Map<String, Course> getCoursesMap() {return warehouseWorker.getCoursesMap();}
-
-    public Map<String, Drink> getDrinksMap() {return warehouseWorker.getDrinksMap();}
-
-    public Map<String, Appetizer> getAppetizersMap() {return warehouseWorker.getAppetizersMap();}
 
     public List<Article> getKitchenList() {return warehouseWorker.getKitchenList();}
 
