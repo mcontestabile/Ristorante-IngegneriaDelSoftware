@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<recipes>
+	<recipe name="spaghetti allo scoglio" portions="4" n="1" d="4">
+		<ingredient has="400g spaghetti"/>
+		<ingredient has="400g cozze "/>
+		<ingredient has="400g vongole"/>
+		<ingredient has="5g prezzemolo"/>
+	</recipe>
+	<recipe name="platessa con panatura di frutta secca" portions="4" n="2" d="7">
+		<ingredient has="4 filetti di platessa"/>
+		<ingredient has="1 uova"/>
+		<ingredient has="80g farina"/>
+		<ingredient has="80g pangrattato"/>
+		<ingredient has="100g frutta secca"/>
+	</recipe>
+	<recipe name="tartufi al tiramisu'" portions="5" n="1" d="12">
+		<ingredient has="250g mascarpone"/>
+		<ingredient has="160g savoiardi"/>
+		<ingredient has="80g caffè"/>
+		<ingredient has="60g zucchero a velo"/>
+	</recipe>
+	<recipe name="risotto alle erbe e noci" portions="4" n="1" d="3">
+		<ingredient has="280g riso"/>
+		<ingredient has="100g erbe"/>
+		<ingredient has="40g noci"/>
+	</recipe>
+	<recipe name="polpettone di tonno e patate" portions="6" n="1" d="5">
+		<ingredient has="600g macinato di bovino"/>
+		<ingredient has="100g tonno"/>
+		<ingredient has="100g patate"/>
+		<ingredient has="1 uova"/>
+	</recipe>
+	<recipe name="brownies con mascarpone" portions="8" n="1" d="5">
+		<ingredient has="260g cioccolato"/>
+		<ingredient has="20g cacao"/>
+		<ingredient has="150g burro"/>
+		<ingredient has="90g farina00"/>
+		<ingredient has="2 uova"/>
+		<ingredient has="10g mascarpone"/>
+	</recipe>
+	<recipe name="lasagne alla bolognese" portions="8" n="3" d="5">
+		<ingredient has="500g pasta sfoglia"/>
+		<ingredient has="300g macinato di bovino"/>
+		<ingredient has="300g passata pomodoro"/>
+		<ingredient has="50g sedano"/>
+	</recipe>
+	<recipe name="vitello tonnato" portions="6" n="1" d="10">
+		<ingredient has="800g vitello"/>
+		<ingredient has="100g tonno"/>
+		<ingredient has="1 foglia alloro"/>
+		<ingredient has="2 uova"/>
+	</recipe>
+	<recipe name="pasta al pesto" portions="4" n="1" d="10">
+		<ingredient has="400g mezze penne rigate"/>
+		<ingredient has="50g pesto"/>
+	</recipe>
+	<recipe name="affettati e formaggi" portions="6" n="1" d="10">
+		<ingredient has="100g prosciutto crudo"/>
+		<ingredient has="100g gorgonzola"/>
+		<ingredient has="100g coppa"/>
+		<ingredient has="100g formaggio grana"/>
+		<ingredient has="100g speck"/>
+		<ingredient has="100g brie"/>
+	</recipe>
+	<recipe name="torta della nonna" portions="10" n="1" d="5">
+		<ingredient has="500g farina00"/>
+		<ingredient has="260g zucchero"/>
+		<ingredient has="2 limone"/>
+		<ingredient has="200g burro"/>
+		<ingredient has="6 uova"/>
+		<ingredient has="500g latte intero"/>
+	</recipe>
+	<recipe name="avocado toast" portions="4" n="1" d="10">
+		<ingredient has="1 limone"/>
+		<ingredient has="4 fette di pane"/>
+		<ingredient has="4 fette di salmone"/>
+		<ingredient has="1 avocado"/>
+	</recipe>
+	<recipe name="spaghetti aglio olio e peperoncino" portions="4" n="1" d="5">
+		<ingredient has="360g spaghetti"/>
+		<ingredient has="10g olio extra vergine d'oliva"/>
+		<ingredient has="2 spicchi di aglio"/>
+		<ingredient has="2 peperoncino"/>
+		<ingredient has="4 cucchiai pangrattato"/>
+		<ingredient has="10g prezzemolo"/>
+		<ingredient has="5g pomodori secchi sott'olio"/>
+	</recipe>
+	<recipe name="maritozzi golosi" portions="25" n="1" d="3">
+		<ingredient has="100g acqua"/>
+		<ingredient has="13g lievito di birra fresco"/>
+		<ingredient has="500g farina 0"/>
+		<ingredient has="55g zucchero"/>
+		<ingredient has="10g miele"/>
+		<ingredient has="175g latte intero fresco"/>
+		<ingredient has="3 uova"/>
+		<ingredient has="1 scorza di arancia"/>
+		<ingredient has="75g olio extravergine d'oliva"/>
+		<ingredient has="10g sale fino"/>
+		<ingredient has="1 baccello di vaniglia"/>
+		<ingredient has="500g panna fresca"/>
+		<ingredient has="100g zucchero a velo"/>
+		<ingredient has="50g cacao"/>
+		<ingredient has="150g pistacchi"/>
+	</recipe>
+</recipes>

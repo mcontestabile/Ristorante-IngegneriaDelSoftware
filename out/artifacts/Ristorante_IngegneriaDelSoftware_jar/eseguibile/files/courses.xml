@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<courses>
+	<course name="menu del giorno" type="menu alla carta" validation="tutto l'anno">
+		<dish has="affettati e formaggi"/>
+		<dish has="pasta al pesto"/>
+		<dish has="spaghetti allo scoglio"/>
+		<dish has="platessa con panatura di frutta secca"/>
+		<dish has="maritozzi golosi"/>
+		<dish has="avocado toast"/>
+	</course>
+	<course name="estate23" type="menu tematico" validation="estate">
+		<dish has="spaghetti allo scoglio"/>
+		<dish has="platessa con panatura di frutta secca"/>
+		<dish has="maritozzi golosi"/>
+	</course>
+</courses>

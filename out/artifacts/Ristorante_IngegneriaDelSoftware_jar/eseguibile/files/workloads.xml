@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<today_workload>
+	<today name="affettati e formaggi" type="piatto" n="1" d="10"/>
+	
+	<today name="pasta al pesto" type="piatto" n="1" d="10"/>
+	
+	<today name="spaghetti allo scoglio" type="piatto" n="1" d="4"/>
+	
+	<today name="platessa con panatura di frutta secca" type="piatto" n="2" d="7"/>
+	
+	<today name="maritozzi golosi" type="piatto" n="1" d="3"/>
+	
+	<today name="avocado toast" type="piatto" n="1" d="10"/>
+	
+	<today name="estate23" type="menu" n="1" d="4"/>
+	
+</today_workload>
