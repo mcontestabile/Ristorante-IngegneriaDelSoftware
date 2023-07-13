@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<agenda>
+	<reservation name="anto" resCover="2">
+		<item item_name="pasta al pesto" item_cover="500"/>
+	</reservation>
+	<reservation name="diego" resCover="2">
+		<item item_name="pasta al pesto" item_cover="490"/>
+	</reservation>
+	<reservation name="vane" resCover="2">
+		<item item_name="pasta al pesto" item_cover="500"/>
+	</reservation>
+	<reservation name="gigi" resCover="40">
+		<item item_name="pasta al pesto" item_cover="9"/>
+	</reservation>
+</agenda>

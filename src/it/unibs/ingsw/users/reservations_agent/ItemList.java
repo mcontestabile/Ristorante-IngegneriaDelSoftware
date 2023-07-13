@@ -5,7 +5,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Classe per gestire la lista di item di una prenotazione completa.
+ */
 public class ItemList {
+    /**
+     * La lista caratterizzata da una chiave di tipo Item
+     * e da una value di tipo Integer che sta ad indicare
+     * per quanti coperti è stato scelto.
+     */
     private Map<Item,Integer> itemList;
 
     public void putInList(Item i){

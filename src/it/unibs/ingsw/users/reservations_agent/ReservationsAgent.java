@@ -29,7 +29,7 @@ public class ReservationsAgent extends User {
     private List<ReservationItemList> reservations;
 
     /**
-     * Repository archivio prenotazioni
+     * Repository archivio prenotazioni.
      */
     private ReservationArchiveRepository reservationArchiveRepository;
 

@@ -1,5 +1,10 @@
 package it.unibs.ingsw.users.reservations_agent;
 
+/**
+ * Classe che rappresenta un generico item del ristorante.
+ * Avrà quindi un nome e un numero coperti.
+ * Un item potrà essere ad esempio di tipo Menu o Piatto.
+ */
 public abstract class Item {
     String name;
     int cover;

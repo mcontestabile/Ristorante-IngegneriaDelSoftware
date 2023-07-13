@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<agenda>
+	<reservation name="antonello" resCover="3">
+		<item item_name="estate23" item_cover="3"/>
+	</reservation>
+	<reservation name="diego" resCover="2">
+		<item item_name="pasta al pesto" item_cover="2"/>
+	</reservation>
+</agenda>

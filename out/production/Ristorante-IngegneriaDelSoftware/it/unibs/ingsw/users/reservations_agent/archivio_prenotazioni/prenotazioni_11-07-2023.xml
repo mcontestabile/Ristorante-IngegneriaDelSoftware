@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--Elenco prenotazioni del 11-07-2023-->
+<agenda>
+	<reservation name="anton" resCover="4">
+		<item item_name="pasta al pesto" item_cover="1499"/>
+	</reservation>
+	<reservation name="diego" resCover="5">
+		<item item_name="pasta al pesto" item_cover="1"/>
+	</reservation>
+</agenda>

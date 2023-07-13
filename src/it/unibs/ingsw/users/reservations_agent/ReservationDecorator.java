@@ -1,5 +1,8 @@
 package it.unibs.ingsw.users.reservations_agent;
 
+/**
+ * Classe decorator.
+ */
 public class ReservationDecorator implements Reservable{
     protected final Reservable decoratedReservation;
 

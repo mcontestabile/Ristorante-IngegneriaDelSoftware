@@ -7,6 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+/**
+ * Salvataggio nell'archivio prenotazioni mediante XML.
+ * Ciascun file verrà salvato nella cartella corrispondente
+ * e avrà un nome che rappresenti la data lavorativa in questione.
+ */
 public class XMLReservationArchiveRepository implements ReservationArchiveRepository{
     @Override
     public void save(String workingDay) {
