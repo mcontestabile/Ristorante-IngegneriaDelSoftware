@@ -70,7 +70,7 @@ public class WarehouseWorkerController extends UserController {
         warehouseWorker.setWareHouseArticlesMap(wareHouseArticlesMap);
 
         wareHouseArticlesMap.forEach((wareHouseArticleName, wareHouseArticle) -> {
-            articles.add(new Article(wareHouseArticleName, (double) Math.round(wareHouseArticle.getQuantity() * 100.0) / 100.0, wareHouseArticle.getMeasure()));
+            articles.add(new Article(wareHouseArticleName, Math.round(wareHouseArticle.getQuantity() * 100.0) / 100.0, wareHouseArticle.getMeasure()));
         });
 
         try {
@@ -110,7 +110,7 @@ public class WarehouseWorkerController extends UserController {
 
             wareHouseArticlesMap.forEach((wareHouseArticleName, wareHouseArticle) -> {
                 if(wareHouseArticle.getQuantity() != 0.0)
-                    articles.add(new Article(wareHouseArticleName, (double) Math.round(wareHouseArticle.getQuantity()*100.0) / 100.0, wareHouseArticle.getMeasure()));
+                    articles.add(new Article(wareHouseArticleName, Math.round(wareHouseArticle.getQuantity()*100.0) / 100.0, wareHouseArticle.getMeasure()));
             });
             try {
                 warehouseWorker.writingTask(articles, UsefulStrings.WAREHOUSE_FILE, "warehouse");
@@ -143,10 +143,9 @@ public class WarehouseWorkerController extends UserController {
 
         //scorro tutte le prenotazioni
         reservations.forEach((r) -> {
-            //scorro tutti i menu di una prenotazione
+            //scorro tutti gli items di una prenotazione
             r.getReservation_items().forEach((menuR, item_coverR) -> {   //<menu, coperti>
 
-                //System.out.println(coursesMap.get(menuR));
                 if(coursesMap.get(menuR) != null) {
                     coursesMap.get(menuR).getDishesArraylist().forEach((d) -> { //scorro i piatti dato un menu
 
@@ -159,9 +158,10 @@ public class WarehouseWorkerController extends UserController {
                             if(ingredient[0].contains("g")) {
                                 ingredient[0] = ingredient[0].replaceAll("\\D+", "");
                                 measure = "g";
-                                qtyIngredientForCover = Integer.parseInt(ingredient[0])/recipeMap.get(d).getPortionInt();   //qtà ingrediente per coperto (ingredienti a persona)
+                                qtyIngredientForCover = Double.parseDouble(ingredient[0])/recipeMap.get(d).getPortionInt();   //qtà ingrediente per coperto (ingredienti a persona)
                                 qtyIngredientForCoverReserved = qtyIngredientForCover * item_coverR;    //qtà ingrediente per coperti prenotati di quel menu (ingredienti per tutte le persone prenotate)
                                 qtyIngredientForCoverReserved += (qtyIngredientForCoverReserved * warehouseWorker.getGap())/100;
+                                qtyIngredientForCoverReserved = Math.round(qtyIngredientForCoverReserved * 100) / 100.0;
                             } else {
                                 qtyIngredientForCoverReserved = Math.ceil((item_coverR * Integer.parseInt(ingredient[0])) / recipeMap.get(d).getPortionInt());
                                 qtyIngredientForCoverReserved += 1;
@@ -186,9 +186,10 @@ public class WarehouseWorkerController extends UserController {
                             if(ingredient[0].contains("g")) {
                                 ingredient[0] = ingredient[0].replaceAll("\\D+", "");
                                 measure = "g";
-                                qtyIngredientForCover = Integer.parseInt(ingredient[0])/recipeMap.get(menuR).getPortionInt();   //qtà ingrediente per coperto (ingredienti a persona)
+                                qtyIngredientForCover = Double.parseDouble(ingredient[0])/recipeMap.get(menuR).getPortionInt();   //qtà ingrediente per coperto (ingredienti a persona)
                                 qtyIngredientForCoverReserved = qtyIngredientForCover * item_coverR;    //qtà ingrediente per coperti prenotati di quel menu (ingredienti per tutte le persone prenotate)
                                 qtyIngredientForCoverReserved += (qtyIngredientForCoverReserved * warehouseWorker.getGap())/100;
+                                qtyIngredientForCoverReserved = Math.round(qtyIngredientForCoverReserved * 100) / 100.0;
                             } else {
                                 qtyIngredientForCoverReserved = Math.ceil((item_coverR * Integer.parseInt(ingredient[0])) / recipeMap.get(menuR).getPortionInt());
                                 qtyIngredientForCoverReserved += 1;
@@ -210,9 +211,11 @@ public class WarehouseWorkerController extends UserController {
                         if(ingredient[0].contains("g")) {
                             ingredient[0] = ingredient[0].replaceAll("\\D+", "");
                             measure = "g";
-                            qtyIngredientForCover = Integer.parseInt(ingredient[0])/recipeMap.get(menuR).getPortionInt();   //qtà ingrediente per coperto (ingredienti a persona)
+
+                            qtyIngredientForCover = Double.parseDouble(ingredient[0])/recipeMap.get(menuR).getPortionInt();   //qtà ingrediente per coperto (ingredienti a persona)
                             qtyIngredientForCoverReserved = qtyIngredientForCover * item_coverR;    //qtà ingrediente per coperti prenotati di quel menu (ingredienti per tutte le persone prenotate)
                             qtyIngredientForCoverReserved += (qtyIngredientForCoverReserved * warehouseWorker.getGap())/100;
+                            qtyIngredientForCoverReserved = Math.round(qtyIngredientForCoverReserved * 100) / 100.0;
                         } else {
                             qtyIngredientForCoverReserved = Math.ceil((item_coverR * Integer.parseInt(ingredient[0])) / recipeMap.get(menuR).getPortionInt());
                             qtyIngredientForCoverReserved += 1;
@@ -306,7 +309,7 @@ public class WarehouseWorkerController extends UserController {
             if(wareHouseArticlesMap.get(articleName) != null) {
                 double quantityToBuy = wareHouseArticlesMap.get(articleName).getQuantity() - article.getQuantity();
                 if(quantityToBuy < 0.0) {
-                    shoppingList.add(new Article(articleName, (double) Math.round(Math.abs(quantityToBuy)*100.0)/100.0, article.getMeasure()));
+                    shoppingList.add(new Article(articleName,  Math.round(Math.abs(quantityToBuy)*100.0)/100.0, article.getMeasure()));
                     // System.out.println(shoppingListMap.get(articleName));
                 }
             } else {
@@ -315,9 +318,9 @@ public class WarehouseWorkerController extends UserController {
         });
         necessaryDrinks.forEach((a) -> {
             if(wareHouseArticlesMap.get(a.getName()) != null) {
-                double quantityToBuy = wareHouseArticlesMap.get(a.getName()).getQuantity() - ((double) Math.round(a.getQuantity()*100)/100);
+                double quantityToBuy = wareHouseArticlesMap.get(a.getName()).getQuantity() - (Math.round(a.getQuantity()*100)/100);
                 if(quantityToBuy < 0.0) {
-                    shoppingList.add(new Article(a.getName(), (double) Math.round(Math.abs(quantityToBuy)*100.0)/100.0, "l"));
+                    shoppingList.add(new Article(a.getName(),  Math.round(Math.abs(quantityToBuy)*100.0)/100.0, "l"));
                 }
             } else {
                 shoppingList.add(a);
@@ -325,9 +328,9 @@ public class WarehouseWorkerController extends UserController {
         });
         necessaryAppetizers.forEach((a) -> {
             if(wareHouseArticlesMap.get(a.getName()) != null) {
-                double quantityToBuy = wareHouseArticlesMap.get(a.getName()).getQuantity() - ((double) Math.round(a.getQuantity()*100)/100);
+                double quantityToBuy = wareHouseArticlesMap.get(a.getName()).getQuantity() - (Math.round(a.getQuantity()*100)/100);
                 if(quantityToBuy < 0.0) {
-                    shoppingList.add(new Article(a.getName(), (double) Math.round(Math.abs(quantityToBuy)*100.0)/100.0, "hg"));
+                    shoppingList.add(new Article(a.getName(), Math.round(Math.abs(quantityToBuy)*100.0)/100.0, "hg"));
                 }
             } else {
                 shoppingList.add(a);
